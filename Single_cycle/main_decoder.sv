@@ -11,6 +11,8 @@ module main_decoder(
     output logic       ALUSrcA
 );
 
+    // Every output is defined for every opcode. Don't-care (x) values here would cross
+    // pipeline registers and can reach hazard/flush decisions (see spec failure-mode notes).
     always_comb begin
         if (op == 7'b0000011) begin // lw
             RegWrite  = 1;
@@ -28,7 +30,7 @@ module main_decoder(
             ImmSrc    = 3'b001;
             ALUSrc    = 1;
             MemWrite  = 1;
-            ResultSrc = 2'bxx;
+            ResultSrc = 2'b00;
             Branch    = 0;
             ALUOp     = 2'b00;
             PCSrc     = 2'b00;
@@ -36,7 +38,7 @@ module main_decoder(
         end
         else if (op == 7'b0110011) begin // R-type: add, sub, and, or, xor, sll, srl, sra, slt, sltu
             RegWrite  = 1;
-            ImmSrc    = 3'bxxx;
+            ImmSrc    = 3'b000;
             ALUSrc    = 0;
             MemWrite  = 0;
             ResultSrc = 2'b00;
@@ -50,7 +52,7 @@ module main_decoder(
             ImmSrc    = 3'b010;
             ALUSrc    = 0;
             MemWrite  = 0;
-            ResultSrc = 2'bxx;
+            ResultSrc = 2'b00;
             Branch    = 1;
             ALUOp     = 2'b01;
             PCSrc     = 2'b00;
@@ -70,13 +72,13 @@ module main_decoder(
         else if (op == 7'b1101111) begin // JAL
             RegWrite  = 1;
             ImmSrc    = 3'b100;
-            ALUSrc    = 1'bx;
+            ALUSrc    = 1'b0;
             MemWrite  = 0;
             ResultSrc = 2'b11;
             Branch    = 0;
-            ALUOp     = 2'bxx;
+            ALUOp     = 2'b00;
             PCSrc     = 2'b01;
-            ALUSrcA   = 1'bx;
+            ALUSrcA   = 1'b0;
         end
         else if (op == 7'b1100111) begin // JALR
             RegWrite  = 1;
@@ -92,13 +94,13 @@ module main_decoder(
         else if (op == 7'b0110111) begin // LUI
             RegWrite  = 1;
             ImmSrc    = 3'b011;
-            ALUSrc    = 1'bx;
+            ALUSrc    = 1'b0;
             MemWrite  = 0;
             ResultSrc = 2'b10;
             Branch    = 0;
-            ALUOp     = 2'bxx;
+            ALUOp     = 2'b00;
             PCSrc     = 2'b00;
-            ALUSrcA   = 1'bx;
+            ALUSrcA   = 1'b0;
         end
         else if (op == 7'b0010111) begin // AUIPC
             RegWrite  = 1;
