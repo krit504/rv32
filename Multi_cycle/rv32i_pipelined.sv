@@ -19,6 +19,8 @@ logic [31:0] A_PC_to_imem_and_ALU;
 f_d_reg u_f_d_reg(
     .clk(clk),
     .rst_n(rst_n),
+    .StallD(StallD),
+    .FlushD(FlushD),
     .InstrF(instruction_imem_to_FETCH),
     .PCF(A_PC_to_imem_and_ALU),
     .PCPlus4F(PCPlus4F_to_FETCH),
@@ -33,6 +35,7 @@ pc u_pc(
     .clk(clk),
     .rst_n(rst_n),
     .PCNext(PCNext_pc_mux_to_pc),
+    .StallF(StallF),
     .PCOut(A_PC_to_imem_and_ALU)
 );
 
@@ -96,6 +99,11 @@ d_e_reg u_d_e_reg(
     .ResultSrcD(ResultSrc_CU_to_DECODE),
     .ALUControlD(ALUControl_CU_to_DECODE),
     .PCSrcD(PCSrc_CU_to_DECODE),
+    .Rs1D(InstrD_from_FETCH[19:15]),
+    .Rs2D(InstrD_from_FETCH[24:20]),
+    .FlushE(FlushE),
+    .Rs1E(Rs1E),
+    .Rs2E(Rs2E),
     .RD1E(RD1E),
     .RD2E(RD2E),
     .ImmExtE(ImmExtE),
@@ -118,6 +126,8 @@ logic [31:0] RD1E;
 logic [31:0] RD2E;
 logic [31:0] ImmExtE;
 logic [4:0] RdE;
+logic [4:0] Rs1E;
+logic [4:0] Rs2E;
 logic [2:0] funct3E;
 logic [31:0] PCE;
 logic [31:0] PCPlus4E;
@@ -174,11 +184,56 @@ immediate_generator u_immediate_generator(
 ////////////////////////////////
 
 
+logic [1:0] ForwardAE;
+logic [1:0] ForwardBE;
+logic StallF;
+logic StallD;
+logic FlushD;
+logic FlushE;
+
+hazard_unit u_hazard_unit(
+    .Rs1D(InstrD_from_FETCH[19:15]),
+    .Rs2D(InstrD_from_FETCH[24:20]),
+    .Rs1E(Rs1E),
+    .Rs2E(Rs2E),
+    .RdE(RdE),
+    .RdM(RdM),
+    .RdW(RdW),
+    .RegWriteE(RegWriteE),
+    .RegWriteM(RegWriteM),
+    .RegWriteW(RegWriteW),
+    .ResultSrcE(ResultSrcE),
+    .PCNextSelE(PCNextSelE),
+    .ForwardAE(ForwardAE),
+    .ForwardBE(ForwardBE),
+    .StallF(StallF),
+    .StallD(StallD),
+    .FlushD(FlushD),
+    .FlushE(FlushE)
+);
+
+logic [31:0] FwdDataM;
+logic [31:0] FwdRD1E;
+logic [31:0] FwdRD2E;
+logic [31:0] WriteDataE;
 logic [31:0] SrcAE;
 logic [31:0] SrcBE;
 
-assign SrcAE=ALUSrcAE ? PCE : RD1E;
-assign SrcBE=ALUSrcE ? ImmExtE : RD2E;
+assign FwdDataM = (ResultSrcM == 2'b10) ? ImmExtM  :
+                  (ResultSrcM == 2'b11) ? PCPlus4M :
+                                           ALUResultM;
+
+assign FwdRD1E = (ForwardAE == 2'b10) ? FwdDataM :
+                 (ForwardAE == 2'b01) ? ResultW  :
+                                         RD1E;
+
+assign FwdRD2E = (ForwardBE == 2'b10) ? FwdDataM :
+                 (ForwardBE == 2'b01) ? ResultW  :
+                                         RD2E;
+
+assign SrcAE      = ALUSrcAE ? PCE     : FwdRD1E;
+assign SrcBE      = ALUSrcE  ? ImmExtE : FwdRD2E;
+assign WriteDataE = FwdRD2E;
 
 logic [31:0] ALUResultE;
 logic ZeroE;
@@ -249,7 +304,7 @@ e_m_reg u_e_m_reg(
     .clk(clk),
     .rst_n(rst_n),
     .ALUResultE(ALUResultE),
-    .WriteDataE(RD2E),
+    .WriteDataE(WriteDataE),
     .PCPlus4E(PCPlus4E),
     .RdE(RdE),
     .ImmExtE(ImmExtE),

@@ -16,6 +16,9 @@ module d_e_reg(
     input logic [1:0] ResultSrcD,
     input logic [3:0] ALUControlD,
     input logic [1:0] PCSrcD,
+    input logic [4:0] Rs1D,
+    input logic [4:0] Rs2D,
+    input logic  FlushE,
     output logic [31:0] RD1E,
     output logic [31:0] RD2E,
     output logic [31:0] ImmExtE,
@@ -30,7 +33,9 @@ module d_e_reg(
     output logic BranchE,
     output logic [1:0] ResultSrcE,
     output logic [3:0] ALUControlE,
-    output logic [1:0] PCSrcE
+    output logic [1:0] PCSrcE,
+    output logic [4:0] Rs1E,
+    output logic [4:0] Rs2E
 );
 
 always_ff @(posedge clk or negedge rst_n) begin
@@ -38,13 +43,19 @@ always_ff @(posedge clk or negedge rst_n) begin
         RD1E <= '0; RD2E <= '0; ImmExtE <= '0; RdE <= '0; funct3E <= '0;
         PCE <= '0; PCPlus4E <= '0;
         RegWriteE <= '0; ALUSrcE <= '0; ALUSrcAE <= '0; MemWriteE <= '0; BranchE <= '0;
-        ResultSrcE <= '0; ALUControlE <= '0; PCSrcE <= '0;
+        ResultSrcE <= '0; ALUControlE <= '0; PCSrcE <= '0;Rs1E<='0;Rs2E<='0;
+        end 
+    else if (FlushE) begin
+        RD1E <= '0; RD2E <= '0; ImmExtE <= '0; RdE <= '0; funct3E <= '0;
+        PCE <= '0; PCPlus4E <= '0;
+        RegWriteE <= '0; ALUSrcE <= '0; ALUSrcAE <= '0; MemWriteE <= '0; BranchE <= '0;
+        ResultSrcE <= '0; ALUControlE <= '0; PCSrcE <= '0; Rs1E<='0;Rs2E<='0;
         end 
     else begin
         RD1E <= RD1; RD2E <= RD2; ImmExtE <= ImmExtD; RdE <= RdD; funct3E <= funct3D;
         PCE <= PCD; PCPlus4E <= PCPlus4D;
         RegWriteE <= RegWriteD; ALUSrcE <= ALUSrcD; ALUSrcAE <= ALUSrcAD; MemWriteE <= MemWriteD; BranchE <= BranchD;
-        ResultSrcE <= ResultSrcD; ALUControlE <= ALUControlD; PCSrcE <= PCSrcD;
+        ResultSrcE <= ResultSrcD; ALUControlE <= ALUControlD; PCSrcE <= PCSrcD; Rs2E<=Rs2D;Rs1E<=Rs1D;
     end
 end
 endmodule
