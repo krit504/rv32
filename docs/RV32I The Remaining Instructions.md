@@ -173,7 +173,7 @@ Example: `x1 = 32'hFFFFFFFB` (−5), `x2 = 3`. `blt x1, x2, offset`: signed, `�
 |`01`|`ReadData`|
 |`10`|`ImmExt`|
 
-**Main Decoder row:** `RegWrite=1`, `ImmSrc=11` (U-type — the previously spare code in the existing 2-bit `ImmSrc` field), `ALUSrc` don't-care, `MemWrite=0`, `ResultSrc=10`, `Branch=0`.
+**Main Decoder row:** `RegWrite=1`, `ImmSrc=11` (U-type — the previously spare code in the existing 2-bit `ImmSrc` field), `ALUSrc=0` (functionally don't-care, driven to a defined `0` rather than `x`), `MemWrite=0`, `ResultSrc=10`, `Branch=0`.
 
 Example: `lui x5, 0x12345` → `ImmExt = 0x12345000` (the field `0x12345` placed in bits `[31:12]`, zeros in `[11:0]`) → `x5 = 0x12345000` directly, with no ALU step.
 
@@ -223,7 +223,7 @@ Example: `PC = 0x2000`. `auipc x6, 0x1` → `ImmExt = 0x00001000` → `ALUResult
 
 **`PCSrc` does not need to change yet.** `jal` uses the same two `PCNext` sources that already exist — `PCPlus4` and `PCTarget` — it just forces `PCTarget` unconditionally rather than depending on `Zero`. This is opcode-determined: `control_unit` recognizes the `jal` opcode and outputs `PCSrc=1` directly, with no comparison involved, unlike an actual branch where `PCSrc` depends on `Zero` at runtime.
 
-**Main Decoder row:** `RegWrite=1`, `ImmSrc=100` (J-type), `ALUSrc`/`ALUSrcA` don't-care (the ALU is not involved — `PCTarget` is the dedicated adder), `MemWrite=0`, `ResultSrc=11` (`PCPlus4`), `PCSrc` forced to `1`.
+**Main Decoder row:** `RegWrite=1`, `ImmSrc=100` (J-type), `ALUSrc=0`/`ALUSrcA=0` (functionally don't-care, driven to defined `0`s rather than `x`: the ALU is not involved — `PCTarget` is the dedicated adder), `MemWrite=0`, `ResultSrc=11` (`PCPlus4`), `PCSrc` forced to `1`.
 
 Example: `PC = 0x1000`. `jal x1, +16`: `ImmExt = 16` → `PCTarget = 0x1000 + 16 = 0x1010` → next PC is `0x1010` unconditionally → `x1 = PCPlus4 = 0x1004`.
 
@@ -266,14 +266,16 @@ Example, continuing directly from the `jal` example above: `PC = 0x2000`, `x1 = 
 |Instruction(s)|op|RegWrite|ImmSrc|ALUSrc|ALUSrcA|MemWrite|ResultSrc|Branch|PCSrc (forced)|ALUOp|
 |---|---|---|---|---|---|---|---|---|---|---|
 |`lw`|`0000011`|1|`000`|1|0|0|`01`|0|—|`00`|
-|`sw`|`0100011`|0|`001`|1|0|1|`xx`|0|—|`00`|
-|R-type (10)|`0110011`|1|`xxx`|0|0|0|`00`|0|—|`10`|
+|`sw`|`0100011`|0|`001`|1|0|1|`00`|0|—|`00`|
+|R-type (10)|`0110011`|1|`000`|0|0|0|`00`|0|—|`10`|
 |I-type ALU (9)|`0010011`|1|`000`|1|0|0|`00`|0|—|`10`|
-|branches (6)|`1100011`|0|`010`|0|0|0|`xx`|1|runtime|`01`|
-|`jal`|`1101111`|1|`100`|x|x|0|`11`|0|`01`|x|
+|branches (6)|`1100011`|0|`010`|0|0|0|`00`|1|runtime|`01`|
+|`jal`|`1101111`|1|`100`|0|0|0|`11`|0|`01`|`00`|
 |`jalr`|`1100111`|1|`000`|1|0|0|`11`|0|`10`|`00`|
-|`lui`|`0110111`|1|`011`|x|x|0|`10`|0|—|x|
+|`lui`|`0110111`|1|`011`|0|0|0|`10`|0|—|`00`|
 |`auipc`|`0010111`|1|`011`|1|1|0|`00`|0|—|`00`|
+
+Every entry here is a defined value: outputs that are functionally don't-care are driven to `0` rather than `x`, because an `x` that crosses a pipeline register can reach a hazard decision (pipelined spec §18, Note 9).
 
 ALU Decoder tables: `ALUOp=10` in Section 2, `ALUOp=01` in Section 3.
 

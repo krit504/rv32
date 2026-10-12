@@ -381,9 +381,10 @@ Purely combinational. Instantiated at the top level as a sibling of the stages, 
 |`RdE`|in|5|destination register of the instruction in Execute|
 |`RdM`|in|5|destination register of the instruction in Memory|
 |`RdW`|in|5|destination register of the instruction in Writeback|
+|`RegWriteE`|in|1|instruction in Execute writes a register. Qualifies the load-use check (§18, Note 9)|
 |`RegWriteM`|in|1|instruction in Memory writes a register|
 |`RegWriteW`|in|1|instruction in Writeback writes a register|
-|`ResultSrcE`|in|2|`01` identifies a `lw` in Execute|
+|`ResultSrcE`|in|2|`01` identifies a `lw` in Execute, together with `RegWriteE`|
 |`PCNextSelE`|in|2|resolved next-PC select from §8. Non-zero means a redirect is happening this cycle|
 |`ForwardAE`|out|2|select for the `SrcA` register-value forwarding mux|
 |`ForwardBE`|out|2|select for the `SrcB` register-value forwarding mux|
@@ -392,7 +393,7 @@ Purely combinational. Instantiated at the top level as a sibling of the stages, 
 |`FlushD`|out|1|clear `f_d_reg`|
 |`FlushE`|out|1|clear `d_e_reg`|
 
-**Parameters:** none. **Internal signals:** `lwStall` (1), `redirectE` (1). Both are combinational, no state.
+**Parameters:** `FORWARDING` (default `1`; `0` selects the ablation described under Functional behavior). **Internal signals:** `lwStall` (1), `depStall` (1), `stallCond` (1), `redirectE` (1). All combinational, no state.
 
 **`ForwardAE`/`ForwardBE` encoding:**
 
@@ -413,14 +414,17 @@ ForwardAE = ((Rs1E == RdM) && RegWriteM && (RdM != 5'd0)) ? 2'b10 :
 **Stall and flush conditions:**
 
 ```
-lwStall   = ((Rs1D == RdE) || (Rs2D == RdE)) && (ResultSrcE == 2'b01) && (RdE != 5'd0);
+lwStall   = ((Rs1D == RdE) || (Rs2D == RdE)) && RegWriteE && (ResultSrcE == 2'b01) && (RdE != 5'd0);
 redirectE = (PCNextSelE != 2'b00);
+stallCond = (FORWARDING != 0) ? lwStall : depStall;   // depStall: ablation only, see below
 
-StallF = lwStall;
-StallD = lwStall;
+StallF = stallCond;
+StallD = stallCond;
 FlushD = redirectE;
-FlushE = lwStall | redirectE;
+FlushE = stallCond | redirectE;
 ```
+
+With `FORWARDING = 1` (default) `stallCond` is `lwStall`, so `StallF`/`StallD` equal `lwStall` and `FlushE` is `lwStall | redirectE`, as in the rest of this document.
 
 **Functional behavior:**
 
@@ -445,6 +449,19 @@ FlushE = lwStall | redirectE;
     - `ForwardAE`/`ForwardBE` depend only on `Rs1E`, `Rs2E`, `RdM`, `RdW`, `RegWriteM`, `RegWriteW`.
     - `redirectE` depends on `PCNextSelE`, which depends on the ALU output, which depends on `ForwardAE`/`ForwardBE`.
     - `FlushD`/`FlushE` are synchronous clears, sampled at the next clock edge, so they do not feed back.
+- **`RegWriteE` qualifies the load check.**
+    - A load must write a register, so `RegWriteE = 1` for every real `lw`.
+    - For `sw` and branches the `Instr[11:7]` field is immediate bits, not a destination register. It can equal `Rs1D`/`Rs2D` by accident.
+    - `main_decoder` now drives `ResultSrc` to a defined `00` on those rows, so `ResultSrcE == 01` is already false for them. The qualifier is kept as defense in depth (§18, Note 9).
+- **`FORWARDING = 0` (ablation).**
+    - `ForwardAE`/`ForwardBE` are tied to `00`. Results are only correct if dependent instructions are held apart instead, so the unit stalls the consumer in Decode:
+      ```
+      depStall = ((RegWriteE && (RdE != 0) && (Rs1D == RdE || Rs2D == RdE)) ||
+                  (RegWriteM && (RdM != 0) && (Rs1D == RdM || Rs2D == RdM))) && !redirectE;
+      ```
+    - A producer in Writeback needs no stall: the negedge register-file write lands before the Decode-stage read is sampled (§2).
+    - `depStall` is masked by `redirectE`. A redirect flushes the instruction in Decode anyway, and holding `pc` during a redirect would drop the new target. This also keeps stall and flush from asserting together.
+    - It compares register-number fields unconditionally, so it also stalls on immediate-bit matches (§18, Note 8), and costs more cycles than forwarding.
 
 **What "done" looks like for this block:** directed tests that drive the inputs directly and check every output.
 
@@ -460,8 +477,10 @@ FlushE = lwStall | redirectE;
     - load in Execute, `Rs1D == RdE` → `1`
     - load in Execute, `Rs2D == RdE` → `1`
     - same match with `ResultSrcE != 01` → `0`
+    - match with `ResultSrcE = 01` but `RegWriteE = 0` → `0`
     - `RdE = 0` with `Rs1D = 0` → `0`
     - no match → `0`
+- no hazard_unit input or output is `x` or `z` on any cycle of any test program (checked by `tb_hazard.sv`).
 - `redirectE`: `PCNextSelE = 00` gives `FlushD = 0`. `01` or `10` gives `FlushD = 1`.
 - `FlushE` asserts for either cause alone.
 - `StallD` and `FlushD` are never both `1` for any input combination the datapath can produce.
@@ -594,6 +613,7 @@ end
 |`Rs2D`|`InstrD[24:20]`|
 |`Rs1E`, `Rs2E`|`d_e_reg.Rs1E`, `d_e_reg.Rs2E`|
 |`RdE`|`d_e_reg.RdE`|
+|`RegWriteE`|`d_e_reg.RegWriteE`|
 |`RdM`, `RdW`|`e_m_reg.RdM`, `m_w_reg.RdW`|
 |`RegWriteM`, `RegWriteW`|`e_m_reg.RegWriteM`, `m_w_reg.RegWriteW`|
 |`ResultSrcE`|`d_e_reg.ResultSrcE`|
@@ -603,6 +623,8 @@ end
 |`StallD`|`f_d_reg.StallD`|
 |`FlushD`|`f_d_reg.FlushD`|
 |`FlushE`|`d_e_reg.FlushE`|
+
+`rv32_top` has a parameter `FORWARDING` (default `1`) that it passes to `hazard_unit` (§13).
 
 **New taps feeding `d_e_reg`:** `.Rs1D(InstrD[19:15])` and `.Rs2D(InstrD[24:20])`. These are the same bit slices already feeding `regfile.A1`/`A2`, routed to a second destination.
 
@@ -755,6 +777,21 @@ Then add directed tests. Each checks final register or memory state against a ha
 - Both cost one cycle and give correct results.
 - Do not "fix" these when debugging a failing test.
 
+**Note 9 — a don't-care (X) control value that crosses a pipeline register can make a stall or flush decision X.**
+
+- A don't-care is harmless where nothing reads it. It is not harmless once it travels through a pipeline register into a hazard condition.
+- Concrete case: `sw` and branches carried `ResultSrc = xx`, because `RegWrite = 0` makes it irrelevant to writeback. Their `Instr[11:7]` field is not a destination register either. It holds immediate bits (`imm[4:0]` for `sw`).
+- If those bits equalled the next instruction's `Rs1D`/`Rs2D`, `lwStall = (match) && (ResultSrcE == 01) && ...` evaluated `1 && X`, so `lwStall` was X.
+- Example: `sw x0,5(x0)` followed by `add x6,x5,x0`. The `sw`'s `Instr[11:7]` is `5`.
+- In simulation `StallD = X` made `f_d_reg` hold (`else if (!StallD)` is false for X), while `FlushE = X` meant `d_e_reg` did not flush (`else if (FlushE)` is false for X). The consumer entered Execute and also stayed in Decode, so it executed twice.
+  - That is harmless for `add x6,x5,x0` and wrong for `addi x5,x5,1`.
+  - In silicon the result depends on how synthesis resolves the X, so it can differ from simulation.
+- Fix, both parts:
+    - Define every pipelined control output. `main_decoder` drives `0` instead of `x`/`xx`/`xxx` for every functionally don't-care output (see the decoder tables in the single-cycle specs).
+    - Qualify load detection with `RegWriteE`.
+- Regression check: `tb_hazard.sv` fails any test in which a `hazard_unit` input or output is X/Z on any cycle after reset.
+  - It covers the inputs too. `ResultSrcE` was X while `lwStall` stayed defined, and that is how the cause was found.
+
 ---
 
 ## 19. Hazard Control Signal Reference
@@ -767,12 +804,12 @@ Then add directed tests. Each checks final register or memory state against a ha
 |`FwdRD1E`, `FwdRD2E`|32|top-level forwarding muxes|register operand values after forwarding. They feed `SrcAE`/`SrcBE`. `FwdRD2E` also feeds `WriteDataE`|
 |`Rs1D`, `Rs2D`|5|`InstrD[19:15]`, `InstrD[24:20]`|source register numbers in Decode, used by the stall check|
 |`Rs1E`, `Rs2E`|5|`d_e_reg`|source register numbers in Execute, used by the forwarding check. Not pipelined past Execute|
-|`lwStall`|1|`hazard_unit` (internal)|a load is in Execute and its destination matches `Rs1D` or `Rs2D`|
+|`lwStall`|1|`hazard_unit` (internal)|a load (`RegWriteE` and `ResultSrcE = 01`) is in Execute and its destination matches `Rs1D` or `Rs2D`|
 |`redirectE`|1|`hazard_unit` (internal)|`PCNextSelE != 00`|
-|`StallF`|1|`hazard_unit`|hold `pc`. Equal to `lwStall`|
-|`StallD`|1|`hazard_unit`|hold `f_d_reg`. Equal to `lwStall`|
+|`StallF`|1|`hazard_unit`|hold `pc`. Equal to `stallCond` (`lwStall` when `FORWARDING = 1`)|
+|`StallD`|1|`hazard_unit`|hold `f_d_reg`. Equal to `stallCond` (`lwStall` when `FORWARDING = 1`)|
 |`FlushD`|1|`hazard_unit`|clear `f_d_reg`. Equal to `redirectE`|
-|`FlushE`|1|`hazard_unit`|clear `d_e_reg`. `lwStall` OR `redirectE`|
+|`FlushE`|1|`hazard_unit`|clear `d_e_reg`. `stallCond` OR `redirectE`|
 
 ---
 
@@ -780,7 +817,7 @@ Then add directed tests. Each checks final register or memory state against a ha
 
 |Block|Inputs|Outputs|Notes|
 |---|---|---|---|
-|`hazard_unit`|`Rs1D[4:0]`, `Rs2D[4:0]`, `Rs1E[4:0]`, `Rs2E[4:0]`, `RdE[4:0]`, `RdM[4:0]`, `RdW[4:0]`, `RegWriteM`, `RegWriteW`, `ResultSrcE[1:0]`, `PCNextSelE[1:0]`|`ForwardAE[1:0]`, `ForwardBE[1:0]`, `StallF`, `StallD`, `FlushD`, `FlushE`|new. Combinational. Top-level sibling, not inside `control_unit`|
+|`hazard_unit`|`Rs1D[4:0]`, `Rs2D[4:0]`, `Rs1E[4:0]`, `Rs2E[4:0]`, `RdE[4:0]`, `RdM[4:0]`, `RdW[4:0]`, `RegWriteE`, `RegWriteM`, `RegWriteW`, `ResultSrcE[1:0]`, `PCNextSelE[1:0]`|`ForwardAE[1:0]`, `ForwardBE[1:0]`, `StallF`, `StallD`, `FlushD`, `FlushE`|new. Combinational. Top-level sibling, not inside `control_unit`. Parameter `FORWARDING` (default 1)|
 |`pc`|`clk`, `rst_n`, `PCNext[31:0]`, `StallF`|`PCOut[31:0]`|`StallF` added|
 |`f_d_reg`|`clk`, `rst_n`, `StallD`, `FlushD`, `InstrF[31:0]`, `PCF[31:0]`, `PCPlus4F[31:0]`|`InstrD[31:0]`, `PCD[31:0]`, `PCPlus4D[31:0]`|`StallD`, `FlushD` added. Priority: reset, flush, stall|
 |`d_e_reg`|every input in §11's row, plus `FlushE`, `Rs1D[4:0]`, `Rs2D[4:0]`|every output in §11's row, plus `Rs1E[4:0]`, `Rs2E[4:0]`|`FlushE` clears every output. `Rs1E`/`Rs2E` stop at Execute|

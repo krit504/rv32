@@ -185,16 +185,18 @@ funct3[2:0] ────────►│ Control Unit │───► RegWrite
 |Instruction|op|RegWrite|ImmSrc|ALUSrc|MemWrite|ResultSrc|Branch|ALUOp|
 |---|---|---|---|---|---|---|---|---|
 |`lw`|`0000011`|`1`|`00`|`1`|`0`|`1`|`0`|`00`|
-|`sw`|`0100011`|`0`|`01`|`1`|`1`|`x`|`0`|`00`|
-|R-type|`0110011`|`1`|`xx`|`0`|`0`|`0`|`0`|`10`|
-|`beq`|`1100011`|`0`|`10`|`0`|`0`|`x`|`1`|`01`|
+|`sw`|`0100011`|`0`|`01`|`1`|`1`|`0`|`0`|`00`|
+|R-type|`0110011`|`1`|`00`|`0`|`0`|`0`|`0`|`10`|
+|`beq`|`1100011`|`0`|`10`|`0`|`0`|`0`|`1`|`01`|
+
+No output is left as `x`. An entry that is functionally a don't-care (`ResultSrc` on `sw`/`beq`, `ImmSrc` on R-type) is driven to a defined `0`, because an `x` on a signal that crosses a pipeline register can reach a hazard decision (pipelined spec §18, Note 9). Nothing reads those values on those rows, so behavior is unchanged.
 
 **Per-row justification:**
 
 - **`lw`**: writes a register; needs the I-type immediate as a memory offset; that offset must reach the ALU (`ALUSrc=1`); doesn't write memory; the value written back comes from memory, not the ALU (`ResultSrc=1`); not a branch; address computation is unconditionally addition (`ALUOp=00`).
-- **`sw`**: writes no register at all — `ResultSrc` is a genuine don't-care here, not merely unused, because `RegWrite=0` means the register file's write port never activates regardless of what value the Result mux would have produced; needs the S-type immediate; that immediate reaches the ALU; does write memory; address computation is addition, same `ALUOp=00` as `lw`.
-- **R-type**: writes a register; `ImmSrc` is don't-care (`xx`) because R-type never reads `ImmExt` at all — both ALU operands come from the register file; `ALUSrc=0` selects `RD2` instead of the immediate; doesn't write memory; not a branch; `ALUOp=10` defers the exact operation to the ALU Decoder, since this is the one instruction class where the operation genuinely varies by `funct3`.
-- **`beq`**: writes no register — `ResultSrc` don't-care for the same reason as `sw`; needs the B-type immediate for the branch offset; ALU operands are two registers, not an immediate (`ALUSrc=0`); doesn't write memory; `Branch=1` flags this instruction downstream; `ALUOp=01` — a branch comparison is unconditionally a subtraction, independent of `funct3`.
+- **`sw`**: writes no register at all — `ResultSrc=0` is functionally a don't-care here, because `RegWrite=0` means the register file's write port never activates regardless of what value the Result mux would have produced, but it is driven to a defined `0` rather than `x`; needs the S-type immediate; that immediate reaches the ALU; does write memory; address computation is addition, same `ALUOp=00` as `lw`.
+- **R-type**: writes a register; `ImmSrc=00` is functionally a don't-care (defined, not `xx`) because R-type never reads `ImmExt` at all — both ALU operands come from the register file; `ALUSrc=0` selects `RD2` instead of the immediate; doesn't write memory; not a branch; `ALUOp=10` defers the exact operation to the ALU Decoder, since this is the one instruction class where the operation genuinely varies by `funct3`.
+- **`beq`**: writes no register — `ResultSrc=0`, defined rather than `x`, for the same reason as `sw`; needs the B-type immediate for the branch offset; ALU operands are two registers, not an immediate (`ALUSrc=0`); doesn't write memory; `Branch=1` flags this instruction downstream; `ALUOp=01` — a branch comparison is unconditionally a subtraction, independent of `funct3`.
 
 **Control-flow note:** every output is defined for every recognized `op` value above. Any `op` value **not** in this table (all future/unsupported opcodes, for now) must still produce defined outputs — every signal defaulted to `0` at the top of the `always_comb` block, before the `case` statement, exactly as required to prevent inferred latches in any wide combinational decoder. This matters more here than it might first appear: only 4 of 128 possible `op` values are handled by this table so far, so the default-assignment discipline is carrying nearly the entire address space right now, not just an edge case.
 

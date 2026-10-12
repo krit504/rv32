@@ -100,22 +100,24 @@
 | Instruction(s) | op        | RegWrite | ImmSrc | ALUSrc | ALUSrcA | MemWrite | ResultSrc | Branch | PCSrc | ALUOp |
 | -------------- | --------- | -------- | ------ | ------ | ------- | -------- | --------- | ------ | ----- | ----- |
 | `lw`           | `0000011` | 1        | `000`  | 1      | 0       | 0        | `01`      | 0      | `00`  | `00`  |
-| `sw`           | `0100011` | 0        | `001`  | 1      | 0       | 1        | `xx`      | 0      | `00`  | `00`  |
-| R-type         | `0110011` | 1        | `xxx`  | 0      | 0       | 0        | `00`      | 0      | `00`  | `10`  |
+| `sw`           | `0100011` | 0        | `001`  | 1      | 0       | 1        | `00`      | 0      | `00`  | `00`  |
+| R-type         | `0110011` | 1        | `000`  | 0      | 0       | 0        | `00`      | 0      | `00`  | `10`  |
 | I-type ALU     | `0010011` | 1        | `000`  | 1      | 0       | 0        | `00`      | 0      | `00`  | `10`  |
-| Branch         | `1100011` | 0        | `010`  | 0      | 0       | 0        | `xx`      | 1      | `00`  | `01`  |
-| `jal`          | `1101111` | 1        | `100`  | x      | x       | 0        | `11`      | 0      | `01`  | `xx`  |
+| Branch         | `1100011` | 0        | `010`  | 0      | 0       | 0        | `00`      | 1      | `00`  | `01`  |
+| `jal`          | `1101111` | 1        | `100`  | 0      | 0       | 0        | `11`      | 0      | `01`  | `00`  |
 | `jalr`         | `1100111` | 1        | `000`  | 1      | 0       | 0        | `11`      | 0      | `10`  | `00`  |
-| `lui`          | `0110111` | 1        | `011`  | x      | x       | 0        | `10`      | 0      | `00`  | `xx`  |
+| `lui`          | `0110111` | 1        | `011`  | 0      | 0       | 0        | `10`      | 0      | `00`  | `00`  |
 | `auipc`        | `0010111` | 1        | `011`  | 1      | 1       | 0        | `00`      | 0      | `00`  | `00`  |
+
+No output is left as `x`. Entries that are functionally don't-care (`ResultSrc` on `sw`/branch, `ImmSrc` on R-type, `ALUSrc`/`ALUSrcA`/`ALUOp` on `jal`/`lui`) are driven to a defined `0`, because an `x` on a signal that crosses a pipeline register can reach a hazard decision (pipelined spec §18, Note 9). Nothing reads those values on those rows, so behavior is unchanged.
 
 **Per-row notes for the new rows:**
 
 - **I-type ALU**: `ImmSrc=000` (I-type, same encoding `lw` uses). `ResultSrc=00` — always the ALU result, never memory, since none of these 9 instructions touch `dmem`. `ALUOp=10` — same as R-type, since the exact operation depends on `funct3` (§4).
-- **Branch (updated row)**: `ResultSrc` is don't-care (`RegWrite=0`, same reasoning as `sw`/original `beq`). `PCSrc=00` from this decoder — the actual `01`/`00` choice is resolved at runtime inside `control_unit`, not here.
-- **`jal`**: `ALUSrc`/`ALUSrcA` don't-care — the ALU is not involved in computing `jal`'s target at all (the dedicated `PCTarget` adder handles it). `ResultSrc=11` selects `PCPlus4` (return address) as the writeback value. `PCSrc=01` forced — `jal` always redirects, decided purely from its opcode.
+- **Branch (updated row)**: `ResultSrc=00` is functionally a don't-care (`RegWrite=0`, same reasoning as `sw`/original `beq`), defined rather than `xx`. `PCSrc=00` from this decoder — the actual `01`/`00` choice is resolved at runtime inside `control_unit`, not here.
+- **`jal`**: `ALUSrc=0`, `ALUSrcA=0`, `ALUOp=00` — functionally don't-care (the ALU is not involved in computing `jal`'s target at all; the dedicated `PCTarget` adder handles it), driven to defined `0`s rather than `x`. `ResultSrc=11` selects `PCPlus4` (return address) as the writeback value. `PCSrc=01` forced — `jal` always redirects, decided purely from its opcode.
 - **`jalr`**: `ALUSrc=1`, `ALUSrcA=0` — reuses the ALU exactly as `lw`/`sw` do, computing `rs1+imm`. `ResultSrc=11` (return address, same as `jal`). `PCSrc=10` forced — always redirects via the ALU's result (with bit 0 cleared at the `PCNext` mux, §6). `ALUOp=00` — this target computation is unconditionally addition, never ambiguous.
-- **`lui`**: `ALUSrc`/`ALUSrcA` don't-care — the ALU is bypassed entirely; the writeback value is `ImmExt` directly (`ResultSrc=10`).
+- **`lui`**: `ALUSrc=0`, `ALUSrcA=0`, `ALUOp=00` — functionally don't-care (the ALU is bypassed entirely), defined rather than `x`; the writeback value is `ImmExt` directly (`ResultSrc=10`).
 - **`auipc`**: `ALUSrc=1` (select `ImmExt` for `SrcB`), `ALUSrcA=1` (select `PC`, not `RD1`, for `SrcA` — the only instruction that sets this bit). `ResultSrc=00` — unlike `lui`, `auipc` does go through the ALU.
 
 ---
