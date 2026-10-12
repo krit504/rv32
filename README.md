@@ -35,6 +35,8 @@ docs/           specs and concept notes (the RTL is written against these)
 
 Both core directories carry their own copy of the shared modules (ALU, decoders, regfile, ...).
 
+History note: commits `9ee45f5` (5-stage pipeline) and `02da49f` (hazard handling) were assembled after the fact. Their pre-hazard versions of `f_d_reg`, `d_e_reg`, `pc` and the top level were reconstructed from the final files, and `02da49f` has no `FORWARDING` parameter. Each of those commits builds and passes its own tests, but `git blame` and `git bisect` across them reflect that reconstruction, not the order the code was actually written.
+
 ## Requirements
 
 `verilator` >= 5, `iverilog` >= 12, `python3`. Run everything from the core's directory.
