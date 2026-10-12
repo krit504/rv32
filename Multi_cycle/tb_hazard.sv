@@ -34,6 +34,31 @@ module tb_hazard #(
         .retired(retired), .spurious_stalls(spurious), .done(done)
     );
 
+    // X/Z check: no hazard_unit input or output may be unknown on any cycle after reset.
+    // Sampled mid-cycle (negedge) so the combinational outputs have settled. Reduction XOR is
+    // x if any bit is x or z; $isunknown on this hierarchical concatenation gave false positives
+    // in Icarus 12.
+    int xviol = 0;
+    always @(negedge clk) if (rst_n) begin
+        if ((^{dut.u_hazard_unit.Rs1D, dut.u_hazard_unit.Rs2D,
+                        dut.u_hazard_unit.Rs1E, dut.u_hazard_unit.Rs2E,
+                        dut.u_hazard_unit.RdE, dut.u_hazard_unit.RdM, dut.u_hazard_unit.RdW,
+                        dut.u_hazard_unit.RegWriteE, dut.u_hazard_unit.RegWriteM,
+                        dut.u_hazard_unit.RegWriteW,
+                        dut.u_hazard_unit.ResultSrcE, dut.u_hazard_unit.PCNextSelE,
+                        dut.u_hazard_unit.ForwardAE, dut.u_hazard_unit.ForwardBE,
+                        dut.u_hazard_unit.StallF, dut.u_hazard_unit.StallD,
+                        dut.u_hazard_unit.FlushD, dut.u_hazard_unit.FlushE}) === 1'bx) begin
+            if (xviol == 0)
+                $display("XFIRST t=%0t InstrD=%h ResultSrcE=%b RegWriteE=%b PCNextSelE=%b Stall=%b%b Flush=%b%b",
+                         $time, dut.InstrD_from_FETCH, dut.u_hazard_unit.ResultSrcE,
+                         dut.u_hazard_unit.RegWriteE, dut.u_hazard_unit.PCNextSelE,
+                         dut.u_hazard_unit.StallF, dut.u_hazard_unit.StallD,
+                         dut.u_hazard_unit.FlushD, dut.u_hazard_unit.FlushE);
+            xviol = xviol + 1;
+        end
+    end
+
     initial begin
         repeat (200) @(posedge clk);
         for (int i = 1; i < 32; i++)
@@ -46,6 +71,7 @@ module tb_hazard #(
         $display("RETIRED %0d", retired);
         $display("SPURIOUS %0d", spurious);
         $display("DONE %0d", done);
+        $display("XVIOL %0d", xviol);
         $finish;
     end
 endmodule

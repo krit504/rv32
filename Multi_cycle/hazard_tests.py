@@ -64,7 +64,7 @@ def run(prog):
         if m: regs[int(m.group(1))] = m.group(2)
         m = re.match(r"MEM (\d+) (\w+)", ln)
         if m: mem[int(m.group(1))] = m.group(2)
-        m = re.match(r"(CYCLES|STALLS|FLUSHES|RETIRED|SPURIOUS|DONE) (\d+)", ln)
+        m = re.match(r"(CYCLES|STALLS|FLUSHES|RETIRED|SPURIOUS|DONE|XVIOL) (\d+)", ln)
         if m: stats[m.group(1).lower()] = int(m.group(2))
     return regs, mem, stats
 
@@ -164,6 +164,8 @@ for name, prog, regs, mem, exp in tests:
             errs.append(f"mem[{a}]={got_mem.get(a)} expected {hx(v)}")
     if st.get("done") != 1:
         errs.append("pipeline never drained")
+    if st.get("xviol") != 0:
+        errs.append(f"hazard_unit saw X/Z on {st.get('xviol')} cycle(s)")
     for k in ("flushes", "retired"):
         if k in exp and st.get(k) != exp[k]:
             errs.append(f"{k}={st.get(k)} expected {exp[k]}")
