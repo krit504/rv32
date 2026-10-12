@@ -44,8 +44,9 @@ generate
     end
 endgenerate
 
-// RegWriteE qualifies the load: sw/branch carry ResultSrc = xx (don't care) and an
-// "rd" field that is really immediate bits, so (ResultSrcE == 01) alone can be X.
+// RegWriteE qualifies the load: for sw/branch the "rd" field is really immediate bits,
+// and the spec treats ResultSrc as don't-care there. main_decoder now defines it, but a
+// load must write a register regardless, so the qualifier stays as defense in depth.
 assign lwStall   = ((Rs1D == RdE) || (Rs2D == RdE)) && RegWriteE && (ResultSrcE == 2'b01) && (RdE != 5'd0);
 assign redirectE = (PCNextSelE != 2'b00);
 
