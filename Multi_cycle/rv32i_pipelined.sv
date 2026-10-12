@@ -1,4 +1,4 @@
-module rv32_top_pipelined(
+module rv32_top_pipelined #(parameter int FORWARDING = 1)(
     input logic clk,
     input logic rst_n
 );
@@ -191,7 +191,7 @@ logic StallD;
 logic FlushD;
 logic FlushE;
 
-hazard_unit u_hazard_unit(
+hazard_unit #(.FORWARDING(FORWARDING)) u_hazard_unit(
     .Rs1D(InstrD_from_FETCH[19:15]),
     .Rs2D(InstrD_from_FETCH[24:20]),
     .Rs1E(Rs1E),
