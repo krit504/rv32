@@ -44,6 +44,7 @@ jal   = lambda rd, imm: j_type(imm, rd)
 jalr  = lambda rd, imm, rs1: i_type(imm, rs1, 0, rd, 0b1100111)
 NOP = addi(0, 0, 0)
 
+FILL = 4   # pipeline fill cycles, reported separately from steady-state CPI
 NOFWD = "--nofwd" in sys.argv or "--nofw" in sys.argv
 QUIET = "--quiet" in sys.argv
 
@@ -66,6 +67,8 @@ def run(prog):
         if m: mem[int(m.group(1))] = m.group(2)
         m = re.match(r"(CYCLES|STALLS|FLUSHES|RETIRED|SPURIOUS|DONE|XVIOL) (\d+)", ln)
         if m: stats[m.group(1).lower()] = int(m.group(2))
+        if ln.startswith("METRICS "):
+            stats["metrics"] = dict(re.findall(r"(\w+)=(\S+)", ln))
     return regs, mem, stats
 
 def hx(v):
@@ -175,13 +178,16 @@ for name, prog, regs, mem, exp in tests:
                 errs.append(f"{k}={st.get(k)} expected {exp[k]}")
     elif exp.get("dep") and st.get("stalls", 0) == 0:
         errs.append("ablation: dependent sequence never stalled")
-    ident = st["retired"] + st["stalls"] + 2 * st["flushes"] + 4
+    ident = st["retired"] + st["stalls"] + 2 * st["flushes"] + FILL
     if st["cycles"] != ident:
         errs.append(f"cycles={st['cycles']} != retired+stalls+2*flushes+4={ident}")
+    if st.get("metrics", {}).get("identity") != "ok":
+        errs.append("perf_counters identity check reported " + str(st.get("metrics", {}).get("identity")))
     if not QUIET or errs:
-        cpi = st["cycles"] / max(st["retired"], 1)
+        mt = st.get("metrics", {})
         print(("PASS  " if not errs else "FAIL  ") + f"{name:68s} cyc={st['cycles']:3d} ret={st['retired']:2d} "
-              f"stall={st['stalls']} flush={st['flushes']} spur={st['spurious']} CPI={cpi:.2f}"
+              f"stall={st['stalls']} flush={st['flushes']} spur={st['spurious']} "
+              f"CPI_raw={mt.get('CPI_raw', '?')} CPI_steady={mt.get('CPI_steady', '?')}"
               + ("" if not errs else "\n        <- " + "; ".join(errs)))
     fails += bool(errs)
 

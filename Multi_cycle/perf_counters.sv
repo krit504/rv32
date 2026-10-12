@@ -33,6 +33,10 @@ module perf_counters #(
     output logic        done
 );
 
+// Pipeline fill: the first instruction needs 4 more cycles to reach Writeback, so a hazard-free
+// run of N instructions takes N + FILL_CYCLES cycles. Reported separately from CPI_steady.
+localparam int FILL_CYCLES = 4;
+
 logic validD, validE, validM, validW;
 logic validF;
 
@@ -73,5 +77,30 @@ always_ff @(posedge clk or negedge rst_n) begin
         end
     end
 end
+
+// One summary line per run. Branch flush cycles are counted as 2 per taken redirect
+// (FlushD cycles x 2: the two wrong-path instructions behind it). With FORWARDING = 0 the
+// stall column holds dependency stalls instead of load-use stalls.
+task report;
+    real cpi_raw, cpi_steady, stall_pi, flush_pi, spur_pi;
+    string stall_lbl;
+    begin
+        if (FORWARDING != 0) stall_lbl = "load_use_stall_per_instr";
+        else                 stall_lbl = "dep_stall_per_instr";
+        if (retired == 0) begin
+            cpi_raw = 0.0; cpi_steady = 0.0; stall_pi = 0.0; flush_pi = 0.0; spur_pi = 0.0;
+        end else begin
+            cpi_raw    = $itor(cycles) / $itor(retired);
+            cpi_steady = $itor(cycles - FILL_CYCLES) / $itor(retired);
+            stall_pi   = $itor(stall_cycles) / $itor(retired);
+            flush_pi   = $itor(2 * flush_cycles) / $itor(retired);
+            spur_pi    = $itor(spurious_stalls) / $itor(retired);
+        end
+        $display("METRICS cycles=%0d retired=%0d fill_cycles=%0d stall_cycles=%0d branch_flush_cycles=%0d spurious_stalls=%0d CPI_raw=%0.3f CPI_steady=%0.3f %0s=%0.3f branch_flush_per_instr=%0.3f spurious_per_instr=%0.3f identity=%0s",
+                 cycles, retired, FILL_CYCLES, stall_cycles, 2 * flush_cycles, spurious_stalls,
+                 cpi_raw, cpi_steady, stall_lbl, stall_pi, flush_pi, spur_pi,
+                 (cycles == retired + stall_cycles + 2 * flush_cycles + FILL_CYCLES) ? "ok" : "FAIL");
+    end
+endtask
 
 endmodule

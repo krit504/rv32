@@ -72,6 +72,7 @@ module tb_hazard #(
         $display("SPURIOUS %0d", spurious);
         $display("DONE %0d", done);
         $display("XVIOL %0d", xviol);
+        perf.report();
         $finish;
     end
 endmodule
