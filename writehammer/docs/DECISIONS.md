@@ -14,7 +14,7 @@ Each entry: the choice, the alternatives, the reason, the impact, the date (IST)
 - **Impact:** commit messages follow spec 0B.12 (`T<ID>: summary`).
 - **Date:** 2026-11-01
 
-## DEC-003 Physical flow uses IHP sg13g2, not sky130 (deviation from Section 3)
+## DEC-003 (SUPERSEDED by DEC-006) Physical flow uses IHP sg13g2, not sky130 (deviation from Section 3)
 - **Alternatives:** IHP sg13cmos5l (the author's Tiny Tapeout chip library); installing sky130 into the PDK cache.
 - **Reason:** sky130 is not installed. sg13g2 is in `~/.cache/tt-pdk/root`, and this project has no tie to the Tiny Tapeout chip. Tools come from the author's pinned LibreLane Docker image (`ghcr.io/librelane/librelane:3.1.0.dev3`, id `sha256:369c964b…`).
 - **Impact:** every T6.5 number is labelled sg13g2 and must not be compared with the author's sg13cmos5l results. Flow runs are prepared as scripts and launched by the author, not by the agent.
@@ -31,4 +31,10 @@ Each entry: the choice, the alternatives, the reason, the impact, the date (IST)
 - **Alternatives:** use T0.3's "16 directed hazard cases in 18 runs, 5 of 5 mutants".
 - **Reason:** the repo has grown since the spec was written: 25 directed hazard programs, each run with forwarding and with the no-forwarding ablation, plus the cache-on runs at four latencies. Spec 0A.A forbids test counts decreasing, so the floor is what exists now. The exact counts are recorded in T0.3's log.
 - **Impact:** T0.3 checks that the quoted results reproduce as a subset, and records the larger current numbers as the baseline.
+- **Date:** 2026-11-01
+
+## DEC-006 Physical flow uses sky130 `sky130_fd_sc_hd` as Section 3 specifies (supersedes DEC-003)
+- **Alternatives:** IHP sg13g2 (DEC-003).
+- **Reason:** DEC-003 rested on the agent's claim that sky130 was not installed. That claim was wrong: sky130A is installed through ciel at `~/.cache/tt-pdk/root/ciel/sky130/versions/74c0e6b118a67d94c24172143d3bd597473fa63d/sky130A` (open_pdks `74c0e6b`), with `libs.ref/sky130_fd_sc_hd/lib` present. With no download needed, the spec default applies and there is no deviation.
+- **Impact:** T6.5 uses `sky130_fd_sc_hd`, same tools (the author's pinned LibreLane image), same constraints for every variant. Results are labelled sky130 and are not comparable with the author's sg13cmos5l numbers. Flow runs are still launched by the author (Q-002).
 - **Date:** 2026-11-01

@@ -8,7 +8,7 @@ Times are IST.
 | Task | Status | Last command | Last result | Updated |
 |---|---|---|---|---|
 | T0.1 | DONE | `ls writehammer` + first commit | layout, `.gitignore`, `STATUS.md`, `DECISIONS.md`, `OPEN_QUESTIONS.md` exist | 2026-11-01 18:16 |
-| T0.2 | NOT RUN | | | |
+| T0.2 | DONE | `scripts/fetch_third_party.sh` | `docs/TOOLS.md` complete; EDA tool versions are author-reported (container not started by agent) | 2026-11-01 18:45 |
 | T0.3 | NOT RUN | | | |
 | T0.4 | NOT RUN | | | |
 | T0.5 | NOT RUN | | | |
