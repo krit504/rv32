@@ -6,6 +6,7 @@ VENV_PY := .venv/bin/python
 RTL     := $(wildcard rtl/*.sv)
 TOP     := rv32_top_pipelined
 LATS    := 1 2 3 10
+RUN     := scripts/run.sh --   # every result-producing command is logged to logs/runs/ (spec 0B.1)
 
 .PHONY: all lint test arch-test random bench caches wear attacks calibrate eval synth plots \
         hypotheses locks audit clean test-nohazard test-hazard test-cache test-mutants
@@ -13,27 +14,27 @@ LATS    := 1 2 3 10
 all: lint test arch-test random bench caches wear attacks calibrate eval synth plots hypotheses audit
 
 lint:
-	verilator --lint-only -Wall --top-module $(TOP) $(RTL)
+	$(RUN) verilator --lint-only -Wall --top-module $(TOP) $(RTL)
 	@echo "[lint] OK: 0 warnings, 0 errors"
 
 test: test-nohazard test-hazard test-cache test-mutants
 	@echo "[test] OK"
 
 test-nohazard:
-	$(PY) tests/nohazard_test.py
-	@for l in $(LATS); do CACHES=1 LAT=$$l $(PY) tests/nohazard_test.py || exit 1; done
+	$(RUN) $(PY) tests/nohazard_test.py
+	@for l in $(LATS); do CACHES=1 LAT=$$l $(RUN) $(PY) tests/nohazard_test.py || exit 1; done
 
 test-hazard:
-	$(PY) tests/hazard_tests.py --quiet
-	$(PY) tests/hazard_tests.py --nofwd --quiet
-	@for l in $(LATS); do CACHES=1 LAT=$$l $(PY) tests/hazard_tests.py --quiet || exit 1; \
-	                      CACHES=1 LAT=$$l $(PY) tests/hazard_tests.py --nofwd --quiet || exit 1; done
+	$(RUN) $(PY) tests/hazard_tests.py --quiet
+	$(RUN) $(PY) tests/hazard_tests.py --nofwd --quiet
+	@for l in $(LATS); do CACHES=1 LAT=$$l $(RUN) $(PY) tests/hazard_tests.py --quiet || exit 1; \
+	                      CACHES=1 LAT=$$l $(RUN) $(PY) tests/hazard_tests.py --nofwd --quiet || exit 1; done
 
 test-cache:
-	$(PY) tests/cache_integration.py
+	$(RUN) $(PY) tests/cache_integration.py
 
 test-mutants:
-	$(PY) tests/run_mutants.py
+	$(RUN) $(PY) tests/run_mutants.py
 
 # Targets wired to the task that implements them. Until then each prints NOT IMPLEMENTED and fails.
 arch-test:  ; @scripts/not_implemented.sh $@ T1.5
