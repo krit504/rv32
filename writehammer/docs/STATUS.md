@@ -1,0 +1,66 @@
+# STATUS
+
+Resume point for any session. Spec: `../../docs/writehammer.md` (v4).
+Status words (spec 0B.11): `DONE` only if the acceptance check ran and passed in this run; `PARTIAL` lists unmet sub-criteria; otherwise `BLOCKED` or `NOT RUN`.
+
+Times are IST.
+
+| Task | Status | Last command | Last result | Updated |
+|---|---|---|---|---|
+| T0.1 | DONE | `ls writehammer` + first commit | layout, `.gitignore`, `STATUS.md`, `DECISIONS.md`, `OPEN_QUESTIONS.md` exist | 2026-11-01 18:16 |
+| T0.2 | NOT RUN | | | |
+| T0.3 | NOT RUN | | | |
+| T0.4 | NOT RUN | | | |
+| T0.5 | NOT RUN | | | |
+| T0.6 | NOT RUN | | | |
+| T1.1 | NOT RUN | | | |
+| T1.2 | NOT RUN | | | |
+| T1.3 | NOT RUN | | | |
+| T1.4 | NOT RUN | | | |
+| T1.5 | NOT RUN | | | |
+| T1.6 | NOT RUN | | | |
+| T1.7 | NOT RUN | | | |
+| T1.8 | NOT RUN | | | |
+| T2.1 | NOT RUN | | | |
+| T2.2 | NOT RUN | | | |
+| T2.3 | NOT RUN | | | |
+| T2.4 | NOT RUN | | | |
+| T2.5 | NOT RUN | | | |
+| T2.6 | NOT RUN | | | |
+| T2.7 | NOT RUN | | | |
+| T3.1 | NOT RUN | | | |
+| T3.2 | NOT RUN | | | |
+| T3.3 | NOT RUN | | | |
+| T3.4 | NOT RUN | | | |
+| T3.5 | NOT RUN | | | |
+| T4.1 | NOT RUN | | | |
+| T4.2 | NOT RUN | | | |
+| T4.3 | NOT RUN | | | |
+| T4.4 | NOT RUN | | | |
+| T4.5 | NOT RUN | | | |
+| T4.6 | NOT RUN | | | |
+| T4.7 | NOT RUN | | | |
+| T4.8 | NOT RUN | | | |
+| T5.1 | NOT RUN | | | |
+| T5.2 | NOT RUN | | | |
+| T5.3 | NOT RUN | | | |
+| T5.4 | NOT RUN | | | |
+| T5.5 | NOT RUN | | | |
+| T5.6 | NOT RUN | | | |
+| T5.7 | NOT RUN | | | |
+| T5.8 | NOT RUN | | | |
+| T5.9 | NOT RUN | | | |
+| T5.10 | NOT RUN | | | |
+| T6.1 | NOT RUN | | | |
+| T6.2 | NOT RUN | | | |
+| T6.3 | NOT RUN | | | |
+| T6.4 | NOT RUN | | | |
+| T6.5 | NOT RUN | | | |
+| T7.1 | NOT RUN | | | |
+| T7.2 | NOT RUN | | | |
+| T7.3 | NOT RUN | | | |
+| T7.4 | NOT RUN | | | |
+| T7.5 | NOT RUN | | | |
+| T7.6 | NOT RUN | | | |
+| T7.7 | NOT RUN | | | |
+| T7.8 | NOT RUN | | | |

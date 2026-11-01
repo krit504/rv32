@@ -1,0 +1,14 @@
+# Python environment and third-party sources (pinned commits recorded in docs/TOOLS.md)
+.venv/
+third_party/
+
+# Build output
+obj_dir/
+build/
+work/
+*.vvp
+*.elf
+*.o
+
+# Run logs are deliverables (spec 0B.1); the repo-wide *.log ignore must not hide them
+!logs/runs/*.log
