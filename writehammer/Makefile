@@ -9,7 +9,7 @@ LATS    := 1 2 3 10
 RUN     := scripts/run.sh --   # every result-producing command is logged to logs/runs/ (spec 0B.1)
 
 .PHONY: all lint test arch-test random bench caches wear attacks calibrate eval synth plots \
-        hypotheses locks locks-selftest audit clean test-nohazard test-hazard test-cache test-mutants
+        hypotheses locks locks-selftest audit clean test-nohazard test-hazard test-cache test-subword test-mutants
 
 all: lint test arch-test random bench caches wear attacks calibrate eval synth plots hypotheses audit
 
@@ -17,7 +17,7 @@ lint:
 	$(RUN) verilator --lint-only -Wall --top-module $(TOP) $(RTL)
 	@echo "[lint] OK: 0 warnings, 0 errors"
 
-test: locks test-nohazard test-hazard test-cache test-mutants
+test: locks test-nohazard test-hazard test-cache test-subword test-mutants
 	@echo "[test] OK"
 
 test-nohazard:
@@ -32,6 +32,11 @@ test-hazard:
 
 test-cache:
 	$(RUN) $(PY) tests/cache_integration.py
+
+test-subword:
+	$(RUN) $(PY) tests/refmodel_selftest.py
+	$(RUN) $(PY) tests/subword_tests.py
+	@for l in $(LATS); do CACHES=1 LAT=$$l $(RUN) $(PY) tests/subword_tests.py || exit 1; done
 
 test-mutants:
 	$(RUN) $(PY) tests/run_mutants.py

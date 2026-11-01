@@ -1,0 +1,23 @@
+run_id: 20261101-230316-1217611-hazard_tests
+timestamp: 2026-11-01 23:03:17 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: python3 tests/hazard_tests.py --nofwd --quiet
+git_commit: da77c401051f86653bfe768cdac4c30fcce891f9
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+  CACHES=1
+  LAT=2
+seed: none
+exit_code: 0
+duration_s: 1
+outputs:
+full_output: work/runs/20261101-230316-1217611-hazard_tests.out
+output_tail: |
+  
+  [NO FORWARDING (ablation)] 25/25 passed

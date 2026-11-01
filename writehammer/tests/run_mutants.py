@@ -13,11 +13,16 @@ from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from paths import ROOT, RTL, TESTS
-from mutants.core_mutants import MUTANTS, DECODER_SW_01, EQUIVALENT
+from mutants.core_mutants import MUTANTS as CORE_MUTANTS, DECODER_SW_01, EQUIVALENT
+from mutants.subword_mutants import MUTANTS as SUBWORD_MUTANTS
+
+MUTANTS = CORE_MUTANTS + SUBWORD_MUTANTS
 
 # Cheapest first; the first failing test catches the mutant.
 SUITE = [
     ("cache_integration", ["tests/cache_integration.py"], {}),
+    ("subword_c0", ["tests/subword_tests.py"], {}),
+    ("subword_c1_l2", ["tests/subword_tests.py"], {"CACHES": "1", "LAT": "2"}),
     ("nohazard_c0", ["tests/nohazard_test.py"], {}),
     ("nohazard_c1_l2", ["tests/nohazard_test.py"], {"CACHES": "1", "LAT": "2"}),
     ("hazard_fwd", ["tests/hazard_tests.py", "--quiet"], {}),

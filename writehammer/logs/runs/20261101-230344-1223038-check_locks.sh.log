@@ -1,0 +1,20 @@
+run_id: 20261101-230344-1223038-check_locks.sh
+timestamp: 2026-11-01 23:03:44 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: scripts/check_locks.sh
+git_commit: da77c401051f86653bfe768cdac4c30fcce891f9
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 1
+duration_s: 0
+outputs:
+full_output: work/runs/20261101-230344-1223038-check_locks.sh.out
+output_tail: |
+  [locks] FAIL: tests/mutants/core_mutants.py changed without a CHANGE_LOG entry (current sha256 ae24b78acda5b859404075360c103fb5b687e507db1ec2378648ec77c54d2795)

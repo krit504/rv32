@@ -38,3 +38,9 @@ Each entry: the choice, the alternatives, the reason, the impact, the date (IST)
 - **Reason:** DEC-003 rested on the agent's claim that sky130 was not installed. That claim was wrong: sky130A is installed through ciel at `~/.cache/tt-pdk/root/ciel/sky130/versions/74c0e6b118a67d94c24172143d3bd597473fa63d/sky130A` (open_pdks `74c0e6b`), with `libs.ref/sky130_fd_sc_hd/lib` present. With no download needed, the spec default applies and there is no deviation.
 - **Impact:** T6.5 uses `sky130_fd_sc_hd`, same tools (the author's pinned LibreLane image), same constraints for every variant. Results are labelled sky130 and are not comparable with the author's sg13cmos5l numbers. Flow runs are still launched by the author (Q-002).
 - **Date:** 2026-11-01
+
+## DEC-007 `dmem` zero-initializes
+- **Alternatives:** compare only memory words the program wrote; leave `dmem` uninitialized.
+- **Reason:** with caches off `dmem` started as `x`, with caches on the data `backing_mem` starts at 0 (cache datasheet). The same program then produced different memory states, and the T1.2 reference model (which starts at 0) disagreed on untouched words. Making the two configurations start identical is also what the correctness invariant (spec Section 4) needs. Weakening the comparison to hide it was rejected.
+- **Impact:** `dmem` gains an `initial` loop. A load from a never-written word now reads 0 with caches off, as it already did with caches on.
+- **Date:** 2026-11-01

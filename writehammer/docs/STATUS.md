@@ -13,8 +13,8 @@ Times are IST.
 | T0.4 | DONE | `make -n all` | exit 0; unimplemented targets fail loudly with their task ID | 2026-11-01 |
 | T0.5 | DONE | `make lint test` via `scripts/run.sh` | complete log records in `logs/runs/`; templates exist | 2026-11-01 |
 | T0.6 | DONE | `make locks locks-selftest` | 14 files locked; tamper cases behave as required | 2026-11-01 |
-| T1.1 | NOT RUN | | | |
-| T1.2 | NOT RUN | | | |
+| T1.1 | DONE | `make lint test` | lint 0 warnings; all earlier tests unchanged | 2026-11-01 |
+| T1.2 | DONE | `make test` | subword 11/11 x5 configs; mutants 20/20 caught | 2026-11-01 |
 | T1.3 | NOT RUN | | | |
 | T1.4 | NOT RUN | | | |
 | T1.5 | NOT RUN | | | |

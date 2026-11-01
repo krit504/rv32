@@ -1,0 +1,42 @@
+run_id: 20261101-230642-1241175-run_mutants
+timestamp: 2026-11-01 23:06:51 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: python3 tests/run_mutants.py
+git_commit: da77c401051f86653bfe768cdac4c30fcce891f9
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 9
+outputs:
+full_output: work/runs/20261101-230642-1241175-run_mutants.out
+output_tail: |
+  H1_no_fwd_from_M_srcA                    CAUGHT       cache_integration: FAIL L=1 loop_fits: x1=ffffff9f exp 00000000
+  H2_no_x0_guard_M_srcA                    CAUGHT       hazard_fwd: FAIL  x0 guard                                                             cyc=  6 ret= 2 stall=0 flush=0 spur
+  H3_no_load_use_stall                     CAUGHT       cache_integration: FAIL L=1 imiss_with_lwstall: x6=00000000 exp 00000012
+  H4_flushE_keeps_PCSrcE                   CAUGHT       hazard_fwd: FAIL  jal: flush + link                                                    cyc=196 ret= 1 stall=0 flush=194 sp
+  H5_regfile_posedge_write                 CAUGHT       cache_integration: FAIL L=1 producer_loadmiss_consumer: x7=00000007 exp 0000000a
+  C1_valid_not_reset                       CAUGHT       cache_integration: FAIL L=1 loop_fits: IC_REFILL=0 exp 2
+  C2_icache_fill_live_addr                 CAUGHT       cache_integration: FAIL L=1 loop_fits: x1=00000004 exp 00000000
+  C3_fdreg_flush_before_hold               CAUGHT       cache_integration: FAIL L=1 store_miss_hit_load: x8=00000000 exp 00000009; mem[1]=00000000 exp 00000009
+  C4_mwreg_not_held                        CAUGHT       cache_integration: FAIL L=1 producer_loadmiss_consumer: x7=00000003 exp 0000000a
+  C5_store_hit_no_line_update              CAUGHT       cache_integration: FAIL L=1 store_miss_hit_load: x8=00000000 exp 00000009
+  C6_re_without_RegWriteM                  SURVIVED     
+  C7_reversed_lane_order                   CAUGHT       cache_integration: FAIL L=1 loop_fits: IC_REFILL=1 exp 2
+  S1_lb_zero_extends                       CAUGHT       subword_c0: FAIL  loads_all_offsets
+  S2_load_wrong_byte_lane                  CAUGHT       subword_c0: FAIL  loads_all_offsets
+  S3_sb_byte_enable_stuck                  CAUGHT       subword_c0: FAIL  stores_all_offsets
+  S4_lh_zero_extends                       CAUGHT       subword_c0: FAIL  loads_all_offsets
+  S5_sh_upper_half_enable_stuck            CAUGHT       subword_c0: FAIL  half_stores_all_offsets
+  S6_sb_data_not_replicated                CAUGHT       subword_c0: FAIL  stores_all_offsets
+  S7_lbu_sign_extends                      CAUGHT       subword_c0: FAIL  loads_all_offsets
+  S8_funct3_not_carried                    CAUGHT       subword_c0: FAIL  loads_all_offsets
+  C6X_decoder_sw01_no_gate                 CAUGHT       cache_integration: FAIL L=1 store_miss_no_refill: DC_REFILL=1 exp 0
+  C6X_control_decoder_sw01_with_gate       SURVIVED     
+  [mutants] 20/20 caught; 1 argued equivalent (C6, backed by C6X/C6X_control); OK

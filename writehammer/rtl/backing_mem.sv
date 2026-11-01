@@ -7,6 +7,7 @@ module backing_mem#(parameter DEPTH=256, parameter LATENCY=10, parameter INIT_FI
     input logic [31:0] addr,
     /* verilator lint_on UNUSEDSIGNAL */
     input logic [31:0] wdata,
+    input logic [3:0] be,      // byte enables for a word write (lane k = bits [8k+7:8k])
     output logic [127:0] rdata,
     output logic done
 );
@@ -39,7 +40,8 @@ always_ff @(posedge clk or negedge rst_n) begin
             BUSY: begin
                 if(cnt!=0) cnt<=cnt-1;
                 if(done && we)
-                    mem[addr[$clog2(DEPTH)+1:2]]<=wdata;
+                    for (int k = 0; k < 4; k++)
+                        if (be[k]) mem[addr[$clog2(DEPTH)+1:2]][8*k +: 8] <= wdata[8*k +: 8];
             end
         endcase
     end

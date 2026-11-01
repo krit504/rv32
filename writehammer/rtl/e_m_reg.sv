@@ -10,6 +10,7 @@ module e_m_reg(
     input logic RegWriteE,
     input logic MemWriteE,
     input logic [1:0] ResultSrcE,
+    input logic [2:0] funct3E,
     output logic [31:0] ALUResultM,
     output logic [31:0] WriteDataM,
     output logic [31:0] PCPlus4M,
@@ -17,12 +18,13 @@ module e_m_reg(
     output logic [31:0] ImmExtM,
     output logic RegWriteM,
     output logic MemWriteM,
-    output logic [1:0] ResultSrcM
+    output logic [1:0] ResultSrcM,
+    output logic [2:0] funct3M
 );
 
 always_ff @(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
-        {ALUResultM,WriteDataM,PCPlus4M,RdM,ImmExtM,RegWriteM,MemWriteM,ResultSrcM}<='0;
+        {ALUResultM,WriteDataM,PCPlus4M,RdM,ImmExtM,RegWriteM,MemWriteM,ResultSrcM,funct3M}<='0;
     end
     else if(StallM) begin
         // hold
@@ -32,6 +34,7 @@ always_ff @(posedge clk or negedge rst_n) begin
         PCPlus4M<=PCPlus4E;
         {RdM,ImmExtM}<={RdE,ImmExtE};
         {RegWriteM,MemWriteM,ResultSrcM}<={RegWriteE,MemWriteE,ResultSrcE};
+        funct3M<=funct3E;
     end
 end
 endmodule

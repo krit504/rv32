@@ -94,6 +94,7 @@ generate
             .we(1'b0),
             .addr(ic_mem_addr),
             .wdata(32'b0),
+            .be(4'b0000),
             .rdata(ic_mem_rdata),
             .done(ic_mem_done)
         );
@@ -373,6 +374,7 @@ e_m_reg u_e_m_reg(
     .RegWriteE(RegWriteE),
     .MemWriteE(MemWriteE),
     .ResultSrcE(ResultSrcE),
+    .funct3E(funct3E),
     .ALUResultM(ALUResultM),
     .WriteDataM(WriteDataM),
     .PCPlus4M(PCPlus4M),
@@ -380,7 +382,8 @@ e_m_reg u_e_m_reg(
     .ImmExtM(ImmExtM),
     .RegWriteM(RegWriteM),
     .MemWriteM(MemWriteM), 
-    .ResultSrcM(ResultSrcM)
+    .ResultSrcM(ResultSrcM),
+    .funct3M(funct3M)
 );
 
 ////////////////////////////////
@@ -401,7 +404,39 @@ logic [4:0] RdW;
 logic [31:0] ResultW;
 logic RegWriteW;
 
-logic [31:0] ReadDataM;
+logic [2:0]  funct3M;
+logic [31:0] ReadRawM;     // word returned by the data memory or D$, before the load extender
+logic [31:0] ReadDataM;    // extended load value into m_w_reg
+
+// Store lane logic (Memory stage): sb/sh replicate the low byte/half across the word and enable
+// only the addressed lanes; sw enables all four. Misaligned accesses are unsupported (excluded
+// from the arch-test subset, see docs/KNOWN_ISSUES.md KI-004).
+logic [3:0]  StoreBEM;
+logic [31:0] StoreDataM;
+always_comb begin
+    StoreBEM   = 4'b0000;
+    StoreDataM = WriteDataM;
+    if (MemWriteM) begin
+        case (funct3M[1:0])
+            2'b00: begin StoreBEM = 4'b0001 << ALUResultM[1:0]; StoreDataM = {4{WriteDataM[7:0]}};  end   // sb
+            2'b01: begin StoreBEM = ALUResultM[1] ? 4'b1100 : 4'b0011; StoreDataM = {2{WriteDataM[15:0]}}; end // sh
+            default: StoreBEM = 4'b1111;                                                                    // sw
+        endcase
+    end
+end
+
+// Load extender: shift the addressed byte/half to bit 0, then sign- or zero-extend.
+logic [15:0] LoadShiftM;    // only the low half is ever needed (lw bypasses the shift)
+assign LoadShiftM = 16'(ReadRawM >> (8 * ALUResultM[1:0]));
+always_comb begin
+    case (funct3M)
+        3'b000:  ReadDataM = {{24{LoadShiftM[7]}},  LoadShiftM[7:0]};    // lb
+        3'b001:  ReadDataM = {{16{LoadShiftM[15]}}, LoadShiftM[15:0]};   // lh
+        3'b100:  ReadDataM = {24'b0, LoadShiftM[7:0]};                   // lbu
+        3'b101:  ReadDataM = {16'b0, LoadShiftM[15:0]};                  // lhu
+        default: ReadDataM = ReadRawM;                                   // lw
+    endcase
+end
 logic [31:0] ReadDataW;
 logic [31:0] ALUResultW;
 
@@ -436,6 +471,7 @@ logic        dc_mem_req;
 logic        dc_mem_we;
 logic [31:0] dc_mem_addr;
 logic [31:0] dc_mem_wdata;
+logic [3:0]  dc_mem_be;
 logic [127:0] dc_mem_rdata;
 logic        dc_mem_done;
 
@@ -446,15 +482,17 @@ generate
             .clk(clk),
             .rst_n(rst_n),
             .addr(ALUResultM),
-            .wdata(WriteDataM),
+            .wdata(StoreDataM),
+            .be(StoreBEM),
             .we(MemWriteM),
             .re(RegWriteM & (ResultSrcM == 2'b01)),
-            .rdata(ReadDataM),
+            .rdata(ReadRawM),
             .dmiss(dmiss),
             .mem_req(dc_mem_req),
             .mem_we(dc_mem_we),
             .mem_addr(dc_mem_addr),
             .mem_wdata(dc_mem_wdata),
+            .mem_be(dc_mem_be),
             .mem_rdata(dc_mem_rdata),
             .mem_done(dc_mem_done),
             .write_cnt(dc_write_cnt),
@@ -467,6 +505,7 @@ generate
             .we(dc_mem_we),
             .addr(dc_mem_addr),
             .wdata(dc_mem_wdata),
+            .be(dc_mem_be),
             .rdata(dc_mem_rdata),
             .done(dc_mem_done)
         );
@@ -477,15 +516,17 @@ generate
         dmem u_dmem(
             .clk(clk),
             .A(ALUResultM),
-            .WD(WriteDataM),
+            .WD(StoreDataM),
             .WE(MemWriteM),
-            .RD(ReadDataM)
+            .BE(StoreBEM),
+            .RD(ReadRawM)
         );
         assign dmiss = 1'b0;
         assign dc_mem_req = 1'b0;
         assign dc_mem_we = 1'b0;
         assign dc_mem_addr = 32'b0;
         assign dc_mem_wdata = 32'b0;
+        assign dc_mem_be = 4'b0;
         assign dc_mem_rdata = 128'b0;
         assign dc_mem_done = 1'b0;
         assign dc_refill_cnt = 32'b0;

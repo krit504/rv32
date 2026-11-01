@@ -5,6 +5,7 @@ module dcache#(parameter NUM_LINES=64)(
     input logic [31:0] addr,
     /* verilator lint_on UNUSEDSIGNAL */
     input logic [31:0] wdata,
+    input logic [3:0] be,      // byte enables of the store in Memory (lane-aligned with wdata)
     input logic we,
     input logic re,
     output logic [31:0] rdata,
@@ -13,6 +14,7 @@ module dcache#(parameter NUM_LINES=64)(
     output logic mem_we,
     output logic [31:0] mem_addr,
     output logic [31:0] mem_wdata,
+    output logic [3:0] mem_be,
     input logic [127:0] mem_rdata,
     input logic mem_done,
     output logic [31:0] write_cnt,
@@ -53,6 +55,7 @@ always_comb begin
     mem_we    = (state == WRITE);
     mem_addr  = (state == WRITE) ? {addr[31:2], 2'b00} : {addr[31:4], 4'b0};
     mem_wdata = wdata;
+    mem_be    = be;
 end
 
 always_ff @(posedge clk or negedge rst_n) begin
@@ -96,7 +99,8 @@ always_ff @(posedge clk) begin
         tags[index] <=tag;
     end
     else if(state==LOOKUP && we && hit) begin
-        data[index][32*wordsel +: 32] <= wdata;
+        for (int k = 0; k < 4; k++)
+            if (be[k]) data[index][32*wordsel + 8*k +: 8] <= wdata[8*k +: 8];
     end
 end
 

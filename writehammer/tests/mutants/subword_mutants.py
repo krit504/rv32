@@ -1,0 +1,41 @@
+"""subword_mutants.py: T1.2 mutants for the sub-word load/store path (protected; add only).
+
+Same tuple format as core_mutants.py: (id, file under rtl/, text to replace (must occur once),
+replacement, what it breaks). The three required by T1.2: wrong sign extension, wrong byte lane,
+byte enable stuck. Extra mutants are allowed and listed after them.
+"""
+
+MUTANTS = [
+    ("S1_lb_zero_extends", "rv32_top_pipelined.sv",
+     "3'b000:  ReadDataM = {{24{LoadShiftM[7]}},  LoadShiftM[7:0]};",
+     "3'b000:  ReadDataM = {24'b0, LoadShiftM[7:0]};",
+     "lb zero-extends instead of sign-extending"),
+    ("S2_load_wrong_byte_lane", "rv32_top_pipelined.sv",
+     "assign LoadShiftM = 16'(ReadRawM >> (8 * ALUResultM[1:0]));",
+     "assign LoadShiftM = 16'(ReadRawM >> (8 * (2'd3 - ALUResultM[1:0])));",
+     "loads read the mirrored byte lane"),
+    ("S3_sb_byte_enable_stuck", "rv32_top_pipelined.sv",
+     "StoreBEM = 4'b0001 << ALUResultM[1:0];",
+     "StoreBEM = 4'b0001;",
+     "sb always writes byte 0 of the word"),
+    ("S4_lh_zero_extends", "rv32_top_pipelined.sv",
+     "3'b001:  ReadDataM = {{16{LoadShiftM[15]}}, LoadShiftM[15:0]};",
+     "3'b001:  ReadDataM = {16'b0, LoadShiftM[15:0]};",
+     "lh zero-extends instead of sign-extending"),
+    ("S5_sh_upper_half_enable_stuck", "rv32_top_pipelined.sv",
+     "StoreBEM = ALUResultM[1] ? 4'b1100 : 4'b0011;",
+     "StoreBEM = 4'b0011;",
+     "sh always writes the low half of the word"),
+    ("S6_sb_data_not_replicated", "rv32_top_pipelined.sv",
+     "StoreDataM = {4{WriteDataM[7:0]}};",
+     "StoreDataM = {24'b0, WriteDataM[7:0]};",
+     "sb data only on lane 0, so stores to lanes 1-3 write zero"),
+    ("S7_lbu_sign_extends", "rv32_top_pipelined.sv",
+     "3'b100:  ReadDataM = {24'b0, LoadShiftM[7:0]};",
+     "3'b100:  ReadDataM = {{24{LoadShiftM[7]}}, LoadShiftM[7:0]};",
+     "lbu sign-extends instead of zero-extending"),
+    ("S8_funct3_not_carried", "e_m_reg.sv",
+     "        funct3M<=funct3E;",
+     "        funct3M<=3'b010;",
+     "Memory stage treats every access as a word access"),
+]
