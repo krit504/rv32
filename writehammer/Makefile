@@ -1,5 +1,5 @@
 # writehammer Makefile. Targets per spec Section 5. Run from this directory.
-# Targets not yet implemented print "NOT IMPLEMENTED (<task>)" and fail, so nothing passes silently.
+# Targets not yet implemented print "NOT IMPLEMENTED" with their task ID and fail, so nothing passes silently.
 
 PY      := python3
 VENV_PY := .venv/bin/python
@@ -35,8 +35,20 @@ test-cache:
 test-mutants:
 	$(PY) tests/run_mutants.py
 
-arch-test random bench caches wear attacks calibrate eval synth plots hypotheses locks audit:
-	@echo "NOT IMPLEMENTED ($@)"; exit 1
+# Targets wired to the task that implements them. Until then each prints NOT IMPLEMENTED and fails.
+arch-test:  ; @scripts/not_implemented.sh $@ T1.5
+random:     ; @scripts/not_implemented.sh $@ T1.6
+bench:      ; @scripts/not_implemented.sh $@ "T1.7 T1.8"
+caches:     ; @scripts/not_implemented.sh $@ T2.7
+wear:       ; @scripts/not_implemented.sh $@ "T3.1-T3.5"
+attacks:    ; @scripts/not_implemented.sh $@ "T4.1-T4.8"
+calibrate:  ; @scripts/not_implemented.sh $@ T5.6
+eval:       ; @scripts/not_implemented.sh $@ T6.1
+synth:      ; @scripts/not_implemented.sh $@ T6.5
+plots:      ; @scripts/not_implemented.sh $@ T6.2
+hypotheses: ; @scripts/not_implemented.sh $@ T6.3
+locks:      ; @scripts/not_implemented.sh $@ T0.6
+audit:      ; @scripts/not_implemented.sh $@ T7.8
 
 clean:
 	rm -rf work obj_dir build

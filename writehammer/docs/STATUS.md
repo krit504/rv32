@@ -10,7 +10,7 @@ Times are IST.
 | T0.1 | DONE | `ls writehammer` + first commit | layout, `.gitignore`, `STATUS.md`, `DECISIONS.md`, `OPEN_QUESTIONS.md` exist | 2026-11-01 18:16 |
 | T0.2 | DONE | `scripts/fetch_third_party.sh` | `docs/TOOLS.md` complete; EDA tool versions are author-reported (container not started by agent) | 2026-11-01 18:45 |
 | T0.3 | PARTIAL | `make lint && make test` | lint 0 warnings; test green (21/21 x5, 25/25 x10, 36/36, 12/12 mutants). Unmet: the quoted "5 of 5 mutants" cannot be rerun (no harness in repo); replaced by a 12-mutant harness | 2026-11-01 |
-| T0.4 | NOT RUN | | | |
+| T0.4 | DONE | `make -n all` | exit 0; unimplemented targets fail loudly with their task ID | 2026-11-01 |
 | T0.5 | NOT RUN | | | |
 | T0.6 | NOT RUN | | | |
 | T1.1 | NOT RUN | | | |
