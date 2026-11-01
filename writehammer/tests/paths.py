@@ -2,13 +2,14 @@
 
 Inputs: none. Outputs: ROOT, RTL, TB, WORK and the core source list CORE_RTL.
 Usage: `from paths import ROOT, CORE_RTL, TB, work_dir` from any script in tests/.
-Env overrides (used by the mutation runner): RTL_DIR replaces rtl/, WORK_ROOT replaces work/.
+Env overrides (used by the mutation runner): RTL_DIR replaces rtl/, TB_DIR replaces tb/,
+WORK_ROOT replaces work/.
 """
 import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RTL = os.environ.get("RTL_DIR", os.path.join(ROOT, "rtl"))
-TB = os.path.join(ROOT, "tb")
+TB = os.environ.get("TB_DIR", os.path.join(ROOT, "tb"))
 TESTS = os.path.join(ROOT, "tests")
 
 CORE_RTL = [os.path.join(RTL, f) for f in (

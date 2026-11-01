@@ -29,3 +29,15 @@ Entry format:
 - Why: T1.2 needs sub-word encoders; the remaining ALU and branch encoders are needed by the T1.6 random generator.
 - Evidence the original was wrong: not a correction. `git diff HEAD -- tests/asm.py` shows 0 removed lines: no existing encoder changed, so no existing test's inputs changed.
 - New sha256: ce65bd4d39e3984a3dbbe0d1066df28352b8b6ca89cf1d2c3081552a9beaf80f
+
+## CHG-004 2026-11-01 tests/run_mutants.py
+- What changed: imports `tests/mutants/perf_mutants.py`; copies `tb/` into each mutant's directory and resolves file names starting with `tb/` there; sets `TB_DIR`; runs `tests/perf_tests.py` first in the suite.
+- Why: T1.3 adds mutants of the testbench-side monitor, which live in `tb/`, not `rtl/`.
+- Evidence the original was wrong: not a correction. Nothing was removed or loosened: the earlier 20 mutants are still applied and caught (27/27 after the change), and the test order only adds `perf` at the front.
+- New sha256: 97e710b31aa38aee973dd8dd6ac0f6c68e139e00e330277b5994ff1e59177d98
+
+## CHG-005 2026-11-01 tests/paths.py
+- What changed: `TB` can be overridden with the `TB_DIR` environment variable (docstring updated).
+- Why: lets the mutation runner point the tests at a patched copy of `tb/`.
+- Evidence the original was wrong: not a correction; with `TB_DIR` unset the value is identical to before.
+- New sha256: 2a52ae7f2468e671702e0d2983f503e95cf2a8a13e35625108a6690dd8a34037

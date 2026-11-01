@@ -12,15 +12,17 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from paths import ROOT, RTL, TESTS
+from paths import ROOT, RTL, TB, TESTS
 from mutants.core_mutants import MUTANTS as CORE_MUTANTS, DECODER_SW_01, EQUIVALENT
 from mutants.subword_mutants import MUTANTS as SUBWORD_MUTANTS
+from mutants.perf_mutants import MUTANTS as PERF_MUTANTS
 
-MUTANTS = CORE_MUTANTS + SUBWORD_MUTANTS
+MUTANTS = CORE_MUTANTS + SUBWORD_MUTANTS + PERF_MUTANTS
 
 # Cheapest first; the first failing test catches the mutant.
 SUITE = [
     ("cache_integration", ["tests/cache_integration.py"], {}),
+    ("perf", ["tests/perf_tests.py"], {}),
     ("subword_c0", ["tests/subword_tests.py"], {}),
     ("subword_c1_l2", ["tests/subword_tests.py"], {"CACHES": "1", "LAT": "2"}),
     ("nohazard_c0", ["tests/nohazard_test.py"], {}),
@@ -32,8 +34,9 @@ SUITE = [
 
 
 def apply(dst, patches):
+    # a file name is relative to rtl/ unless it starts with "tb/"
     for f, old, new in patches:
-        p = os.path.join(dst, f)
+        p = os.path.join(os.path.dirname(dst), f) if f.startswith("tb/") else os.path.join(dst, f)
         s = open(p).read()
         if s.count(old) != 1:
             return f"patch text found {s.count(old)} times in {f}"
@@ -49,10 +52,11 @@ def run(name, patches):
     shutil.rmtree(base, ignore_errors=True)
     rtl = os.path.join(base, "rtl")
     shutil.copytree(RTL, rtl)
+    shutil.copytree(TB, os.path.join(base, "tb"))
     err = apply(rtl, patches)
     if err:
         return name, "PATCH_FAILED", err
-    env = dict(os.environ, RTL_DIR=rtl, WORK_ROOT=os.path.join(base, "work"), JOBS="2")
+    env = dict(os.environ, RTL_DIR=rtl, TB_DIR=os.path.join(base, "tb"), WORK_ROOT=os.path.join(base, "work"), JOBS="2")
     for tname, cmd, extra in SUITE:
         r = subprocess.run([sys.executable] + cmd, cwd=ROOT, env={**env, **extra},
                            capture_output=True, text=True)

@@ -15,7 +15,7 @@ Times are IST.
 | T0.6 | DONE | `make locks locks-selftest` | 14 files locked; tamper cases behave as required | 2026-11-01 |
 | T1.1 | DONE | `make lint test` | lint 0 warnings; all earlier tests unchanged | 2026-11-01 |
 | T1.2 | DONE | `make test` | subword 11/11 x5 configs; mutants 20/20 caught | 2026-11-01 |
-| T1.3 | NOT RUN | | | |
+| T1.3 | DONE | `make test` | perf 21/21 hand-computed; mutants 27/27 caught | 2026-11-01 |
 | T1.4 | NOT RUN | | | |
 | T1.5 | NOT RUN | | | |
 | T1.6 | NOT RUN | | | |

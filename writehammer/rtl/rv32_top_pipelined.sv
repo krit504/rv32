@@ -11,7 +11,12 @@ module rv32_top_pipelined #(
     output logic [31:0] ic_refill_cnt,
     output logic [31:0] dc_refill_cnt,
     output logic [31:0] dc_write_cnt,
-    output logic [31:0] dbg_dmem [0:3]
+    output logic [31:0] dbg_dmem [0:3],
+    // MMIO window 0xF000_0000-0xF000_0FFF: stores there never reach dmem or the D$. One pulse per
+    // store, in the Memory stage; the simulation monitor (tb/sys_monitor.sv) interprets them.
+    output logic        mmio_we,
+    output logic [31:0] mmio_addr,
+    output logic [31:0] mmio_wdata
 );
 
 
@@ -413,10 +418,15 @@ logic [31:0] ReadDataM;    // extended load value into m_w_reg
 // from the arch-test subset, see docs/KNOWN_ISSUES.md KI-004).
 logic [3:0]  StoreBEM;
 logic [31:0] StoreDataM;
+logic        MemStoreM;     // a store that goes to dmem / the D$ (not to the MMIO window)
+assign mmio_we    = MemWriteM && (ALUResultM[31:12] == 20'hF0000);
+assign mmio_addr  = ALUResultM;
+assign mmio_wdata = WriteDataM;
+assign MemStoreM  = MemWriteM && !mmio_we;
 always_comb begin
     StoreBEM   = 4'b0000;
     StoreDataM = WriteDataM;
-    if (MemWriteM) begin
+    if (MemStoreM) begin
         case (funct3M[1:0])
             2'b00: begin StoreBEM = 4'b0001 << ALUResultM[1:0]; StoreDataM = {4{WriteDataM[7:0]}};  end   // sb
             2'b01: begin StoreBEM = ALUResultM[1] ? 4'b1100 : 4'b0011; StoreDataM = {2{WriteDataM[15:0]}}; end // sh
@@ -484,7 +494,7 @@ generate
             .addr(ALUResultM),
             .wdata(StoreDataM),
             .be(StoreBEM),
-            .we(MemWriteM),
+            .we(MemStoreM),
             .re(RegWriteM & (ResultSrcM == 2'b01)),
             .rdata(ReadRawM),
             .dmiss(dmiss),
@@ -517,7 +527,7 @@ generate
             .clk(clk),
             .A(ALUResultM),
             .WD(StoreDataM),
-            .WE(MemWriteM),
+            .WE(MemStoreM),
             .BE(StoreBEM),
             .RD(ReadRawM)
         );
