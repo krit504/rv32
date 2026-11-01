@@ -1,4 +1,4 @@
-module dmem#(parameter DEPTH=256)(
+module dmem#(parameter DEPTH=256, parameter INIT_FILE="")(
     input logic clk,
     input logic [31:0] A,
     input logic [31:0] WD,
@@ -13,6 +13,7 @@ logic [31:0] mem [0:DEPTH-1];
 // memory state and a load from a never-written word reads 0 rather than x.
 initial begin
     for (int i = 0; i < DEPTH; i++) mem[i] = 32'b0;
+    if (INIT_FILE != "") $readmemh(INIT_FILE, mem);   // initialized .data / .rodata of a linked image
 end
 
 assign RD=mem[A[$clog2(DEPTH)+1:2]];

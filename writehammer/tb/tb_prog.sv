@@ -1,7 +1,8 @@
 `timescale 1ns/1ps
 // tb_prog: runs a program (program.hex in the run directory) on rv32_top_pipelined until it writes
 // the HALT register, with the MMIO monitor attached. Prints HALT/PERF/PHASE lines (sys_monitor).
-// Parameters: CACHES (0/1), LAT (memory latency), FWD (forwarding), MAXCYC (safety limit).
+// Parameters: CACHES (0/1), LAT (memory latency), FWD (forwarding), MAXCYC (safety limit),
+// MEMW (words per memory), IMAGE (load the data memory from the same image as the code).
 // Prints "TIMEOUT" and stops if MAXCYC clock cycles pass without HALT: the limit only guards
 // against a hung simulation and is logged by the caller; a timeout is always a test failure.
 // Also dumps registers x1..x31 and the first four data words at HALT ("REG n h", "MEM n h"), and
@@ -10,7 +11,9 @@ module tb_prog #(
     parameter bit CACHES = 1'b0,
     parameter int LAT = 2,
     parameter int FWD = 1,
-    parameter int MAXCYC = 200000
+    parameter int MAXCYC = 200000,
+    parameter int MEMW = 256,           // words per memory (65536 = 256 KiB for linked C images)
+    parameter bit IMAGE = 1'b0          // 1: data memory also loaded from program.hex
 );
     logic clk = 1'b0, rst_n = 1'b0;
     always #5 clk = ~clk;
@@ -19,7 +22,8 @@ module tb_prog #(
     logic [31:0] ic_refill_cnt, dc_refill_cnt, dc_write_cnt;
     logic        mmio_we;
     logic [31:0] mmio_addr, mmio_wdata;
-    rv32_top_pipelined #(.FORWARDING(FWD), .CACHES_ON(CACHES), .MEM_LATENCY(LAT)) dut (
+    rv32_top_pipelined #(.FORWARDING(FWD), .CACHES_ON(CACHES), .MEM_LATENCY(LAT),
+                         .MEM_WORDS(MEMW), .DMEM_FROM_IMAGE(IMAGE)) dut (
         .clk(clk), .rst_n(rst_n),
         .ic_refill_cnt(ic_refill_cnt), .dc_refill_cnt(dc_refill_cnt), .dc_write_cnt(dc_write_cnt),
         .mmio_we(mmio_we), .mmio_addr(mmio_addr), .mmio_wdata(mmio_wdata)

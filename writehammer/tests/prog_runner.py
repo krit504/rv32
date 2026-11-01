@@ -26,6 +26,11 @@ def run_program(words, caches=0, lat=2, fwd=1, name="prog", maxcyc=200000):
                    + [os.path.join(TB, "sys_monitor.sv"), os.path.join(TB, "tb_prog.sv")],
                    check=True, capture_output=True)
     out = subprocess.run(["vvp", "p.vvp"], cwd=d, capture_output=True, text=True).stdout
+    return parse_output(out)
+
+
+def parse_output(out):
+    """Parse the lines tb_prog.sv and sys_monitor.sv print (HALT, PERF, PHASE, CHR, REG, MEM, ...)."""
     r = {"regs": {0: 0}, "mem": {}, "halt": None, "perf": None, "phases": [], "text": "",
          "timeout": "TIMEOUT" in out, "raw": out}
     for ln in out.splitlines():

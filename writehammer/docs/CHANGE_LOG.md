@@ -41,3 +41,15 @@ Entry format:
 - Why: lets the mutation runner point the tests at a patched copy of `tb/`.
 - Evidence the original was wrong: not a correction; with `TB_DIR` unset the value is identical to before.
 - New sha256: 2a52ae7f2468e671702e0d2983f503e95cf2a8a13e35625108a6690dd8a34037
+
+## CHG-006 2026-11-02 tests/prog_runner.py
+- What changed: the output parsing moved out of `run_program` into a new function `parse_output(out)` so `tests/image_runner.py` can reuse it. `run_program` now ends with `return parse_output(out)`; the parsing code itself is unchanged.
+- Why: T1.4 runs linked images through the same testbench output.
+- Evidence the original was wrong: not a correction. `make test-perf` (which uses `run_program`) gave 21/21 before and after, and all 7 monitor mutants (P1-P7) are still caught.
+- New sha256: b44027c1dd83b1c3ed40700263830c1765922fd3c3268c69f5a66f57d6171b80
+
+## CHG-007 2026-11-02 tests/run_mutants.py
+- What changed: imports `tests/mutants/toolchain_mutants.py` and runs `tests/toolchain_test.py` in the suite against every mutant.
+- Why: T1.4 adds mutants of the image-loading path and a test for them. Adds only; nothing removed or loosened.
+- Evidence the original was wrong: not a correction. Before the change `make test-mutants` reported 27/27 caught; after it reports 30/30 caught, and the original 27 are caught by the same tests as before.
+- New sha256: 155f21b6078f67c9ea1005621eeeeee1288e347079a7e71448c758d33d9b08a3

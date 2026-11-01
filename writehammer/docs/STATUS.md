@@ -16,7 +16,7 @@ Times are IST.
 | T1.1 | DONE | `make lint test` | lint 0 warnings; all earlier tests unchanged | 2026-11-01 |
 | T1.2 | DONE | `make test` | subword 11/11 x5 configs; mutants 20/20 caught | 2026-11-01 |
 | T1.3 | DONE | `make test` | perf 21/21 hand-computed; mutants 27/27 caught | 2026-11-01 |
-| T1.4 | NOT RUN | | | |
+| T1.4 | DONE | `tests/toolchain_test.py`; `make test` | 10/10 against the native-gcc oracle at 5 configs; mutants 30/30 caught | 2026-11-02 |
 | T1.5 | NOT RUN | | | |
 | T1.6 | NOT RUN | | | |
 | T1.7 | NOT RUN | | | |

@@ -2,7 +2,13 @@ module rv32_top_pipelined #(
     parameter int FORWARDING  = 1,
     parameter bit CACHES_ON   = 1'b1,
     parameter int MEM_LATENCY = 10,
-    parameter     IMEM_FILE   = "program.hex"
+    parameter string IMEM_FILE = "program.hex",
+    // Words in each of the instruction and data memories (256 = 1 KiB, the default the earlier
+    // tests rely on; the C flow uses 65536 = 256 KiB). Addresses wrap modulo this size.
+    parameter int MEM_WORDS   = 256,
+    // 1: the data memory is also loaded from IMEM_FILE, so a linked image's initialized .data and
+    // .rodata are present at their linked addresses. Code and data regions are disjoint (T2.5).
+    parameter bit DMEM_FROM_IMAGE = 1'b0
 )(
     input  logic        clk,
     input  logic        rst_n,
@@ -92,7 +98,7 @@ generate
             .mem_done(ic_mem_done),
             .refill_cnt(ic_refill_cnt)
         );
-        backing_mem #(.LATENCY(MEM_LATENCY), .INIT_FILE(IMEM_FILE)) u_imem_bm(
+        backing_mem #(.DEPTH(MEM_WORDS), .LATENCY(MEM_LATENCY), .INIT_FILE(IMEM_FILE)) u_imem_bm(
             .clk(clk),
             .rst_n(rst_n),
             .req(ic_mem_req),
@@ -104,7 +110,7 @@ generate
             .done(ic_mem_done)
         );
     end else begin : g_imem
-        imem u_imem(
+        imem #(.DEPTH(MEM_WORDS), .INIT_FILE(IMEM_FILE)) u_imem(
             .A(A_PC_to_imem_and_ALU),
             .RD(instruction_imem_to_FETCH)
         );
@@ -508,29 +514,63 @@ generate
             .write_cnt(dc_write_cnt),
             .refill_cnt(dc_refill_cnt)
         );
-        backing_mem #(.LATENCY(MEM_LATENCY), .INIT_FILE("")) u_dmem_bm(
-            .clk(clk),
-            .rst_n(rst_n),
-            .req(dc_mem_req),
-            .we(dc_mem_we),
-            .addr(dc_mem_addr),
-            .wdata(dc_mem_wdata),
-            .be(dc_mem_be),
-            .rdata(dc_mem_rdata),
-            .done(dc_mem_done)
-        );
-        for (genvar i = 0; i < 4; i++) begin : g_dbg
-            assign dbg_dmem[i] = u_dmem_bm.mem[i];
+        if (DMEM_FROM_IMAGE) begin : g_img
+            backing_mem #(.DEPTH(MEM_WORDS), .LATENCY(MEM_LATENCY), .INIT_FILE(IMEM_FILE)) u_dmem_bm(
+                .clk(clk),
+                .rst_n(rst_n),
+                .req(dc_mem_req),
+                .we(dc_mem_we),
+                .addr(dc_mem_addr),
+                .wdata(dc_mem_wdata),
+                .be(dc_mem_be),
+                .rdata(dc_mem_rdata),
+                .done(dc_mem_done)
+            );
+            for (genvar i = 0; i < 4; i++) begin : g_dbg
+                assign dbg_dmem[i] = u_dmem_bm.mem[i];
+            end
+        end else begin : g_zero
+            backing_mem #(.DEPTH(MEM_WORDS), .LATENCY(MEM_LATENCY), .INIT_FILE("")) u_dmem_bm(
+                .clk(clk),
+                .rst_n(rst_n),
+                .req(dc_mem_req),
+                .we(dc_mem_we),
+                .addr(dc_mem_addr),
+                .wdata(dc_mem_wdata),
+                .be(dc_mem_be),
+                .rdata(dc_mem_rdata),
+                .done(dc_mem_done)
+            );
+            for (genvar i = 0; i < 4; i++) begin : g_dbg
+                assign dbg_dmem[i] = u_dmem_bm.mem[i];
+            end
         end
     end else begin : g_dmem
-        dmem u_dmem(
-            .clk(clk),
-            .A(ALUResultM),
-            .WD(StoreDataM),
-            .WE(MemStoreM),
-            .BE(StoreBEM),
-            .RD(ReadRawM)
-        );
+        if (DMEM_FROM_IMAGE) begin : g_img
+            dmem #(.DEPTH(MEM_WORDS), .INIT_FILE(IMEM_FILE)) u_dmem(
+                .clk(clk),
+                .A(ALUResultM),
+                .WD(StoreDataM),
+                .WE(MemStoreM),
+                .BE(StoreBEM),
+                .RD(ReadRawM)
+            );
+            for (genvar i = 0; i < 4; i++) begin : g_dbg
+                assign dbg_dmem[i] = u_dmem.mem[i];
+            end
+        end else begin : g_zero
+            dmem #(.DEPTH(MEM_WORDS), .INIT_FILE("")) u_dmem(
+                .clk(clk),
+                .A(ALUResultM),
+                .WD(StoreDataM),
+                .WE(MemStoreM),
+                .BE(StoreBEM),
+                .RD(ReadRawM)
+            );
+            for (genvar i = 0; i < 4; i++) begin : g_dbg
+                assign dbg_dmem[i] = u_dmem.mem[i];
+            end
+        end
         assign dmiss = 1'b0;
         assign dc_mem_req = 1'b0;
         assign dc_mem_we = 1'b0;
@@ -541,9 +581,6 @@ generate
         assign dc_mem_done = 1'b0;
         assign dc_refill_cnt = 32'b0;
         assign dc_write_cnt = 32'b0;
-        for (genvar i = 0; i < 4; i++) begin : g_dbg
-            assign dbg_dmem[i] = u_dmem.mem[i];
-        end
     end
 endgenerate
 
