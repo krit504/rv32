@@ -12,7 +12,7 @@ Times are IST.
 | T0.3 | PARTIAL | `make lint && make test` | lint 0 warnings; test green (21/21 x5, 25/25 x10, 36/36, 12/12 mutants). Unmet: the quoted "5 of 5 mutants" cannot be rerun (no harness in repo); replaced by a 12-mutant harness | 2026-11-01 |
 | T0.4 | DONE | `make -n all` | exit 0; unimplemented targets fail loudly with their task ID | 2026-11-01 |
 | T0.5 | DONE | `make lint test` via `scripts/run.sh` | complete log records in `logs/runs/`; templates exist | 2026-11-01 |
-| T0.6 | NOT RUN | | | |
+| T0.6 | DONE | `make locks locks-selftest` | 14 files locked; tamper cases behave as required | 2026-11-01 |
 | T1.1 | NOT RUN | | | |
 | T1.2 | NOT RUN | | | |
 | T1.3 | NOT RUN | | | |

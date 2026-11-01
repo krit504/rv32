@@ -1,0 +1,20 @@
+run_id: 20261101-183535-1168423-check_locks.sh
+timestamp: 2026-11-01 18:35:35 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: scripts/check_locks.sh
+git_commit: f19b6ab1c2325937cef286a0fecc591de1220b26
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 0
+outputs:
+full_output: work/runs/20261101-183535-1168423-check_locks.sh.out
+output_tail: |
+  [locks] OK: 14 locked file(s) verified

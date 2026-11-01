@@ -9,7 +9,7 @@ LATS    := 1 2 3 10
 RUN     := scripts/run.sh --   # every result-producing command is logged to logs/runs/ (spec 0B.1)
 
 .PHONY: all lint test arch-test random bench caches wear attacks calibrate eval synth plots \
-        hypotheses locks audit clean test-nohazard test-hazard test-cache test-mutants
+        hypotheses locks locks-selftest audit clean test-nohazard test-hazard test-cache test-mutants
 
 all: lint test arch-test random bench caches wear attacks calibrate eval synth plots hypotheses audit
 
@@ -17,7 +17,7 @@ lint:
 	$(RUN) verilator --lint-only -Wall --top-module $(TOP) $(RTL)
 	@echo "[lint] OK: 0 warnings, 0 errors"
 
-test: test-nohazard test-hazard test-cache test-mutants
+test: locks test-nohazard test-hazard test-cache test-mutants
 	@echo "[test] OK"
 
 test-nohazard:
@@ -48,8 +48,14 @@ eval:       ; @scripts/not_implemented.sh $@ T6.1
 synth:      ; @scripts/not_implemented.sh $@ T6.5
 plots:      ; @scripts/not_implemented.sh $@ T6.2
 hypotheses: ; @scripts/not_implemented.sh $@ T6.3
-locks:      ; @scripts/not_implemented.sh $@ T0.6
 audit:      ; @scripts/not_implemented.sh $@ T7.8
+
+locks:
+	$(RUN) scripts/check_locks.sh
+
+# T0.6 acceptance: check_locks.sh must fail on tampering (runs on a throwaway copy).
+locks-selftest:
+	$(RUN) scripts/selftest_locks.sh
 
 clean:
 	rm -rf work obj_dir build
