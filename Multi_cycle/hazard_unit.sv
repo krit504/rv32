@@ -16,10 +16,15 @@ module hazard_unit #(parameter int FORWARDING = 1)(
     input  logic       RegWriteW,
     input  logic [1:0] ResultSrcE,
     input  logic [1:0] PCNextSelE,
+    input  logic       imiss,
+    input  logic       dmiss,
     output logic [1:0] ForwardAE,
     output logic [1:0] ForwardBE,
     output logic       StallF,
     output logic       StallD,
+    output logic       StallE,
+    output logic       StallM,
+    output logic       StallW,
     output logic       FlushD,
     output logic       FlushE
 );
@@ -28,6 +33,7 @@ logic lwStall;
 logic depStall;
 logic stallCond;
 logic redirectE;
+logic freeze;
 
 generate
     if (FORWARDING != 0) begin : g_fwd
@@ -57,9 +63,17 @@ assign depStall  = ((RegWriteE && (RdE != 5'd0) && ((Rs1D == RdE) || (Rs2D == Rd
 
 assign stallCond = (FORWARDING != 0) ? lwStall : depStall;
 
-assign StallF = stallCond;
-assign StallD = stallCond;
-assign FlushD = redirectE;
+// Cache stalls (spec section 6). A D-cache miss freezes the whole pipeline. An I-cache miss
+// holds pc only and bubbles f_d_reg, unless a redirect is loading pc or a load-use stall
+// is already holding f_d_reg (a flush there would destroy the held instruction).
+assign freeze = dmiss;
+
+assign StallF = freeze | stallCond | (imiss & ~redirectE);
+assign StallD = freeze | stallCond;
+assign StallE = freeze;
+assign StallM = freeze;
+assign StallW = freeze;
+assign FlushD = redirectE | (imiss & ~stallCond);
 assign FlushE = stallCond | redirectE;
 
 endmodule

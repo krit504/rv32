@@ -18,6 +18,7 @@ module d_e_reg(
     input logic [1:0] PCSrcD,
     input logic [4:0] Rs1D,
     input logic [4:0] Rs2D,
+    input logic  StallE,
     input logic  FlushE,
     output logic [31:0] RD1E,
     output logic [31:0] RD2E,
@@ -45,6 +46,9 @@ always_ff @(posedge clk or negedge rst_n) begin
         RegWriteE <= '0; ALUSrcE <= '0; ALUSrcAE <= '0; MemWriteE <= '0; BranchE <= '0;
         ResultSrcE <= '0; ALUControlE <= '0; PCSrcE <= '0;Rs1E<='0;Rs2E<='0;
         end 
+    else if (StallE) begin
+        // hold
+    end
     else if (FlushE) begin
         RD1E <= '0; RD2E <= '0; ImmExtE <= '0; RdE <= '0; funct3E <= '0;
         PCE <= '0; PCPlus4E <= '0;

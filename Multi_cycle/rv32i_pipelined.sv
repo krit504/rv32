@@ -1,4 +1,9 @@
-module rv32_top_pipelined #(parameter int FORWARDING = 1)(
+module rv32_top_pipelined #(
+    parameter int FORWARDING  = 1,
+    parameter bit CACHES_ON   = 1'b1,
+    parameter int MEM_LATENCY = 10,
+    parameter     IMEM_FILE   = "program.hex"
+)(
     input logic clk,
     input logic rst_n
 );
@@ -15,6 +20,12 @@ logic [31:0] PCD_from_FETCH;
 logic [31:0] PCPlus4D_from_FETCH;
 logic [31:0] PCNext_pc_mux_to_pc;
 logic [31:0] A_PC_to_imem_and_ALU;
+
+logic imiss;
+logic dmiss;
+logic StallE;
+logic StallM;
+logic StallW;
 
 f_d_reg u_f_d_reg(
     .clk(clk),
@@ -51,10 +62,49 @@ assign PCNext_pc_mux_to_pc =
                              {ALUResultE[31:1], 1'b0};
 //IMEM
 
-imem u_imem(
-    .A(A_PC_to_imem_and_ALU),
-    .RD(instruction_imem_to_FETCH)
-);
+logic        ic_mem_req;
+logic [31:0] ic_mem_addr;
+logic [127:0] ic_mem_rdata;
+logic        ic_mem_done;
+logic [31:0] ic_refill_cnt;
+
+generate
+    if (CACHES_ON) begin : g_icache
+        icache u_icache(
+            .clk(clk),
+            .rst_n(rst_n),
+            .addr(A_PC_to_imem_and_ALU),
+            .rdata(instruction_imem_to_FETCH),
+            .imiss(imiss),
+            .mem_req(ic_mem_req),
+            .mem_addr(ic_mem_addr),
+            .mem_rdata(ic_mem_rdata),
+            .mem_done(ic_mem_done),
+            .refill_cnt(ic_refill_cnt)
+        );
+        backing_mem #(.LATENCY(MEM_LATENCY), .INIT_FILE(IMEM_FILE)) u_imem_bm(
+            .clk(clk),
+            .rst_n(rst_n),
+            .req(ic_mem_req),
+            .we(1'b0),
+            .addr(ic_mem_addr),
+            .wdata(32'b0),
+            .rdata(ic_mem_rdata),
+            .done(ic_mem_done)
+        );
+    end else begin : g_imem
+        imem u_imem(
+            .A(A_PC_to_imem_and_ALU),
+            .RD(instruction_imem_to_FETCH)
+        );
+        assign imiss = 1'b0;
+        assign ic_mem_req = 1'b0;
+        assign ic_mem_addr = 32'b0;
+        assign ic_mem_rdata = 128'b0;
+        assign ic_mem_done = 1'b0;
+        assign ic_refill_cnt = 32'b0;
+    end
+endgenerate
 
 
 
@@ -101,6 +151,7 @@ d_e_reg u_d_e_reg(
     .PCSrcD(PCSrc_CU_to_DECODE),
     .Rs1D(InstrD_from_FETCH[19:15]),
     .Rs2D(InstrD_from_FETCH[24:20]),
+    .StallE(StallE),
     .FlushE(FlushE),
     .Rs1E(Rs1E),
     .Rs2E(Rs2E),
@@ -204,10 +255,15 @@ hazard_unit #(.FORWARDING(FORWARDING)) u_hazard_unit(
     .RegWriteW(RegWriteW),
     .ResultSrcE(ResultSrcE),
     .PCNextSelE(PCNextSelE),
+    .imiss(imiss),
+    .dmiss(dmiss),
     .ForwardAE(ForwardAE),
     .ForwardBE(ForwardBE),
     .StallF(StallF),
     .StallD(StallD),
+    .StallE(StallE),
+    .StallM(StallM),
+    .StallW(StallW),
     .FlushD(FlushD),
     .FlushE(FlushE)
 );
@@ -303,6 +359,7 @@ alu u_alu(
 e_m_reg u_e_m_reg(
     .clk(clk),
     .rst_n(rst_n),
+    .StallM(StallM),
     .ALUResultE(ALUResultE),
     .WriteDataE(WriteDataE),
     .PCPlus4E(PCPlus4E),
@@ -351,6 +408,7 @@ logic [31:0] ImmExtW;
 m_w_reg u_m_w_reg(
     .clk(clk),
     .rst_n(rst_n),
+    .StallW(StallW),
     .ReadDataM(ReadDataM),
     .ALUResultM(ALUResultM),
     .RdM(RdM),
@@ -369,13 +427,73 @@ m_w_reg u_m_w_reg(
 
 //DMEM
 
-dmem u_dmem(
-    .clk(clk),
-    .A(ALUResultM),
-    .WD(WriteDataM),
-    .WE(MemWriteM),
-    .RD(ReadDataM)
-);
+logic        dc_mem_req;
+logic        dc_mem_we;
+logic [31:0] dc_mem_addr;
+logic [31:0] dc_mem_wdata;
+logic [127:0] dc_mem_rdata;
+logic        dc_mem_done;
+logic [31:0] dc_refill_cnt;
+logic [31:0] dc_write_cnt;
+
+// first four data-memory words, for testbench dumps, whichever memory backs them
+logic [31:0] dbg_dmem [0:3];
+
+generate
+    if (CACHES_ON) begin : g_dcache
+        dcache u_dcache(
+            .clk(clk),
+            .rst_n(rst_n),
+            .addr(ALUResultM),
+            .wdata(WriteDataM),
+            .we(MemWriteM),
+            .re(RegWriteM & (ResultSrcM == 2'b01)),
+            .rdata(ReadDataM),
+            .dmiss(dmiss),
+            .mem_req(dc_mem_req),
+            .mem_we(dc_mem_we),
+            .mem_addr(dc_mem_addr),
+            .mem_wdata(dc_mem_wdata),
+            .mem_rdata(dc_mem_rdata),
+            .mem_done(dc_mem_done),
+            .write_cnt(dc_write_cnt),
+            .refill_cnt(dc_refill_cnt)
+        );
+        backing_mem #(.LATENCY(MEM_LATENCY), .INIT_FILE("")) u_dmem_bm(
+            .clk(clk),
+            .rst_n(rst_n),
+            .req(dc_mem_req),
+            .we(dc_mem_we),
+            .addr(dc_mem_addr),
+            .wdata(dc_mem_wdata),
+            .rdata(dc_mem_rdata),
+            .done(dc_mem_done)
+        );
+        for (genvar i = 0; i < 4; i++) begin : g_dbg
+            assign dbg_dmem[i] = u_dmem_bm.mem[i];
+        end
+    end else begin : g_dmem
+        dmem u_dmem(
+            .clk(clk),
+            .A(ALUResultM),
+            .WD(WriteDataM),
+            .WE(MemWriteM),
+            .RD(ReadDataM)
+        );
+        assign dmiss = 1'b0;
+        assign dc_mem_req = 1'b0;
+        assign dc_mem_we = 1'b0;
+        assign dc_mem_addr = 32'b0;
+        assign dc_mem_wdata = 32'b0;
+        assign dc_mem_rdata = 128'b0;
+        assign dc_mem_done = 1'b0;
+        assign dc_refill_cnt = 32'b0;
+        assign dc_write_cnt = 32'b0;
+        for (genvar i = 0; i < 4; i++) begin : g_dbg
+            assign dbg_dmem[i] = u_dmem.mem[i];
+        end
+    end
+endgenerate
 
 assign ResultW = (ResultSrcW == 2'b00) ? ALUResultW :
                  (ResultSrcW == 2'b01) ? ReadDataW  :

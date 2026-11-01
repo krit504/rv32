@@ -14,10 +14,13 @@ always_ff @(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
         {InstrD, PCD, PCPlus4D} <='0;
     end
+    else if(StallD) begin
+        // hold
+    end
     else if(FlushD) begin
         {InstrD, PCD, PCPlus4D} <='0;
     end
-    else if(!StallD) begin
+    else begin
         {InstrD, PCD, PCPlus4D} <={InstrF,PCF,PCPlus4F};
     end
 end

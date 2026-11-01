@@ -3,12 +3,15 @@
 // END_PC with -P, runs this, and compares the dump against hand-computed values.
 module tb_hazard #(
     parameter int FWD    = 1,
-    parameter int END_PC = 0
+    parameter int END_PC = 0,
+    parameter bit CACHES = 1'b0,
+    parameter int LAT    = 2,
+    parameter int CYCLES = 200
 );
     logic clk = 1'b0;
     logic rst_n;
 
-    rv32_top_pipelined #(.FORWARDING(FWD)) dut (.clk(clk), .rst_n(rst_n));
+    rv32_top_pipelined #(.FORWARDING(FWD), .CACHES_ON(CACHES), .MEM_LATENCY(LAT)) dut (.clk(clk), .rst_n(rst_n));
 
     always #5 clk = ~clk;
 
@@ -60,11 +63,11 @@ module tb_hazard #(
     end
 
     initial begin
-        repeat (200) @(posedge clk);
+        repeat (CYCLES) @(posedge clk);
         for (int i = 1; i < 32; i++)
             $display("REG %0d %h", i, dut.u_regfile.regs[i]);
         for (int i = 0; i < 4; i++)
-            $display("MEM %0d %h", i, dut.u_dmem.mem[i]);
+            $display("MEM %0d %h", i, dut.dbg_dmem[i]);
         $display("CYCLES %0d", cycles);
         $display("STALLS %0d", stall_cycles);
         $display("FLUSHES %0d", flush_cycles);

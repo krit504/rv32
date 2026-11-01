@@ -1,6 +1,7 @@
 module m_w_reg(
     input logic clk,
     input logic rst_n,
+    input logic StallW,
     input logic [31:0] ReadDataM,
     input logic [31:0] ALUResultM,
     input logic [4:0] RdM,
@@ -20,6 +21,9 @@ module m_w_reg(
 always_ff @(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
         {ReadDataW,ALUResultW,RdW,PCPlus4W,ImmExtW,RegWriteW,ResultSrcW} <='0;
+    end
+    else if(StallW) begin
+        // hold
     end
     else begin
         {ReadDataW,ALUResultW,RdW,PCPlus4W,ImmExtW,RegWriteW,ResultSrcW}<={ReadDataM,ALUResultM,RdM,PCPlus4M,ImmExtM,RegWriteM,ResultSrcM};

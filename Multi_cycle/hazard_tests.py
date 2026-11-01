@@ -1,10 +1,11 @@
 import re
 import subprocess
 import sys
+import os
 
 FILES = ("rv32i_pipelined.sv f_d_reg.sv d_e_reg.sv e_m_reg.sv m_w_reg.sv control_unit.sv "
          "main_decoder.sv alu_decoder.sv ALU.sv immediate_generator.sv pc.sv regfile.sv "
-         "imem.sv dmem.sv hazard_unit.sv perf_counters.sv tb_hazard.sv").split()
+         "imem.sv dmem.sv backing_mem.sv icache.sv dcache.sv hazard_unit.sv perf_counters.sv tb_hazard.sv").split()
 
 M32 = 0xFFFFFFFF
 
@@ -47,14 +48,23 @@ NOP = addi(0, 0, 0)
 FILL = 4   # pipeline fill cycles, reported separately from steady-state CPI
 NOFWD = "--nofwd" in sys.argv or "--nofw" in sys.argv
 QUIET = "--quiet" in sys.argv
+# CACHES=1 [LAT=n]: run the same programs through icache/dcache + backing_mem. Only final
+# registers and memory are compared; stall/flush/cycle counts legitimately change (Note 12).
+CACHES = int(os.environ.get("CACHES", "0"))
+LAT = int(os.environ.get("LAT", "2"))
+CACHE_PARAMS = ([f"-Ptb_hazard.CACHES=1", f"-Ptb_hazard.LAT={LAT}",
+                 f"-Ptb_hazard.CYCLES={400 + 80 * (LAT + 2)}"] if CACHES else [])
 
 def run(prog):
+    # Note 13: with caches on the run is long enough for pc to wrap the 256-word memory and
+    # re-execute the program, so park pc on an infinite loop after the last instruction.
+    prog = prog + [jal(0, 0)] if CACHES else prog
     words = prog + [NOP] * (256 - len(prog))
     with open("program.hex", "w") as f:
         for w in words:
             f.write(f"{w & M32:08x}\n")
     subprocess.run(["iverilog", "-g2012", "-o", "hz.vvp", f"-Ptb_hazard.FWD={0 if NOFWD else 1}",
-                    f"-Ptb_hazard.END_PC={len(prog) * 4}"] + FILES, check=True,
+                    f"-Ptb_hazard.END_PC={len(prog) * 4}"] + CACHE_PARAMS + FILES, check=True,
                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     out = subprocess.run(["vvp", "hz.vvp"], capture_output=True, text=True).stdout
     regs = {0: 0}
@@ -165,23 +175,25 @@ for name, prog, regs, mem, exp in tests:
     for a, v in mem.items():
         if got_mem.get(a) != hx(v):
             errs.append(f"mem[{a}]={got_mem.get(a)} expected {hx(v)}")
-    if st.get("done") != 1:
+    if not CACHES and st.get("done") != 1:
         errs.append("pipeline never drained")
     if st.get("xviol") != 0:
         errs.append(f"hazard_unit saw X/Z on {st.get('xviol')} cycle(s)")
-    for k in ("flushes", "retired"):
+    for k in (() if CACHES else ("flushes", "retired")):
         if k in exp and st.get(k) != exp[k]:
             errs.append(f"{k}={st.get(k)} expected {exp[k]}")
-    if not NOFWD:
+    if CACHES:
+        pass
+    elif not NOFWD:
         for k in ("stalls", "spurious"):
             if k in exp and st.get(k) != exp[k]:
                 errs.append(f"{k}={st.get(k)} expected {exp[k]}")
     elif exp.get("dep") and st.get("stalls", 0) == 0:
         errs.append("ablation: dependent sequence never stalled")
     ident = st["retired"] + st["stalls"] + 2 * st["flushes"] + FILL
-    if st["cycles"] != ident:
+    if not CACHES and st["cycles"] != ident:
         errs.append(f"cycles={st['cycles']} != retired+stalls+2*flushes+4={ident}")
-    if st.get("metrics", {}).get("identity") != "ok":
+    if not CACHES and st.get("metrics", {}).get("identity") != "ok":
         errs.append("perf_counters identity check reported " + str(st.get("metrics", {}).get("identity")))
     if not QUIET or errs:
         mt = st.get("metrics", {})

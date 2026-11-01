@@ -1,6 +1,7 @@
 module e_m_reg(
     input logic clk,
     input logic rst_n,
+    input logic StallM,
     input logic [31:0] ALUResultE,
     input logic [31:0] WriteDataE,
     input logic [31:0] PCPlus4E,
@@ -22,6 +23,9 @@ module e_m_reg(
 always_ff @(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
         {ALUResultM,WriteDataM,PCPlus4M,RdM,ImmExtM,RegWriteM,MemWriteM,ResultSrcM}<='0;
+    end
+    else if(StallM) begin
+        // hold
     end
     else begin
         {ALUResultM,WriteDataM} <={ALUResultE,WriteDataE};
