@@ -1,0 +1,13 @@
+{
+  "_comment": "T0.3 baseline. Spec 0A.A: these counts must never decrease. Checked by the T7.8 audit.",
+  "nohazard_register_checks": 21,
+  "nohazard_configs": ["caches off", "caches on LAT=1", "LAT=2", "LAT=3", "LAT=10"],
+  "hazard_programs": 25,
+  "hazard_runs_per_program": 10,
+  "hazard_run_configs": ["fwd/nofwd x (caches off, caches on LAT=1,2,3,10)"],
+  "cache_integration_checks": 36,
+  "mutants_caught": 12,
+  "mutants_argued_equivalent": 1,
+  "mutant_equivalence_controls": 2,
+  "arch_tests_included": 0
+}
