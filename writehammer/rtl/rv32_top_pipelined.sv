@@ -2,7 +2,7 @@ module rv32_top_pipelined #(
     parameter int FORWARDING  = 1,
     parameter bit CACHES_ON   = 1'b1,
     parameter int MEM_LATENCY = 10,
-    parameter string IMEM_FILE = "program.hex",
+    parameter IMEM_FILE = "program.hex",   // untyped on purpose: Icarus 12 cannot bind a string-typed parameter inside generate blocks
     // Words in each of the instruction and data memories (256 = 1 KiB, the default the earlier
     // tests rely on; the C flow uses 65536 = 256 KiB). Addresses wrap modulo this size.
     parameter int MEM_WORDS   = 256,

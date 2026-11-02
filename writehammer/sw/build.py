@@ -14,7 +14,9 @@ Flags:   -march=rv32i_zicsr -mabi=ilp32 -O2 -ffreestanding -nostdlib -static -Wl
 Check:   after linking, every instruction in the ELF must be an RV32I base instruction (checked
          with objdump -M no-aliases against the full RV32I list); anything else (mul, csr, fence,
          ecall, compressed, ...) fails the build, as does a non-rv32i architecture attribute.
-Env:     RISCV_GCC (default riscv64-unknown-elf-gcc), CFLAGS_EXTRA.
+Env:     RISCV_GCC (default riscv64-unknown-elf-gcc), CFLAGS_EXTRA, LDLIBS_EXTRA (e.g. "-lc": linked inside a
+         linker group with libgcc; the newlib libc of the rv32i_zicsr multilib is RV32I-only too, and the
+         ELF check below still applies to everything that gets linked).
 Exit 0 on success.
 """
 import os
@@ -65,7 +67,9 @@ def main(argv):
     elf = os.path.join(out, "prog.elf")
     run([GCC] + CFLAGS + ["-T", os.path.join(HERE, "link.ld"), "-Wl,--gc-sections",
                           f"-Wl,-Map={os.path.join(out, 'prog.map')}",
-                          os.path.join(HERE, "crt0.S")] + srcs + ["-lgcc", "-o", elf])
+                          os.path.join(HERE, "crt0.S")] + srcs
+        + (["-Wl,--start-group"] + os.environ["LDLIBS_EXTRA"].split() + ["-lgcc", "-Wl,--end-group"]
+           if os.environ.get("LDLIBS_EXTRA") else ["-lgcc"]) + ["-o", elf])
     check_isa(elf)
     binf = os.path.join(out, "prog.bin")
     run([PREFIX + "objcopy", "-O", "binary", elf, binf])

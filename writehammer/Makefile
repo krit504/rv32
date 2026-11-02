@@ -17,7 +17,7 @@ lint:
 	$(RUN) verilator --lint-only -Wall --top-module $(TOP) $(RTL)
 	@echo "[lint] OK: 0 warnings, 0 errors"
 
-test: locks test-nohazard test-hazard test-cache test-subword test-perf test-toolchain test-arch-control random test-mutants
+test: locks test-nohazard test-hazard test-cache test-subword test-perf test-toolchain test-arch-control random bench test-mutants
 	@echo "[test] OK"
 
 test-nohazard:
@@ -62,11 +62,17 @@ random:
 	@for l in 1 3 10; do CACHES=1 LAT=$$l $(RUN) $(PY) tests/random_lockstep.py --n 1000 || exit 1; done
 	$(RUN) $(PY) tests/random_control.py
 
+# T1.7/T1.8: benchmarks and benign workloads self-check (native oracles, bad-core controls), then the
+# baseline table docs/baseline.md. About 4 minutes (Verilator).
+bench:
+	$(RUN) $(PY) tests/bench_test.py
+	$(RUN) $(PY) tests/workload_test.py
+	$(RUN) $(PY) analysis/baseline.py
+
 test-mutants:
 	$(RUN) $(PY) tests/run_mutants.py
 
 # Targets wired to the task that implements them. Until then each prints NOT IMPLEMENTED and fails.
-bench:      ; @scripts/not_implemented.sh $@ "T1.7 T1.8"
 caches:     ; @scripts/not_implemented.sh $@ T2.7
 wear:       ; @scripts/not_implemented.sh $@ "T3.1-T3.5"
 attacks:    ; @scripts/not_implemented.sh $@ "T4.1-T4.8"

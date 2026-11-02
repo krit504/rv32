@@ -1,0 +1,34 @@
+run_id: 20261102-064814-1500189-baseline
+timestamp: 2026-11-02 06:48:34 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: python3 analysis/baseline.py
+git_commit: 19b454751b77b954615324acc5ef2c38be6c40e8
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 20
+outputs:
+full_output: work/runs/20261102-064814-1500189-baseline.out
+output_tail: |
+  | Workload | Class | Cycles | Instr | CPI | Load-use stalls | Flush cycles | Rate |
+  |---|---|---|---|---|---|---|---|
+  | Dhrystone (500 runs) | calibration | 269526 | 215022 | 1.253 | 3500 | 51006 | DMIPS/MHz (unofficial): 1.056 |
+  | CoreMark (10 iterations) | calibration | 10694252 | 7463894 | 1.433 | 203832 | 3026526 | CoreMark/MHz (unofficial): 0.935 |
+  | crc32 | held-out | 6791716 | 5746548 | 1.182 | 0 | 1045170 | n/a |
+  | md5sum | held-out | 3081332 | 2650410 | 1.163 | 2178 | 428746 | n/a |
+  | nettle-sha256 | held-out | 4948457 | 4807386 | 1.029 | 28663 | 112410 | n/a |
+  | nettle-aes | held-out | 4961878 | 4701797 | 1.055 | 16113 | 243970 | n/a |
+  | huffbench | held-out | 3163833 | 2450893 | 1.291 | 48290 | 664652 | n/a |
+  | wikisort | held-out | 1757953 | 1334764 | 1.317 | 23049 | 400142 | n/a |
+  | sglib-combined | held-out | 3979509 | 2951540 | 1.348 | 170687 | 857284 | n/a |
+  | qrduino | held-out | 6496597 | 4897598 | 1.326 | 57121 | 1541880 | n/a |
+  | memcpy_big | held-out | 87743 | 80417 | 1.091 | 0 | 7326 | n/a |
+  | memset_big | held-out | 131591 | 98697 | 1.333 | 0 | 32894 | n/a |
+  | storeloop | held-out | 1048678 | 786536 | 1.333 | 0 | 262142 | n/a |

@@ -19,3 +19,6 @@ Spec v4 read in full. Baseline commit of the existing cache work in `Multi_cycle
 
 ## 2026-11-01 23:07 T1.1 and T1.2 committed together
 Spec 0B.12 asks for one commit per task. T1.1 (RTL) and T1.2 (tests) touch the same shared files (STATUS, LOCKED.sha256, CHANGE_LOG, the mutant harness, and mutant C5's patch text depends on the T1.1 RTL line), so they share one commit `T1.1, T1.2`. Both have their own task log.
+
+## 2026-11-02 06:53 T1.7 and T1.8 committed together
+Both feed one baseline table (`analysis/baseline.py`) and one `make bench` target, and both needed the same Verilator runner, so they share a commit `T1.7, T1.8`; each has its own task log. The Verilator vs Icarus difference found along the way (typed string parameters) is recorded in T1.7 problem 1 and KI-012.

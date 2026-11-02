@@ -19,8 +19,8 @@ Times are IST.
 | T1.4 | DONE | `tests/toolchain_test.py`; `make test` | 10/10 against the native-gcc oracle at 5 configs; mutants 30/30 caught | 2026-11-02 |
 | T1.5 | DONE | `make arch-test` | 37/37 caches off; 37/37 caches on LAT 1 and 10; bad-core control fails as required | 2026-11-02 |
 | T1.6 | DONE | `make random` | 1000/1000 in 5 configurations; Spike vs model 200/200; 5 bad cores caught | 2026-11-02 |
-| T1.7 | NOT RUN | | | |
-| T1.8 | NOT RUN | | | |
+| T1.7 | DONE | `make bench` | Dhrystone self-check ok; CoreMark CRCs equal native oracle; caches off and on; baseline in docs/baseline.md | 2026-11-02 |
+| T1.8 | DONE | `make bench` | 19/19 Embench kernels build and pass; 8 held-out + 3 in-repo workloads 14/14 incl. native oracle and bad-core controls | 2026-11-02 |
 | T2.1 | NOT RUN | | | |
 | T2.2 | NOT RUN | | | |
 | T2.3 | NOT RUN | | | |

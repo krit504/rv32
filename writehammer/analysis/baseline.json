@@ -1,0 +1,145 @@
+[
+ {
+  "workload": "Dhrystone (500 runs)",
+  "class": "calibration",
+  "cycles": 269526,
+  "instret": 215022,
+  "cpi": 1.2534810391494824,
+  "stall_loaduse": 3500,
+  "flush_cycles": 51006,
+  "rate_label": "DMIPS/MHz (unofficial)",
+  "rate": 1.0558387012278487
+ },
+ {
+  "workload": "CoreMark (10 iterations)",
+  "class": "calibration",
+  "cycles": 10694252,
+  "instret": 7463894,
+  "cpi": 1.4327979470233634,
+  "stall_loaduse": 203832,
+  "flush_cycles": 3026526,
+  "rate_label": "CoreMark/MHz (unofficial)",
+  "rate": 0.9350817616790777
+ },
+ {
+  "workload": "crc32",
+  "class": "held-out",
+  "cycles": 6791716,
+  "instret": 5746548,
+  "cpi": 1.1818775376104054,
+  "stall_loaduse": 0,
+  "flush_cycles": 1045170,
+  "rate_label": "",
+  "rate": null
+ },
+ {
+  "workload": "md5sum",
+  "class": "held-out",
+  "cycles": 3081332,
+  "instret": 2650410,
+  "cpi": 1.1625869205141846,
+  "stall_loaduse": 2178,
+  "flush_cycles": 428746,
+  "rate_label": "",
+  "rate": null
+ },
+ {
+  "workload": "nettle-sha256",
+  "class": "held-out",
+  "cycles": 4948457,
+  "instret": 4807386,
+  "cpi": 1.029344637605551,
+  "stall_loaduse": 28663,
+  "flush_cycles": 112410,
+  "rate_label": "",
+  "rate": null
+ },
+ {
+  "workload": "nettle-aes",
+  "class": "held-out",
+  "cycles": 4961878,
+  "instret": 4701797,
+  "cpi": 1.0553152337287213,
+  "stall_loaduse": 16113,
+  "flush_cycles": 243970,
+  "rate_label": "",
+  "rate": null
+ },
+ {
+  "workload": "huffbench",
+  "class": "held-out",
+  "cycles": 3163833,
+  "instret": 2450893,
+  "cpi": 1.290889891969988,
+  "stall_loaduse": 48290,
+  "flush_cycles": 664652,
+  "rate_label": "",
+  "rate": null
+ },
+ {
+  "workload": "wikisort",
+  "class": "held-out",
+  "cycles": 1757953,
+  "instret": 1334764,
+  "cpi": 1.3170515536828982,
+  "stall_loaduse": 23049,
+  "flush_cycles": 400142,
+  "rate_label": "",
+  "rate": null
+ },
+ {
+  "workload": "sglib-combined",
+  "class": "held-out",
+  "cycles": 3979509,
+  "instret": 2951540,
+  "cpi": 1.3482822526545464,
+  "stall_loaduse": 170687,
+  "flush_cycles": 857284,
+  "rate_label": "",
+  "rate": null
+ },
+ {
+  "workload": "qrduino",
+  "class": "held-out",
+  "cycles": 6496597,
+  "instret": 4897598,
+  "cpi": 1.3264863714825104,
+  "stall_loaduse": 57121,
+  "flush_cycles": 1541880,
+  "rate_label": "",
+  "rate": null
+ },
+ {
+  "workload": "memcpy_big",
+  "class": "held-out",
+  "cycles": 87743,
+  "instret": 80417,
+  "cpi": 1.0911001405175522,
+  "stall_loaduse": 0,
+  "flush_cycles": 7326,
+  "rate_label": "",
+  "rate": null
+ },
+ {
+  "workload": "memset_big",
+  "class": "held-out",
+  "cycles": 131591,
+  "instret": 98697,
+  "cpi": 1.3332826732322158,
+  "stall_loaduse": 0,
+  "flush_cycles": 32894,
+  "rate_label": "",
+  "rate": null
+ },
+ {
+  "workload": "storeloop",
+  "class": "held-out",
+  "cycles": 1048678,
+  "instret": 786536,
+  "cpi": 1.3332867154205275,
+  "stall_loaduse": 0,
+  "flush_cycles": 262142,
+  "rate_label": "",
+  "rate": null
+ }
+]

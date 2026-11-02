@@ -1,0 +1,23 @@
+run_id: 20261102-064240-1488489-arch_mutant_check
+timestamp: 2026-11-02 06:43:31 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: python3 tests/arch_mutant_check.py
+git_commit: 19b454751b77b954615324acc5ef2c38be6c40e8
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 51
+outputs:
+full_output: work/runs/20261102-064240-1488489-arch_mutant_check.out
+output_tail: |
+  ok   S1_lb_zero_extends           lb-align-01    failed (expected fail)
+  ok   S1_lb_zero_extends           lbu-align-01   passed (expected pass)
+  ok   S3_sb_byte_enable_stuck      sb-align-01    failed (expected fail)
+  [arch_mutant_check] OK
