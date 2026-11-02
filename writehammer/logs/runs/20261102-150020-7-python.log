@@ -1,0 +1,59 @@
+run_id: 20261102-150020-7-python
+timestamp: 2026-11-02 15:01:32 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: .venv/bin/python analysis/wear_baseline.py
+git_commit: b8d19820a0065c8f5dccaa40c7cdefbcfd2cb703
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 72
+outputs:
+full_output: work/runs/20261102-150020-7-python.out
+output_tail: |
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/nettle_aes HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/nettle_aes: 862042 accesses, 437312 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/nettle_aes w_max=7007 PMR(all)=2.050929313625055
+  wear baseline PASS: nettle-aes w_max=7007
+  wear baseline starting: huffbench
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/huffbench HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/huffbench: 704564 accesses, 222653 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/huffbench w_max=7173 PMR(all)=4.12365429614692
+  wear baseline PASS: huffbench w_max=7173
+  wear baseline starting: wikisort
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/wikisort HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/wikisort: 759979 accesses, 287240 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/wikisort w_max=28997 PMR(all)=12.92165436568723
+  wear baseline PASS: wikisort w_max=28997
+  wear baseline starting: sglib-combined
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/sglib_combined HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/sglib_combined: 1040280 accesses, 375682 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/sglib_combined w_max=39637 PMR(all)=13.504868479192508
+  wear baseline PASS: sglib-combined w_max=39637
+  wear baseline starting: qrduino
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/qrduino HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/qrduino: 756319 accesses, 103451 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/qrduino w_max=41013 PMR(all)=50.74541570405313
+  wear baseline PASS: qrduino w_max=41013
+  wear baseline starting: memcpy_big
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/memcpy_big HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/memcpy_big: 106530 accesses, 83330 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/memcpy_big w_max=664 PMR(all)=1.0199447977919116
+  wear baseline PASS: memcpy_big w_max=664
+  wear baseline starting: memset_big
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/memset_big HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/memset_big: 86042 accesses, 88089 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/memset_big w_max=704 PMR(all)=1.0229654099830854
+  wear baseline PASS: memset_big w_max=704
+  wear baseline starting: storeloop
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/storeloop HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/storeloop: 139264 accesses, 169984 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_baseline/baseline_f3a7ccb0eb4d/storeloop w_max=1328 PMR(all)=1.0
+  wear baseline PASS: storeloop w_max=1328
+  [wear baseline] 13/13 workloads: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/analysis/wear_baseline_f3a7ccb0eb4d.csv

@@ -1,0 +1,14 @@
+{
+  "script": "analysis/wear_baseline.py; analysis/wear_stats.py",
+  "git_commit": "b8d19820a0065c8f5dccaa40c7cdefbcfd2cb703",
+  "rtl_tree": "f3a7ccb0eb4d137ed8139d0285d4a9600de07f0f",
+  "run_set_id": "baseline_f3a7ccb0eb4d",
+  "workload": "qrduino",
+  "source_csv_sha256": {
+    "wear_lines.csv": "cae6893faccf0d86de0e036fbd5782b5365ac5d985c521b79c120377c84f1b67",
+    "wear_windows.csv": "2c3bbb7cf3b7d815a6c2c110beb53832a9a066f8e1cfdf9df3884d5745eb3303",
+    "dc_trace.csv": "b0918007bfc5e7b5b24d8cd2969290de6f0e7e7a41cf6dde9efb0b088a1f10c6"
+  },
+  "figure_sha256": "826a43d952474ddb877883d16409e4dbf91364db640a1425bc91f6ba149ff8c3",
+  "assumed_endurance_writes": 1000000000000000
+}

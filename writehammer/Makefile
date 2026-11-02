@@ -96,7 +96,8 @@ test-mutants:
 	$(RUN) $(PY) tests/run_mutants.py
 
 # Targets wired to the task that implements them. Until then each prints NOT IMPLEMENTED and fails.
-wear:       ; @scripts/not_implemented.sh $@ "T3.1-T3.5"
+wear:
+	$(RUN) $(VENV_PY) analysis/wear_baseline.py
 attacks:    ; @scripts/not_implemented.sh $@ "T4.1-T4.8"
 calibrate:  ; @scripts/not_implemented.sh $@ T5.6
 eval:       ; @scripts/not_implemented.sh $@ T6.1

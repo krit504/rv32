@@ -1,0 +1,14 @@
+{
+  "script": "analysis/wear_baseline.py; analysis/wear_stats.py",
+  "git_commit": "b8d19820a0065c8f5dccaa40c7cdefbcfd2cb703",
+  "rtl_tree": "f3a7ccb0eb4d137ed8139d0285d4a9600de07f0f",
+  "run_set_id": "baseline_f3a7ccb0eb4d",
+  "workload": "Dhrystone (500 runs)",
+  "source_csv_sha256": {
+    "wear_lines.csv": "9563ea6feba6bacc3ec841cb95b0244131c4917df5bad387a3f46312c800ccdd",
+    "wear_windows.csv": "1daffa97d7cf9f12b3bf0bf7e35637677684cca9f1d8c4884c9c154c2a784d3c",
+    "dc_trace.csv": "f46fc4400bdb3b06025c7c569ffd269ab2d2b1b205a04273f757a837633526b2"
+  },
+  "figure_sha256": "cac706231129729e47a09a9ac75055ef797f1efcf3ee6af22fceccdff94b8348",
+  "assumed_endurance_writes": 1000000000000000
+}
