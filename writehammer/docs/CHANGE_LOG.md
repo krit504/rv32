@@ -107,3 +107,9 @@ Entry format:
 - Why: T2.2 adds them. Adds only; nothing removed or loosened.
 - Evidence the original was wrong: not a correction; earlier mutants unchanged.
 - New sha256: 3c08ef2acd50d628be82a4cddcaef875eaee78a3300b8a79dd9cdb3eef8fd5fa
+
+## CHG-017 2026-11-02 tests/invariant_test.py
+- What changed: T2.6 added three small-cache geometries to the invariant matrix and bounded hung runs. The previously locked T3 worktree copy had hash b4194c32733a88453fea429f0ccf3bc97667b653886c0377a7f6d6227be54d02; the T2 version is now in the merged tree. No check was removed or loosened.
+- Why: the previous random-program data window exactly fit the 2 KiB D$, so dirty write-back defects could survive without an eviction. Small caches force evictions and expose them.
+- Evidence: `docs/logs/T2.6.md` reports the full 9-configuration invariant run passing and dirty write-back mutants failing the expanded check.
+- New sha256: faa77bb0914deb14b2925285c3bc788d8d0ae283f468a919842fb22852e5765a

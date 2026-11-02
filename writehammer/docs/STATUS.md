@@ -23,11 +23,11 @@ Times are IST.
 | T1.8 | DONE | `make bench` | 19/19 Embench kernels build and pass; 8 held-out + 3 in-repo workloads 14/14 incl. native oracle and bad-core controls | 2026-11-02 |
 | T2.1 | DONE | `tests/mem_model_test.py` | 18/18; 6 mutants caught | 2026-11-02 |
 | T2.2 | DONE | `tests/stall_injection_test.py` | 4000 random programs + no-hazard regression with injection match; 4 mutants caught | 2026-11-02 |
-| T2.3 | PARTIAL | `tests/cache_integration.py`, `tests/hazard_tests.py` (caches on), `tests/invariant_test.py --quick` | I$ parameterized (size, line size) and on the shared memory interface; directed tests pass. Unmet: full `make test` not rerun after the last edits | 2026-11-02 |
-| T2.4 | PARTIAL | `tests/dcache_test.py` | 51/51 against the byte-array golden and the Python cache model, 12/12 D$ mutants caught. Unmet: full `make test` not rerun after the last edits; invariant-test mutant check still running | 2026-11-02 |
+| T2.3 | DONE | `make test` | I$ parameterized and on the shared memory interface; directed and full-core tests pass; caches-on invariant holds in 9 configurations | 2026-11-02 |
+| T2.4 | DONE | `tests/dcache_test.py`, `make test` | 51/51 against the byte-array golden and the Python cache model; 12/12 D$ mutants caught | 2026-11-02 |
 | T2.5 | DONE | `docs/CODE_DATA_SEPARATION.md`; linker `ASSERT` | note written; linker script separates code (.text/.rodata) from data (4 KiB page) and stack | 2026-11-02 |
-| T2.6 | PARTIAL | `tests/invariant_test.py --quick` | quick mode 3/3 (arch, workloads, random identical across 6 configurations). Unmet: full run, mutant check | 2026-11-02 |
-| T2.7 | NOT RUN | | | |
+| T2.6 | DONE | `make invariant`, `make test` | arch 37/37 (= Spike), workloads 13/13, random 200/200, identical across 9 configurations incl. 3 small-cache geometries | 2026-11-02 |
+| T2.7 | DONE | `make caches` | 78 runs, `analysis/caches.csv`, `caches_size.png`, `caches_line.png` with provenance sidecars | 2026-11-02 |
 | T3.1 | NOT RUN | | | |
 | T3.2 | NOT RUN | | | |
 | T3.3 | NOT RUN | | | |

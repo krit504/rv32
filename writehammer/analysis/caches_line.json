@@ -1,0 +1,8 @@
+{
+ "figure": "caches_line.png",
+ "generated_by": "analysis/caches.py",
+ "git_commit": "3b2e8bdcef9fe72e896b28db2bf197982f4664aa",
+ "data": "analysis/caches.csv",
+ "data_sha256": "9f28bd10e1fa115cd8d31a8cfd2037c5c4515b7631efaf585894044d2126a0ef",
+ "quick": false
+}

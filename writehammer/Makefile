@@ -9,7 +9,7 @@ LATS    := 1 2 3 10
 RUN     := scripts/run.sh --   # every result-producing command is logged to logs/runs/ (spec 0B.1)
 
 .PHONY: all lint test arch-test random bench caches wear attacks calibrate eval synth plots \
-        hypotheses locks locks-selftest audit clean arch-test test-nohazard test-hazard test-cache test-mem test-stall test-dcache test-subword test-perf test-toolchain test-arch-control test-mutants
+        hypotheses locks locks-selftest audit clean arch-test test-nohazard test-hazard test-cache test-mem test-stall test-dcache test-invariant invariant caches test-subword test-perf test-toolchain test-arch-control test-mutants
 
 all: lint test arch-test random bench caches wear attacks calibrate eval synth plots hypotheses audit
 
@@ -17,7 +17,7 @@ lint:
 	$(RUN) verilator --lint-only -Wall --top-module $(TOP) $(RTL)
 	@echo "[lint] OK: 0 warnings, 0 errors"
 
-test: locks test-mem test-stall test-dcache test-nohazard test-hazard test-cache test-subword test-perf test-toolchain test-arch-control random bench test-mutants
+test: locks test-mem test-stall test-dcache test-invariant test-nohazard test-hazard test-cache test-subword test-perf test-toolchain test-arch-control random bench test-mutants
 	@echo "[test] OK"
 
 test-nohazard:
@@ -80,11 +80,22 @@ test-dcache:
 test-stall:
 	$(RUN) $(PY) tests/stall_injection_test.py
 
+# T2.6: the correctness invariant across cache and memory configurations. --quick (a third of the arch tests,
+# 100 random programs) is part of `make test`; `make invariant` runs everything (several minutes more).
+test-invariant:
+	$(RUN) $(PY) tests/invariant_test.py --quick
+
+invariant:
+	$(RUN) $(PY) tests/invariant_test.py
+
+# T2.7: cache-size and line-size sweeps, miss rates, stall breakdown, plots (analysis/caches.csv, caches_*.png)
+caches:
+	$(RUN) $(VENV_PY) analysis/caches.py
+
 test-mutants:
 	$(RUN) $(PY) tests/run_mutants.py
 
 # Targets wired to the task that implements them. Until then each prints NOT IMPLEMENTED and fails.
-caches:     ; @scripts/not_implemented.sh $@ T2.7
 wear:       ; @scripts/not_implemented.sh $@ "T3.1-T3.5"
 attacks:    ; @scripts/not_implemented.sh $@ "T4.1-T4.8"
 calibrate:  ; @scripts/not_implemented.sh $@ T5.6

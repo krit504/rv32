@@ -13,3 +13,10 @@ Task to RTL files, tests, result rows, figures and the document sections that ci
 | T1.6 | n/a | `tests/random_gen.py`, `tests/random_lockstep.py`, `tests/random_spike_check.py`, `tests/random_control.py`, `tb/tb_random.sv` | n/a | `docs/logs/T1.6.md` |
 | T1.7 | `rtl/imem.sv`, `rtl/dmem.sv`, `rtl/backing_mem.sv` (untyped INIT_FILE) | `tests/bench_test.py`, `tests/vl_runner.py` | `docs/baseline.md`, `analysis/baseline.json` | `docs/logs/T1.7.md` |
 | T1.8 | n/a | `tests/workload_test.py`, `tests/workloads.py` | `docs/baseline.md` | `docs/logs/T1.8.md`, DEC-008 |
+| T2.1 | `rtl/mem_model.sv` | `tests/mem_model_test.py`, `tb/tb_mem_model.sv`, `tests/mutants/mem_mutants.py` | n/a | `docs/logs/T2.1.md` |
+| T2.2 | `rtl/rv32_top_pipelined.sv` (INJECT_STALL_SEED), stall enables in the pipeline registers | `tests/stall_injection_test.py`, `tests/mutants/stall_mutants.py` | n/a | `docs/logs/T2.2.md` |
+| T2.3 | `rtl/icache.sv` | `tests/cache_integration.py`, `tests/hazard_tests.py`, `tests/invariant_test.py` | `analysis/caches.csv` | `docs/logs/T2.3.md` |
+| T2.4 | `rtl/dcache.sv`, `rtl/write_guard.sv` | `tests/dcache_test.py`, `tests/cache_model.py`, `tests/mutants/dcache_mutants.py`, `tb/tb_dcache.sv` | n/a | `docs/logs/T2.4.md` |
+| T2.5 | `sw/link.ld` | `ASSERT` in the linker script | n/a | `docs/CODE_DATA_SEPARATION.md` |
+| T2.6 | testbench parameters in `tb/` | `tests/invariant_test.py`, `tests/dcache_test.py` | n/a | `docs/logs/T2.6.md` |
+| T2.7 | counters in `rtl/icache.sv`, `rtl/dcache.sv` | `analysis/caches.py` | `analysis/caches.csv`, `analysis/caches_size.png`, `analysis/caches_line.png` | `docs/logs/T2.7.md` |
