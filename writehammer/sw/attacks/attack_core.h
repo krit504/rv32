@@ -47,6 +47,8 @@
 #endif
 static volatile uint32_t target[ATTACK_LOCATIONS][ATTACK_WORDS_PER_TARGET]
     __attribute__((aligned(ATTACK_LINE_BYTES)));
+/* Keep a live .data item so the linker places .bss on a separate data page. */
+static volatile uint32_t data_page_anchor = 1u;
 
 static uint32_t next_dwell(uint32_t *rng) {
     uint32_t span = ATTACK_DWELL_MAX - ATTACK_DWELL_MIN + 1u;
@@ -88,6 +90,7 @@ static int check_targets(uint32_t rounds) {
 }
 
 int main(void) {
+    if (data_page_anchor != 1u) return 126;
     uint32_t rng = attack_lfsr_seed(ATTACK_SEED);
     uint32_t first = 0u, second = 1u;
     uint32_t active = first;
