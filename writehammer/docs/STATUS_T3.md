@@ -9,3 +9,11 @@ This worktree's T3 results; the main agent merges these into `docs/STATUS.md`.
 | T3.3 | DONE | `scripts/run.sh -- python3 tests/wear_known.py` | 2/2 exact known-answer programs passed, including fills, byte merge and dirty eviction | 2026-11-02 |
 | T3.4 | DONE | `make wear` | 13/13 benign workloads, summary row and heatmap per workload; exact golden replay on every run; frozen RTL tree f3a7ccb0eb4d | 2026-11-02 |
 | T3.5 | PARTIAL | `scripts/run.sh -- python3 analysis/wear_replay_suite.py --benign` | 13/13 benign workloads exact at latency 20; mis-count mutant caught; attack images do not exist yet | 2026-11-02 |
+| T4.1 | DONE | `scripts/run.sh -- python3 tests/attack_lfsr.py` | 4/4: native and RV32I known answer; broken-tap control caught in both | 2026-11-02 |
+| T4.2 | BLOCKED | `rg -n 'RLA|RTA|RnLA|RnTA' ../docs docs sw tests analysis` | Author definition of L, T, and Rn absent; Q-004 records it | 2026-11-02 |
+| T4.3 | NOT RUN | | Depends on attack definition and T4.2 | 2026-11-02 |
+| T4.4 | NOT RUN | | Depends on attack definition and T4.2 | 2026-11-02 |
+| T4.5 | NOT RUN | | Depends on attack definition and T4.2 | 2026-11-02 |
+| T4.6 | NOT RUN | | Depends on attack programs | 2026-11-02 |
+| T4.7 | NOT RUN | | Depends on attack programs and heatmaps | 2026-11-02 |
+| T4.8 | NOT RUN | | Depends on attack baselines | 2026-11-02 |
