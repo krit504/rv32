@@ -1,0 +1,22 @@
+run_id: 20261102-113628-2-python
+timestamp: 2026-11-02 11:36:35 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: .venv/bin/python analysis/wear_stats.py work/wear_smoke/run
+git_commit: f1f5a2ba72f09d9e8c9560d1f89b9037add0c232
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 7
+outputs:
+full_output: work/runs/20261102-113628-2-python.out
+output_tail: |
+  /home/kritin/.config/matplotlib is not a writable directory
+  Matplotlib created a temporary cache directory at /tmp/matplotlib-2pngumb6 because there was an issue with the default path (/home/kritin/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_smoke/run w_max=9 PMR(all)=16.225352112676056

@@ -1,0 +1,23 @@
+run_id: 20261102-113624-2-wear_stats
+timestamp: 2026-11-02 11:36:25 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: python3 analysis/wear_stats.py work/wear_smoke/run
+git_commit: f1f5a2ba72f09d9e8c9560d1f89b9037add0c232
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 1
+duration_s: 1
+outputs:
+full_output: work/runs/20261102-113624-2-wear_stats.out
+output_tail: |
+  Traceback (most recent call last):
+    File "/home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/analysis/wear_stats.py", line 16, in <module>
+      import matplotlib
+  ModuleNotFoundError: No module named 'matplotlib'

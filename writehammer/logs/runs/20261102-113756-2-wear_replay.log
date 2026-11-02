@@ -1,0 +1,15 @@
+run_id: 20261102-113756-2-wear_replay
+timestamp: 2026-11-02 11:37:56 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: python3 analysis/wear_replay.py work/wear_known/mixegit_commit: 81ecc49194cb550b098a614476696778f1056ac5
+git_digit_dirty: yes
+t  veri  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.0  iver  iverilog: Icarus Verilog version 12.0 (stabl  risc  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.  pyth  python3: Python 3.12.3
+parameseed: none
+exit_code: 0
+duration_s: 0
+outputs:
+full_output: work/runs/20261102-113756-2-wear_replay.out
+output_tail: |
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_known/mixed/run: 7 accesses, 9 array writes
+rites
