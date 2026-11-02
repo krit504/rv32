@@ -17,7 +17,10 @@ module tb_prog #(
     parameter int INJECT = 0,           // INJECT_STALL_SEED (test only)
     parameter bit RANDLAT = 1'b0,       // random memory latency 1..2*LAT-1
     parameter int MEM_SEED = 1,
-    parameter bit HASH = 1'b0           // print REGHASH and MEMHASH (FNV-1a over registers / every memory word) at HALT
+    parameter bit HASH = 1'b0,          // print REGHASH and MEMHASH (FNV-1a over registers / every memory word) at HALT
+    parameter int ICB = 2048,           // I$ bytes
+    parameter int DCB = 2048,           // D$ bytes
+    parameter int LINEB = 16            // line bytes (both caches)
 );
     logic clk = 1'b0, rst_n = 1'b0;
     always #5 clk = ~clk;
@@ -26,15 +29,21 @@ module tb_prog #(
     logic [31:0] ic_refill_cnt, dc_refill_cnt, dc_write_cnt;
     logic [31:0] dbg_word;
     logic [31:0] dbg_widx = '0;
+    logic [31:0] c_dc_access, c_dc_hit, c_dc_miss, c_dc_wb, c_dc_bypass, c_dc_rab, c_dc_stall;
+    logic [31:0] c_ic_lookup, c_ic_miss, c_ic_stall;
     logic        mmio_we;
     logic [31:0] mmio_addr, mmio_wdata;
     rv32_top_pipelined #(.FORWARDING(FWD), .CACHES_ON(CACHES), .MEM_LATENCY(LAT),
                          .MEM_WORDS(MEMW), .DMEM_FROM_IMAGE(IMAGE), .INJECT_STALL_SEED(INJECT),
-                         .MEM_RANDOM_LATENCY(RANDLAT), .MEM_SEED(MEM_SEED)) dut (
+                         .MEM_RANDOM_LATENCY(RANDLAT), .MEM_SEED(MEM_SEED),
+                         .ICACHE_BYTES(ICB), .DCACHE_BYTES(DCB), .LINE_BYTES(LINEB)) dut (
         .clk(clk), .rst_n(rst_n),
         .ic_refill_cnt(ic_refill_cnt), .dc_refill_cnt(dc_refill_cnt), .dc_write_cnt(dc_write_cnt),
         .mmio_we(mmio_we), .mmio_addr(mmio_addr), .mmio_wdata(mmio_wdata),
-        .dbg_widx(dbg_widx), .dbg_word(dbg_word)
+        .dbg_widx(dbg_widx), .dbg_word(dbg_word),
+        .dc_cnt_access(c_dc_access), .dc_cnt_hit(c_dc_hit), .dc_cnt_miss(c_dc_miss), .dc_cnt_wb(c_dc_wb),
+        .dc_cnt_bypass(c_dc_bypass), .dc_cnt_rab(c_dc_rab), .dc_cnt_stall(c_dc_stall),
+        .ic_cnt_lookup(c_ic_lookup), .ic_cnt_miss(c_ic_miss), .ic_cnt_stall(c_ic_stall)
     );
 
     logic halted;
@@ -48,6 +57,28 @@ module tb_prog #(
         .stallCond(dut.u_hazard_unit.stallCond), .redirectE(dut.u_hazard_unit.redirectE),
         .halted(halted), .exit_code(exit_code)
     );
+
+    // cache counters over the measurement window: snapshot at the program's MMIO START and STOP writes
+    // (a missing START means from reset, a missing STOP means up to HALT), printed as CACHEWIN at HALT
+    localparam int NC = 12;
+    logic [31:0] cur [0:NC-1], snap0 [0:NC-1], snap1 [0:NC-1];
+    logic have_start = 1'b0, have_stop = 1'b0;
+    always_comb begin
+        cur[0] = c_ic_lookup; cur[1] = c_ic_miss; cur[2] = c_ic_stall;
+        cur[3] = c_dc_access; cur[4] = c_dc_hit; cur[5] = c_dc_miss; cur[6] = dc_refill_cnt; cur[7] = c_dc_wb;
+        cur[8] = c_dc_bypass; cur[9] = c_dc_rab; cur[10] = c_dc_stall; cur[11] = dc_write_cnt;
+    end
+    initial for (int i = 0; i < NC; i++) begin snap0[i] = '0; snap1[i] = '0; end
+    always @(posedge clk) if (rst_n && mmio_we) begin
+        if (mmio_addr[7:0] == 8'h04) begin for (int i = 0; i < NC; i++) snap0[i] <= cur[i]; have_start <= 1'b1; end
+        if (mmio_addr[7:0] == 8'h08 && !have_stop) begin for (int i = 0; i < NC; i++) snap1[i] <= cur[i]; have_stop <= 1'b1; end
+    end
+
+    // run-time cycle limit: +maxcyc=<n> overrides MAXCYC (lets one build serve workloads of very different length)
+    int maxcyc_r = MAXCYC;
+    initial begin
+        if ($value$plusargs("maxcyc=%d", maxcyc_r)) ;
+    end
 
     int cyc = 0;
     always @(posedge clk) begin
@@ -65,11 +96,17 @@ module tb_prog #(
                 $display("REGHASH %h", hr);
                 $display("MEMHASH %h", hm);
             end
+            begin
+                logic [31:0] d [0:NC-1];
+                for (int i = 0; i < NC; i++) d[i] = (have_stop ? snap1[i] : cur[i]) - (have_start ? snap0[i] : 32'd0);
+                $display("CACHEWIN ic_lookup=%0d ic_miss=%0d ic_stall=%0d dc_access=%0d dc_hit=%0d dc_miss=%0d dc_fill=%0d dc_wb=%0d dc_bypass=%0d dc_rab=%0d dc_stall=%0d dc_write=%0d",
+                         d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9], d[10], d[11]);
+            end
             $display("IC_REFILL %0d", ic_refill_cnt);
             $display("DC_REFILL %0d", dc_refill_cnt);
             $display("DC_WRITE %0d", dc_write_cnt);
             $finish;
-        end else if (cyc >= MAXCYC) begin
+        end else if (cyc >= maxcyc_r) begin
             $display("TIMEOUT after %0d cycles", cyc);
             $finish;
         end

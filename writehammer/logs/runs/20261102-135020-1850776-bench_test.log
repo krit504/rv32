@@ -1,0 +1,24 @@
+run_id: 20261102-135020-1850776-bench_test
+timestamp: 2026-11-02 13:51:05 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: python3 tests/bench_test.py
+git_commit: 3b2e8bdcef9fe72e896b28db2bf197982f4664aa
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 45
+outputs:
+full_output: work/runs/20261102-135020-1850776-bench_test.out
+output_tail: |
+  native CoreMark oracle (10 iterations): {'seedcrc': '0xe9f5', '[0]crclist': '0xe714', '[0]crcmatrix': '0x1fd7', '[0]crcstate': '0x8e3a', '[0]crcfinal': '0xfcaf'}
+  control H1_no_fwd_from_M_srcA: Dhrystone FAILS, CoreMark FAILS (a bad core must fail at least one)
+  control H3_no_load_use_stall: Dhrystone FAILS, CoreMark FAILS (a bad core must fail at least one)
+  control C4_mwreg_not_held: Dhrystone FAILS, CoreMark FAILS (a bad core must fail at least one)
+  [bench] 9/9 passed
