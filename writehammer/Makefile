@@ -17,7 +17,7 @@ lint:
 	$(RUN) verilator --lint-only -Wall --top-module $(TOP) $(RTL)
 	@echo "[lint] OK: 0 warnings, 0 errors"
 
-test: locks test-nohazard test-hazard test-cache test-subword test-perf test-toolchain test-arch-control test-mutants
+test: locks test-nohazard test-hazard test-cache test-subword test-perf test-toolchain test-arch-control random test-mutants
 	@echo "[test] OK"
 
 test-nohazard:
@@ -53,11 +53,19 @@ arch-test:
 test-arch-control:
 	$(RUN) $(PY) tests/arch_mutant_check.py
 
+# T1.6: 1000 random programs per configuration vs the reference model; the model itself is checked
+# against Spike; known-bad cores must fail. Seeds 1..1000 (replay one with --start SEED --n 1).
+random:
+	$(RUN) $(PY) tests/random_spike_check.py --n 200
+	$(RUN) $(PY) tests/random_lockstep.py --n 1000
+	FWD=0 $(RUN) $(PY) tests/random_lockstep.py --n 1000
+	@for l in 1 3 10; do CACHES=1 LAT=$$l $(RUN) $(PY) tests/random_lockstep.py --n 1000 || exit 1; done
+	$(RUN) $(PY) tests/random_control.py
+
 test-mutants:
 	$(RUN) $(PY) tests/run_mutants.py
 
 # Targets wired to the task that implements them. Until then each prints NOT IMPLEMENTED and fails.
-random:     ; @scripts/not_implemented.sh $@ T1.6
 bench:      ; @scripts/not_implemented.sh $@ "T1.7 T1.8"
 caches:     ; @scripts/not_implemented.sh $@ T2.7
 wear:       ; @scripts/not_implemented.sh $@ "T3.1-T3.5"

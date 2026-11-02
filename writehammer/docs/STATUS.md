@@ -18,7 +18,7 @@ Times are IST.
 | T1.3 | DONE | `make test` | perf 21/21 hand-computed; mutants 27/27 caught | 2026-11-01 |
 | T1.4 | DONE | `tests/toolchain_test.py`; `make test` | 10/10 against the native-gcc oracle at 5 configs; mutants 30/30 caught | 2026-11-02 |
 | T1.5 | DONE | `make arch-test` | 37/37 caches off; 37/37 caches on LAT 1 and 10; bad-core control fails as required | 2026-11-02 |
-| T1.6 | NOT RUN | | | |
+| T1.6 | DONE | `make random` | 1000/1000 in 5 configurations; Spike vs model 200/200; 5 bad cores caught | 2026-11-02 |
 | T1.7 | NOT RUN | | | |
 | T1.8 | NOT RUN | | | |
 | T2.1 | NOT RUN | | | |

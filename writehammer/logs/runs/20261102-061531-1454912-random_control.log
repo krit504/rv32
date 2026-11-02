@@ -1,0 +1,26 @@
+run_id: 20261102-061531-1454912-random_control
+timestamp: 2026-11-02 06:16:26 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: python3 tests/random_control.py
+git_commit: 8bdc85a5b8e1a89804bfd1bd8e45033f51cf6ab4
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 55
+outputs:
+full_output: work/runs/20261102-061531-1454912-random_control.out
+output_tail: |
+  ok   H1_no_fwd_from_M_srcA        [random CACHES=0 LAT=2 FWD=1 pc_free=0 seeds=1..200] 0/200 passed
+  ok   H3_no_load_use_stall         [random CACHES=0 LAT=2 FWD=1 pc_free=0 seeds=1..200] 14/200 passed
+  ok   H5_regfile_posedge_write     [random CACHES=0 LAT=2 FWD=1 pc_free=0 seeds=1..200] 10/200 passed
+  ok   S2_load_wrong_byte_lane      [random CACHES=0 LAT=2 FWD=1 pc_free=0 seeds=1..200] 112/200 passed
+  ok   C4_mwreg_not_held            [random CACHES=1 LAT=3 FWD=1 pc_free=0 seeds=1..200] 57/200 passed
+  ok   unmodified core              [random CACHES=0 LAT=2 FWD=1 pc_free=0 seeds=1..200] 200/200 passed
+  [random_control] OK

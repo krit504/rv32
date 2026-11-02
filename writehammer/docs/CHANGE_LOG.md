@@ -53,3 +53,9 @@ Entry format:
 - Why: T1.4 adds mutants of the image-loading path and a test for them. Adds only; nothing removed or loosened.
 - Evidence the original was wrong: not a correction. Before the change `make test-mutants` reported 27/27 caught; after it reports 30/30 caught, and the original 27 are caught by the same tests as before.
 - New sha256: 155f21b6078f67c9ea1005621eeeeee1288e347079a7e71448c758d33d9b08a3
+
+## CHG-008 2026-11-02 tests/run_mutants.py
+- What changed: the suite run against every mutant now also runs `tests/random_lockstep.py --n 60` (60 random programs).
+- Why: T1.6 adds the random lockstep test; running a small batch against each mutant adds a detector. Adds a test only; nothing removed or loosened.
+- Evidence the original was wrong: not a correction. The earlier 30 mutants are still caught (see `work/full_test*.log` before and the post-change run in the T1.6 log).
+- New sha256: 9553ea2c33df276805388ca5ca6840a95853e8e5a2266af6d4b39f8c7da60f36

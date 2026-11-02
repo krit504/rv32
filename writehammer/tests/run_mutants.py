@@ -23,6 +23,7 @@ MUTANTS = CORE_MUTANTS + SUBWORD_MUTANTS + PERF_MUTANTS + TOOLCHAIN_MUTANTS
 # Cheapest first; the first failing test catches the mutant.
 SUITE = [
     ("cache_integration", ["tests/cache_integration.py"], {}),
+    ("random", ["tests/random_lockstep.py", "--n", "60"], {}),
     ("perf", ["tests/perf_tests.py"], {}),
     ("subword_c0", ["tests/subword_tests.py"], {}),
     ("subword_c1_l2", ["tests/subword_tests.py"], {"CACHES": "1", "LAT": "2"}),
