@@ -1,0 +1,19 @@
+run_id: 20261102-035601-1370868-verilator
+timestamp: 2026-11-02 03:56:01 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: verilator --lint-only -Wall --top-module rv32_top_pipelined rtl/alu_decoder.sv rtl/alu.sv rtl/backing_mem.sv rtl/control_unit.sv rtl/dcache.sv rtl/d_e_reg.sv rtl/dmem.sv rtl/e_m_reg.sv rtl/f_d_reg.sv rtl/hazard_unit.sv rtl/icache.sv rtl/imem.sv rtl/immediate_generator.sv rtl/main_decoder.sv rtl/m_w_reg.sv rtl/pc.sv rtl/regfile.sv rtl/rv32_top_pipelined.sv
+git_commit: f867dbba289999bba019edfb87a9b53ed732e2a0
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 0
+outputs:
+full_output: work/runs/20261102-035601-1370868-verilator.out
+output_tail: |

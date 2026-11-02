@@ -8,7 +8,11 @@ module rv32_top_pipelined #(
     parameter int MEM_WORDS   = 256,
     // 1: the data memory is also loaded from IMEM_FILE, so a linked image's initialized .data and
     // .rodata are present at their linked addresses. Code and data regions are disjoint (T2.5).
-    parameter bit DMEM_FROM_IMAGE = 1'b0
+    parameter bit DMEM_FROM_IMAGE = 1'b0,
+    // Address of the first instruction after reset. The memories ignore high address bits, so an
+    // image linked at 0x8000_0000 (the architectural tests, which Spike also runs there) sits at
+    // word 0.
+    parameter logic [31:0] RESET_PC = 32'h0
 )(
     input  logic        clk,
     input  logic        rst_n,
@@ -20,6 +24,10 @@ module rv32_top_pipelined #(
     output logic [31:0] dbg_dmem [0:3],
     // MMIO window 0xF000_0000-0xF000_0FFF: stores there never reach dmem or the D$. One pulse per
     // store, in the Memory stage; the simulation monitor (tb/sys_monitor.sv) interprets them.
+    /* verilator lint_off UNUSEDSIGNAL */  // KI-008: only the low log2(MEM_WORDS) bits of dbg_widx are used
+    input  logic [31:0] dbg_widx,   // simulation debug read port into the data memory: word index
+    /* verilator lint_on UNUSEDSIGNAL */
+    output logic [31:0] dbg_word,   // the data memory's word dbg_widx (combinational)
     output logic        mmio_we,
     output logic [31:0] mmio_addr,
     output logic [31:0] mmio_wdata
@@ -59,7 +67,7 @@ f_d_reg u_f_d_reg(
 
 //PC
 
-pc u_pc(
+pc #(.RESET_PC(RESET_PC)) u_pc(
     .clk(clk),
     .rst_n(rst_n),
     .PCNext(PCNext_pc_mux_to_pc),
@@ -529,6 +537,7 @@ generate
             for (genvar i = 0; i < 4; i++) begin : g_dbg
                 assign dbg_dmem[i] = u_dmem_bm.mem[i];
             end
+            assign dbg_word = u_dmem_bm.mem[dbg_widx[$clog2(MEM_WORDS)-1:0]];
         end else begin : g_zero
             backing_mem #(.DEPTH(MEM_WORDS), .LATENCY(MEM_LATENCY), .INIT_FILE("")) u_dmem_bm(
                 .clk(clk),
@@ -544,6 +553,7 @@ generate
             for (genvar i = 0; i < 4; i++) begin : g_dbg
                 assign dbg_dmem[i] = u_dmem_bm.mem[i];
             end
+            assign dbg_word = u_dmem_bm.mem[dbg_widx[$clog2(MEM_WORDS)-1:0]];
         end
     end else begin : g_dmem
         if (DMEM_FROM_IMAGE) begin : g_img
@@ -558,6 +568,7 @@ generate
             for (genvar i = 0; i < 4; i++) begin : g_dbg
                 assign dbg_dmem[i] = u_dmem.mem[i];
             end
+            assign dbg_word = u_dmem.mem[dbg_widx[$clog2(MEM_WORDS)-1:0]];
         end else begin : g_zero
             dmem #(.DEPTH(MEM_WORDS), .INIT_FILE("")) u_dmem(
                 .clk(clk),
@@ -570,6 +581,7 @@ generate
             for (genvar i = 0; i < 4; i++) begin : g_dbg
                 assign dbg_dmem[i] = u_dmem.mem[i];
             end
+            assign dbg_word = u_dmem.mem[dbg_widx[$clog2(MEM_WORDS)-1:0]];
         end
         assign dmiss = 1'b0;
         assign dc_mem_req = 1'b0;

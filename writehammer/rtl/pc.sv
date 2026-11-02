@@ -1,4 +1,4 @@
-module pc(
+module pc #(parameter logic [31:0] RESET_PC = 32'h0)(
     input logic clk,
     input logic rst_n,
     input logic [31:0] PCNext,
@@ -8,7 +8,7 @@ module pc(
 
 always_ff @( posedge clk or negedge rst_n ) begin
     if(!rst_n) begin
-        PCOut<=0;
+        PCOut<=RESET_PC;
     end
     else if(!StallF) begin
         PCOut<=PCNext;

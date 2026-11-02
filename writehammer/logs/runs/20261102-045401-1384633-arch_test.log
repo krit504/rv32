@@ -1,0 +1,57 @@
+run_id: 20261102-045401-1384633-arch_test
+timestamp: 2026-11-02 05:54:47 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: python3 tests/arch_test.py
+git_commit: f867dbba289999bba019edfb87a9b53ed732e2a0
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 3646
+outputs:
+full_output: work/runs/20261102-045401-1384633-arch_test.out
+output_tail: |
+  PASS  add-01
+  PASS  addi-01
+  PASS  and-01
+  PASS  andi-01
+  PASS  auipc-01
+  PASS  beq-01
+  PASS  bge-01
+  PASS  bgeu-01
+  PASS  blt-01
+  PASS  bltu-01
+  PASS  bne-01
+  PASS  jal-01
+  PASS  jalr-01
+  PASS  lb-align-01
+  PASS  lbu-align-01
+  PASS  lh-align-01
+  PASS  lhu-align-01
+  PASS  lui-01
+  PASS  lw-align-01
+  PASS  or-01
+  PASS  ori-01
+  PASS  sb-align-01
+  PASS  sh-align-01
+  PASS  sll-01
+  PASS  slli-01
+  PASS  slt-01
+  PASS  slti-01
+  PASS  sltiu-01
+  PASS  sltu-01
+  PASS  sra-01
+  PASS  srai-01
+  PASS  srl-01
+  PASS  srli-01
+  PASS  sub-01
+  PASS  sw-align-01
+  PASS  xor-01
+  PASS  xori-01
+  [arch CACHES=0 LAT=2] 37/37 passed
