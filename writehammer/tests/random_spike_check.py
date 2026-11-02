@@ -62,7 +62,7 @@ def build_and_run(seed):
     if len(words) != 29 + WIN_WORDS:
         return seed, f"signature has {len(words)} words, expected {29 + WIN_WORDS}"
     prog = p.prologue_rtl + p.body
-    regs, mem = model_run(prog, mem_bytes=4096)
+    regs, mem = model_run(prog, mem_bytes=8192)
     bad = [f"x{r}: spike {words[r - 1]:#x} model {regs[r]:#x}" for r in range(1, 30) if words[r - 1] != regs[r]]
     for i in range(WIN_WORDS):
         m = int.from_bytes(mem[DATA_BASE + 4 * i:DATA_BASE + 4 * i + 4], "little")

@@ -16,7 +16,7 @@ CORE_RTL = [os.path.join(RTL, f) for f in (
     "rv32_top_pipelined.sv", "f_d_reg.sv", "d_e_reg.sv", "e_m_reg.sv", "m_w_reg.sv",
     "control_unit.sv", "main_decoder.sv", "alu_decoder.sv", "alu.sv",
     "immediate_generator.sv", "pc.sv", "regfile.sv", "imem.sv", "dmem.sv",
-    "backing_mem.sv", "icache.sv", "dcache.sv", "hazard_unit.sv")]
+    "mem_model.sv", "icache.sv", "dcache.sv", "write_guard.sv", "hazard_unit.sv")]
 
 
 def work_dir(name):

@@ -17,13 +17,18 @@ from mutants.core_mutants import MUTANTS as CORE_MUTANTS, DECODER_SW_01, EQUIVAL
 from mutants.subword_mutants import MUTANTS as SUBWORD_MUTANTS
 from mutants.perf_mutants import MUTANTS as PERF_MUTANTS
 from mutants.toolchain_mutants import MUTANTS as TOOLCHAIN_MUTANTS
+from mutants.mem_mutants import MUTANTS as MEM_MUTANTS
+from mutants.dcache_mutants import MUTANTS as DCACHE_MUTANTS
+from mutants.stall_mutants import MUTANTS as STALL_MUTANTS
 
-MUTANTS = CORE_MUTANTS + SUBWORD_MUTANTS + PERF_MUTANTS + TOOLCHAIN_MUTANTS
+MUTANTS = CORE_MUTANTS + SUBWORD_MUTANTS + PERF_MUTANTS + TOOLCHAIN_MUTANTS + MEM_MUTANTS + DCACHE_MUTANTS + STALL_MUTANTS
 
 # Cheapest first; the first failing test catches the mutant.
 SUITE = [
     ("cache_integration", ["tests/cache_integration.py"], {}),
+    ("mem_model", ["tests/mem_model_test.py"], {}),
     ("random", ["tests/random_lockstep.py", "--n", "60"], {}),
+    ("stall_injection", ["tests/stall_injection_test.py"], {"N": "60"}),
     ("perf", ["tests/perf_tests.py"], {}),
     ("subword_c0", ["tests/subword_tests.py"], {}),
     ("subword_c1_l2", ["tests/subword_tests.py"], {"CACHES": "1", "LAT": "2"}),
@@ -33,6 +38,9 @@ SUITE = [
     ("hazard_fwd", ["tests/hazard_tests.py", "--quiet"], {}),
     ("hazard_nofwd", ["tests/hazard_tests.py", "--nofwd", "--quiet"], {}),
     ("hazard_c1_l2", ["tests/hazard_tests.py", "--quiet"], {"CACHES": "1", "LAT": "2"}),
+    # the D$ unit test against its independent models: 6 configurations (DCACHE_QUICK), reached only by
+    # mutants the cheaper tests did not catch
+    ("dcache_quick", ["tests/dcache_test.py"], {"DCACHE_QUICK": "1"}),
 ]
 
 

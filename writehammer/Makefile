@@ -9,7 +9,7 @@ LATS    := 1 2 3 10
 RUN     := scripts/run.sh --   # every result-producing command is logged to logs/runs/ (spec 0B.1)
 
 .PHONY: all lint test arch-test random bench caches wear attacks calibrate eval synth plots \
-        hypotheses locks locks-selftest audit clean arch-test test-nohazard test-hazard test-cache test-subword test-perf test-toolchain test-arch-control test-mutants
+        hypotheses locks locks-selftest audit clean arch-test test-nohazard test-hazard test-cache test-mem test-stall test-dcache test-subword test-perf test-toolchain test-arch-control test-mutants
 
 all: lint test arch-test random bench caches wear attacks calibrate eval synth plots hypotheses audit
 
@@ -17,7 +17,7 @@ lint:
 	$(RUN) verilator --lint-only -Wall --top-module $(TOP) $(RTL)
 	@echo "[lint] OK: 0 warnings, 0 errors"
 
-test: locks test-nohazard test-hazard test-cache test-subword test-perf test-toolchain test-arch-control random bench test-mutants
+test: locks test-mem test-stall test-dcache test-nohazard test-hazard test-cache test-subword test-perf test-toolchain test-arch-control random bench test-mutants
 	@echo "[test] OK"
 
 test-nohazard:
@@ -68,6 +68,17 @@ bench:
 	$(RUN) $(PY) tests/bench_test.py
 	$(RUN) $(PY) tests/workload_test.py
 	$(RUN) $(PY) analysis/baseline.py
+
+test-mem:
+	$(RUN) $(PY) tests/mem_model_test.py
+
+# D$ vs the golden byte array and the independent Python cache model (Verilator, about 2.5 minutes)
+test-dcache:
+	$(RUN) $(PY) tests/dcache_test.py
+
+# T2.2: random freezes and fetch bubbles injected into the hazard unit must not change any result
+test-stall:
+	$(RUN) $(PY) tests/stall_injection_test.py
 
 test-mutants:
 	$(RUN) $(PY) tests/run_mutants.py

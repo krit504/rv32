@@ -1,0 +1,32 @@
+run_id: 20261102-112840-1729961-check_locks.sh
+timestamp: 2026-11-02 11:28:42 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: scripts/check_locks.sh
+git_commit: 026f4d678507035f050843404e5fc559a77eda88
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 2
+outputs:
+full_output: work/runs/20261102-112840-1729961-check_locks.sh.out
+output_tail: |
+  [locks] changed with CHANGE_LOG entry: tests/asm.py
+  [locks] changed with CHANGE_LOG entry: tests/cache_integration.py
+  [locks] changed with CHANGE_LOG entry: tests/mutants/core_mutants.py
+  [locks] changed with CHANGE_LOG entry: tests/paths.py
+  [locks] changed with CHANGE_LOG entry: tests/run_mutants.py
+  [locks] changed with CHANGE_LOG entry: tests/subword_tests.py
+  [locks] changed with CHANGE_LOG entry: tests/prog_runner.py
+  [locks] changed with CHANGE_LOG entry: tests/mutants/toolchain_mutants.py
+  [locks] changed with CHANGE_LOG entry: tests/random_gen.py
+  [locks] changed with CHANGE_LOG entry: tests/random_lockstep.py
+  [locks] changed with CHANGE_LOG entry: tests/random_spike_check.py
+  [locks] note: tests/invariant_test.py not locked yet (run scripts/check_locks.sh --add)
+  [locks] OK: 45 locked file(s) verified

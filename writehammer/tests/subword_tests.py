@@ -73,8 +73,14 @@ T["store_then_load_same_byte"] = li(1, 0x11223344) + [sw(1, 0, 0), addi(2, 0, -2
 T["subword_with_negative_base"] = li(1, A) + [addi(9, 0, 8), sw(1, 0, 9), addi(10, 9, 4), lb(2, -4, 10), lbu(3, -3, 10), lh(4, -2, 10), sb(0, -4, 10), lw(5, 0, 9)]
 
 
+# The unified memory (caches on) holds the program image at word 0, so the data words these tests use start
+# as code, not zero. Every program first zeroes the four words it works in; the model runs the same code.
+ZERO_DATA = [sw(0, 0, 0), sw(0, 4, 0), sw(0, 8, 0), sw(0, 12, 0)]
+
+
 def check(item):
     name, prog = item
+    prog = ZERO_DATA + prog
     regs, mem = rtl_run(name, prog)
     mregs, mmem = model_run(prog)
     errs = []

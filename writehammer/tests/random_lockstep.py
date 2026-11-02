@@ -26,7 +26,7 @@ CACHES = int(os.environ.get("CACHES", "0"))
 LAT = int(os.environ.get("LAT", "2"))
 FWD = int(os.environ.get("FWD", "1"))
 MAXCYC = int(os.environ.get("MAXCYC", "100000"))
-MEMW = 1024
+MEMW = 2048          # 8 KiB: code below 0x1000, the 2 KiB data window at 0x1000
 WIN_W0, WIN_W1 = DATA_BASE // 4, (DATA_BASE + WINDOW_BYTES) // 4
 HALT_EPILOGUE = [lui(30, 0xF0000), sw(0, 0, 30)]       # x30 = MMIO base; HALT with exit code 0
 CFG = f"c{CACHES}_l{LAT}_f{FWD}"

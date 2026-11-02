@@ -2,7 +2,7 @@
 // tb_arch: runs one architectural-test image (program.hex in the run directory) until it writes
 // the MMIO HALT register, then prints the test signature, one 32-bit word per line as "SIG <hex>",
 // from word SIG_BEGIN_W up to (not including) SIG_END_W of the data memory (word indices from the
-// image base, i.e. (address - 0x80000000) >> 2). Reads the data memory through the top's debug
+// image base, i.e. (address - 0x80000000) >> 2; read at the true address RESET_PC + 4*w). Reads the data memory through the top's debug
 // read port (dbg_widx/dbg_word), so it works with caches on or off.
 // Parameters: CACHES, LAT, SIG_BEGIN_W, SIG_END_W, MEMW, MAXCYC (hang guard; a timeout prints TIMEOUT
 // and is always a failure), RESET_PC.
@@ -14,7 +14,9 @@ module tb_arch #(
     parameter int SIG_END_W = 0,
     parameter int MEMW = 65536,          // words per memory; tests/arch_test.py sizes it to the image
     parameter int MAXCYC = 400000,
-    parameter int RESET_PC = 32'h80000000
+    parameter int RESET_PC = 32'h80000000,
+    parameter bit RANDLAT = 1'b0,       // random memory latency 1..2*LAT-1
+    parameter int MEM_SEED = 1
 );
     logic clk = 1'b0, rst_n = 1'b0;
     always #5 clk = ~clk;
@@ -25,7 +27,7 @@ module tb_arch #(
     logic        mmio_we;
     logic [31:0] mmio_addr, mmio_wdata;
     rv32_top_pipelined #(.CACHES_ON(CACHES), .MEM_LATENCY(LAT), .MEM_WORDS(MEMW),
-                         .DMEM_FROM_IMAGE(1'b1), .RESET_PC(RESET_PC)) dut (
+                         .DMEM_FROM_IMAGE(1'b1), .RESET_PC(RESET_PC), .MEM_RANDOM_LATENCY(RANDLAT), .MEM_SEED(MEM_SEED)) dut (
         .clk(clk), .rst_n(rst_n),
         .ic_refill_cnt(ic_refill_cnt), .dc_refill_cnt(dc_refill_cnt), .dc_write_cnt(dc_write_cnt),
         .mmio_we(mmio_we), .mmio_addr(mmio_addr), .mmio_wdata(mmio_wdata),
@@ -44,13 +46,21 @@ module tb_arch #(
         .halted(halted), .exit_code(exit_code)
     );
 
+    // the signature range may also be given at run time (+sigb=<word> +sige=<word>), so one build serves every test
+    int sigb = SIG_BEGIN_W, sige = SIG_END_W;
+    initial begin
+        if ($value$plusargs("sigb=%d", sigb)) ;
+        if ($value$plusargs("sige=%d", sige)) ;
+    end
+
     int cyc = 0;
     always @(posedge clk) begin
         cyc <= cyc + 1;
         if (halted) begin
             repeat (6) @(posedge clk);
-            for (int w = SIG_BEGIN_W; w < SIG_END_W; w++) begin
-                dbg_widx = w;
+            for (int w = sigb; w < sige; w++) begin
+                dbg_widx = w + (RESET_PC >> 2);        // the true word address: the images are linked at RESET_PC and the
+                                                       // D$ tags carry it, so a dirty line is only visible there
                 #1 $display("SIG %08h", dbg_word);
             end
             $finish;

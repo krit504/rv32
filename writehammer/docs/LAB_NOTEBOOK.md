@@ -22,3 +22,6 @@ Spec 0B.12 asks for one commit per task. T1.1 (RTL) and T1.2 (tests) touch the s
 
 ## 2026-11-02 06:53 T1.7 and T1.8 committed together
 Both feed one baseline table (`analysis/baseline.py`) and one `make bench` target, and both needed the same Verilator runner, so they share a commit `T1.7, T1.8`; each has its own task log. The Verilator vs Icarus difference found along the way (typed string parameters) is recorded in T1.7 problem 1 and KI-012.
+
+## 2026-11-02 08:07 T1.6 generator bug found during T2
+The T1.6 random programs' data window was never at 0x800: `addi x31,x31,0x800` is -2048, so x31 was 0xFFFFF800 and the window was reached through address wrap-around. T1.6's results (1000/1000 in five configurations, the Spike cross-check, the bad-core controls) were all computed on that layout and are correct for it, but the layout was not what `docs/logs/T1.6.md` says. Fixed in CHG-015 (window now at 0x1000); all T1.6 configurations were rerun on the fixed generator: caches off 1000/1000, no-forwarding 1000/1000, caches on LAT 1/3/10 1000/1000 each, Spike vs model 200/200, bad-core control OK. Lesson: a constant that is not representable in an instruction field needs an assertion where the program is generated.

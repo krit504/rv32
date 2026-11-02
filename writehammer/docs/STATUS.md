@@ -21,12 +21,12 @@ Times are IST.
 | T1.6 | DONE | `make random` | 1000/1000 in 5 configurations; Spike vs model 200/200; 5 bad cores caught | 2026-11-02 |
 | T1.7 | DONE | `make bench` | Dhrystone self-check ok; CoreMark CRCs equal native oracle; caches off and on; baseline in docs/baseline.md | 2026-11-02 |
 | T1.8 | DONE | `make bench` | 19/19 Embench kernels build and pass; 8 held-out + 3 in-repo workloads 14/14 incl. native oracle and bad-core controls | 2026-11-02 |
-| T2.1 | NOT RUN | | | |
-| T2.2 | NOT RUN | | | |
-| T2.3 | NOT RUN | | | |
-| T2.4 | NOT RUN | | | |
-| T2.5 | NOT RUN | | | |
-| T2.6 | NOT RUN | | | |
+| T2.1 | DONE | `tests/mem_model_test.py` | 18/18; 6 mutants caught | 2026-11-02 |
+| T2.2 | DONE | `tests/stall_injection_test.py` | 4000 random programs + no-hazard regression with injection match; 4 mutants caught | 2026-11-02 |
+| T2.3 | PARTIAL | `tests/cache_integration.py`, `tests/hazard_tests.py` (caches on), `tests/invariant_test.py --quick` | I$ parameterized (size, line size) and on the shared memory interface; directed tests pass. Unmet: full `make test` not rerun after the last edits | 2026-11-02 |
+| T2.4 | PARTIAL | `tests/dcache_test.py` | 51/51 against the byte-array golden and the Python cache model, 12/12 D$ mutants caught. Unmet: full `make test` not rerun after the last edits; invariant-test mutant check still running | 2026-11-02 |
+| T2.5 | DONE | `docs/CODE_DATA_SEPARATION.md`; linker `ASSERT` | note written; linker script separates code (.text/.rodata) from data (4 KiB page) and stack | 2026-11-02 |
+| T2.6 | PARTIAL | `tests/invariant_test.py --quick` | quick mode 3/3 (arch, workloads, random identical across 6 configurations). Unmet: full run, mutant check | 2026-11-02 |
 | T2.7 | NOT RUN | | | |
 | T3.1 | NOT RUN | | | |
 | T3.2 | NOT RUN | | | |

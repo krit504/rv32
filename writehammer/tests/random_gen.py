@@ -3,14 +3,14 @@
 Usage:  from random_gen import gen;  prog = gen(seed, pc_free=False)
         python3 tests/random_gen.py SEED        prints the program as hex words (for debugging)
 Returns an object with:
-  prologue_rtl  words that set x31 = DATA_BASE (0x800) and load random constants / window data
+  prologue_rtl  words that set x31 = DATA_BASE (0x1000) and load random constants / window data
   body          the random instructions
   prologue_tail the part of the prologue after the two base-setting instructions
   base_setup    index range of the two x31-setting instructions inside prologue_rtl (always [0, 2))
 Properties (the reason a random program is a valid test):
   - terminates: every branch, jal and jalr goes forward by 0..3 instructions
-  - no misaligned access: lh/lhu/sh at even, lw/sw at multiples of 4, all inside the data window
-  - registers: x31 = data window base (never written again), x30 = scratch for jalr targets (never
+  - no misaligned access: lh/lhu/sh at even, lw/sw at multiples of 4, all inside the data window (0x1000..0x17FF)
+  - registers: x31 = data window base, 0x1000 (never written again), x30 = scratch for jalr targets (never
     a general source or destination), x1..x29 general
   - hazard dense: each source register is, with probability 0.6, one of the last three destinations
     (RAW gaps 1 to 3 and load-use), otherwise uniform; loads, stores, taken and not-taken branches,
@@ -27,8 +27,8 @@ from asm import (addi, add, sub, sll, slt, sltu, xor_, srl, sra, or_, and_, slti
                  slli, srli, srai, lui, auipc, lb, lh, lw, lbu, lhu, sb, sh, sw, beq, bne, blt, bge,
                  bltu, bgeu, jal, jalr, M32)
 
-DATA_BASE = 0x800          # data window address; code must stay below it
-WINDOW_BYTES = 2048        # 0x800 .. 0xFFF
+DATA_BASE = 0x1000         # data window address (a multiple of 4 KiB so one lui sets it); code stays below it
+WINDOW_BYTES = 2048        # 0x1000 .. 0x17FF
 HOT_BYTES = 256            # 70% of accesses fall in the first 256 bytes, so loads, stores and sub-word merges collide
 MAX_WORDS = 470            # code words, keeps the program below DATA_BASE with the prologue
 SCRATCH = 30
@@ -112,12 +112,16 @@ def gen(seed, pc_free=False):
 
     # prologue: x31 = window base, random constants in x1..x8, random words into the window
     p = Program()
-    base_setup = [lui(BASE, 0), addi(BASE, BASE, DATA_BASE)]   # tests/random_spike_check swaps these two
+    # x31 = DATA_BASE via lui (DATA_BASE needs no low bits). A signed 12-bit addi cannot hold 0x800 or more: an earlier
+    # version used addi x31,x31,0x800, which is -2048, so the window was really at 0xFFFFF800 (see CHG-015).
+    base_setup = [lui(BASE, DATA_BASE >> 12), addi(BASE, BASE, 0)]   # tests/random_spike_check swaps these two
     tail = []
     for r in range(1, 9):
         tail += _lui_addi(r, rnd.getrandbits(32))
     for i in range(8):
         tail.append(sw(rnd.randint(1, 8), 4 * rnd.randint(0, WINDOW_BYTES // 4 - 1), BASE))
+    assert (((base_setup[0] >> 12) << 12) + (((base_setup[1] >> 20) ^ 0x800) - 0x800)) & M32 == DATA_BASE, \
+        "x31 set-up does not produce DATA_BASE (immediate out of range?)"
     p.prologue_rtl = base_setup + tail
     p.prologue_tail = tail
     p.body = body

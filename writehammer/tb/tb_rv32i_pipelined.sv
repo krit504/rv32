@@ -46,13 +46,14 @@
 module tb_rv32_top_pipelined #(
     parameter bit CACHES = 1'b0,
     parameter int LAT    = 2,
-    parameter int CYCLES = 60
+    parameter int CYCLES = 60,
+    parameter int INJECT = 0            // INJECT_STALL_SEED (test only)
 );
 
     logic clk;
     logic rst_n;
 
-    rv32_top_pipelined #(.CACHES_ON(CACHES), .MEM_LATENCY(LAT)) dut (
+    rv32_top_pipelined #(.CACHES_ON(CACHES), .MEM_LATENCY(LAT), .INJECT_STALL_SEED(INJECT)) dut (
         .clk(clk),
         .rst_n(rst_n)
     );

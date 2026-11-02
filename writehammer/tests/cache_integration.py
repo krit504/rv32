@@ -47,11 +47,13 @@ TESTS = [
     ("loop_fits", [addi(1, 0, 5), addi(1, 1, -1), bne(1, 0, -4), HALT], {1: 0}, {}, {"IC_REFILL": 2}),
     ("store_miss_hit_load", [addi(5, 0, 7), sw(5, 0, 0), lw(6, 0, 0), addi(7, 0, 9), sw(7, 4, 0), lw(8, 4, 0), HALT],
      {6: 7, 8: 9}, {0: 7, 1: 9}, {"DC_REFILL": 1, "DC_WRITE": 2}),
-    ("store_miss_no_refill", [addi(5, 0, 7), sw(5, 0x80, 0), HALT], {}, {}, {"DC_REFILL": 0, "DC_WRITE": 1}),
+    # write-allocate (spec T2.4, DEC-004): a store miss fills the line, then merges the store
+    ("store_miss_allocates", [addi(5, 0, 7), sw(5, 0x80, 0), HALT], {}, {}, {"DC_REFILL": 1, "DC_WRITE": 1}),
     ("producer_loadmiss_consumer", [addi(4, 0, 3), addi(5, 0, 7), lw(6, 0, 0), add(7, 5, 4), HALT], {7: 10}, {}, {}),
     ("branch_uncached_block", [beq(0, 0, 64), addi(9, 0, 1), addi(10, 0, 1)] + [NOP] * 13 + [addi(11, 0, 5), HALT],
      {9: 0, 10: 0, 11: 5}, {}, {}),
-    ("addrs_0x400_apart", [addi(1, 0, 0), lw(2, 0, 0), lui(3, 0), addi(3, 3, 0x400), lw(4, 0, 3), lw(5, 0, 0), HALT],
+    # 0x1000 is a multiple of the 2 KiB D$ size: same index as address 0, different tag, so they conflict
+    ("addrs_cache_size_apart", [addi(1, 0, 0), lw(2, 0, 0), lui(3, 1), lw(4, 0, 3), lw(5, 0, 0), HALT],
      {}, {}, {"DC_REFILL": 3}),
     ("dmiss_taken_branch", [lw(2, 0, 0), beq(0, 0, 12), addi(5, 0, 1), addi(6, 0, 1), addi(7, 0, 3), HALT],
      {5: 0, 6: 0, 7: 3}, {}, {}),

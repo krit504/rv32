@@ -51,3 +51,9 @@ Each entry: the choice, the alternatives, the reason, the impact, the date (IST)
 - **Held-out set (final):** `crc32`, `md5sum`, `nettle-sha256`, `nettle-aes`, `huffbench`, `wikisort`, `sglib-combined`, `qrduino`, plus the in-repo `memcpy_big`, `memset_big` (16 KiB buffers, larger than the largest D$ in the study) and `storeloop`. The calibration set stays Dhrystone and CoreMark (spec Section 3). Thresholds are never tuned on this set (spec 0A.B.4).
 - **Impact:** the list is repeated in `tests/workloads.py`, which is locked.
 - **Date:** 2026-11-02
+
+## DEC-009 Checkpoint commit in the middle of T2 so a second agent can start T3
+- **Alternatives:** wait until all of T2 is DONE and commit once per task as spec 0B.12 says; let the second agent share the working tree.
+- **Reason:** the author asked to speed up the project with a second agent working on T3 in parallel. T3 needs the T2 ports (data-array write events, per-request trace, counters), which exist only in the uncommitted working tree. A shared working tree is unsafe (shared files, mutation jobs that copy `rtl/` and `tb/`), so the second agent gets its own git worktree and branch, which must start from a commit that contains the T2 RTL.
+- **Impact:** one commit (`T2 checkpoint`) covers T2.1 to T2.5 plus the start of T2.6, instead of one commit per task. STATUS.md says exactly which are DONE (T2.1, T2.2, T2.5) and which are PARTIAL (T2.3, T2.4, T2.6) or not run (T2.7), and why. The full `make test` had not been rerun after the last edits at checkpoint time. The T3 hand-off is `docs/HANDOFF_T3.md`.
+- **Date:** 2026-11-02
