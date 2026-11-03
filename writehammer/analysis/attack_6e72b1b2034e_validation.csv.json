@@ -1,0 +1,128 @@
+{
+  "script": "analysis/attack_validate.py",
+  "git_commit": "6e3dd513fa5f8bd2aee540b3359ad3d39e1eb5ba",
+  "run_set_id": "6e72b1b2034e",
+  "table_sha256": "2ce79f35f9f986b99523d20c6ff44e9fc91e801448771a498cc7c695a264b69c",
+  "benign_csv_sha256": "a66d9dd5e6753eb7158c34948a0675441dddd4e8ac5c074acf4ab25d4267429a",
+  "attack_source_csv_sha256": {
+    "rla_direct_s1": {
+      "wear_lines.csv": "11b56adb597272b63a631d771e9d22b6918a6524bb5fef5e971784e1e07e5f6a",
+      "wear_windows.csv": "5f10890f015e191c86c9e6f0d3d739358f826720c20da06288a396fc951c8602"
+    },
+    "rla_paper_s1": {
+      "wear_lines.csv": "cd3c72a719739980cbe8d78155e782776bd3ebd4d7eb0bc08495e74b765944f5",
+      "wear_windows.csv": "0a31926a770de7ceff3619b462d20e1c5737d88a20a7af3640947ab8e314f8ae"
+    },
+    "rta_direct_s1": {
+      "wear_lines.csv": "e73c68413bb7b2211ac715eb05308eed63d31d5f2a71b9c21b4d8a62b26e10f8",
+      "wear_windows.csv": "23e4badc24f2f7f2caeb28d3dcdbfae7819850150e93b53b504be092fadb3123"
+    },
+    "rta_paper_s1": {
+      "wear_lines.csv": "f3e2405ea1ea9d68bc1dfec8a2c28d89c7e81abf9825d77fb5a408a5a2a72013",
+      "wear_windows.csv": "60bdc5057289180d7102d246f5857a2682eca73800b335fb43611fdcec37db82"
+    },
+    "rnla_direct_s1": {
+      "wear_lines.csv": "98e13d284604f81fd9b01b160e6c2e0f527aecd5476c594874f4fb798ad57c14",
+      "wear_windows.csv": "1aa268a3b0356e12d802f25efbbfb595a93b6c60955a2b2c5190269ef61a8367"
+    },
+    "rnla_direct_s2": {
+      "wear_lines.csv": "96ab035e059f2cf2b592b42203a14cd26c3f90d589bfac7fced0f908ab539288",
+      "wear_windows.csv": "57e41f6a5080535cd2ff3794c54f5a477f76dfd9bccefa5c13702ff29c9d0773"
+    },
+    "rnla_direct_s3": {
+      "wear_lines.csv": "b6402764984a52e1c9001dc94ac2311677c21368e51ec19fa3d28fef4fa0556e",
+      "wear_windows.csv": "e1477c73f87222ba2f5b712893049f8634f602390236910ee9fde81f19d8ec7e"
+    },
+    "rnla_direct_s4": {
+      "wear_lines.csv": "b2d037413ae7f7a919626c183733a14bc5f1384be60d1060839c836e32982171",
+      "wear_windows.csv": "9bc9502702e1b4f0b3064545781a4699af0912b4c5ef060e2b52ab6b82581f51"
+    },
+    "rnla_direct_s5": {
+      "wear_lines.csv": "3157e1dbc65899a3389627a9e312b13b393f633185c1e7ca6e1f3aa44a734dfe",
+      "wear_windows.csv": "e2129c36a67e14e4bcc5e6a9fee1411ad0548d82fa70b8880bfb3f091b1c4440"
+    },
+    "rnla_paper_s1": {
+      "wear_lines.csv": "094c9aa0b908898313b89d8c151af7e0451c6bfd365efc9a24f4e5ab952a3097",
+      "wear_windows.csv": "53aa5987b15ff70fafb4e38cb6730fdd846fa027d0317ddbbd7c31c69217fd20"
+    },
+    "rnla_paper_s2": {
+      "wear_lines.csv": "ddd6099cceae1cca07943e218f001dcc4a1b2fc3008077a433c96f25b7c772ff",
+      "wear_windows.csv": "a628decbb0edfd38eb0d1aad7281477bfccd56cd7069165c72eb689f47489fbc"
+    },
+    "rnla_paper_s3": {
+      "wear_lines.csv": "af7147949b73d5728a126ea0c9bcab4f8bc0c8d0663333e3dad94883e4e514d3",
+      "wear_windows.csv": "585bb8b06bab911fbefaff18ffc669cff831dc58389554dfa0f235c66e0e393c"
+    },
+    "rnla_paper_s4": {
+      "wear_lines.csv": "c5f195989ba487b26b7ae879553c7c20c9dba6767486539b4835da5f284eb9af",
+      "wear_windows.csv": "abf0880e4ab1098b4b1fc35b6120e6839fe3ff028264f881cae8d7d0cabf6e46"
+    },
+    "rnla_paper_s5": {
+      "wear_lines.csv": "17372a176c842ce564125a6264fa08715584b3f9ee235f5f43070949042b354f",
+      "wear_windows.csv": "06d93346c39b81f376c4a9ad76050b000a0f6825ced6a4e62ca3d8e13ab495b0"
+    },
+    "rnta_direct_s1": {
+      "wear_lines.csv": "76ecd4d2ef6beaa5ee0dbadec3994094ee4e6e6b11aa717ae1668c2eec21a303",
+      "wear_windows.csv": "5014662945f45c39b31b05edb83541611e6791d1f764427ad86f464f5b865091"
+    },
+    "rnta_direct_s2": {
+      "wear_lines.csv": "04229d89cdea18d977634b8915c2eab46a9b04edf5e2bb058a89f7e0880829c8",
+      "wear_windows.csv": "6628e3f67e15e3f7c99b47256da9f69e2626295f944f4c86633704e99ee252cb"
+    },
+    "rnta_direct_s3": {
+      "wear_lines.csv": "92cc5d11c628823423d5558a3e82b81abde2b9bc8d743540ba05b49258926c2a",
+      "wear_windows.csv": "32385ecd6be3861e7d617b1eb4e31438f552eadfc5da78c82252f4fa748dce6c"
+    },
+    "rnta_direct_s4": {
+      "wear_lines.csv": "93d9f3b0f552a09323fcd6b8d636dfdc0bcab4100fd9bd6b63ff09d63b94d665",
+      "wear_windows.csv": "66ce4be29fab0fa72b578ef1a68df81daa6ab130813b7925e28a4e773d608d8d"
+    },
+    "rnta_direct_s5": {
+      "wear_lines.csv": "f88d552dc499a2a66597500ba7e44e4c7d5bb07ee14a202d1f4d452be916fd16",
+      "wear_windows.csv": "7d1a8193ec903df0a6f9af8c79d54d2461ed12ffdef157062179388d9a78a72a"
+    },
+    "rnta_paper_s1": {
+      "wear_lines.csv": "7d8c4803ea92e4622e200cf7ae16ebc4aa1cb026825b76005dc8e4fd8b9fc373",
+      "wear_windows.csv": "8b2974526faf9dca58f08c3f3015b163afa629c0029744dfd406201cc43ceb61"
+    },
+    "rnta_paper_s2": {
+      "wear_lines.csv": "3e60809ee5fa9bbf6c3d3dc76c5fa21045c76c2155775663fe324530c29e8d77",
+      "wear_windows.csv": "4d3de0d1d1343d32dd694992d97818e93ed9d243bf21e68afb50f01a7f020a3f"
+    },
+    "rnta_paper_s3": {
+      "wear_lines.csv": "bb9ed462d9a3208f0f73b4bb3adf8f02d75f6c25ee94eba1c47455505c8fea88",
+      "wear_windows.csv": "e54200db36326847830cfb7ddb0ff63dd33bda31f771f1e58a90c222e7a9efd1"
+    },
+    "rnta_paper_s4": {
+      "wear_lines.csv": "c26b0b9189c85fca7ce605e37222f902dd38ed89ee32506526be5a14ecf8d52b",
+      "wear_windows.csv": "67e20b95da6663a423ee6132982662cce2bcacfc938a76565ccc9927d3ca263d"
+    },
+    "rnta_paper_s5": {
+      "wear_lines.csv": "99b34f094c76d663fead1a3534b7e36a6383fd745e0cbd4038092e9b4b125d84",
+      "wear_windows.csv": "72daf0e026c92c747c5d87e4ceb59652079cec99184db979ba0af65cd0e7fb50"
+    }
+  },
+  "visual_review_required": [
+    "rnla_direct_s1",
+    "rnla_direct_s2",
+    "rnla_direct_s3",
+    "rnla_direct_s4",
+    "rnla_direct_s5",
+    "rnla_paper_s1",
+    "rnla_paper_s2",
+    "rnla_paper_s3",
+    "rnla_paper_s4",
+    "rnla_paper_s5",
+    "rnta_direct_s1",
+    "rnta_direct_s2",
+    "rnta_direct_s3",
+    "rnta_direct_s4",
+    "rnta_direct_s5",
+    "rnta_paper_s1",
+    "rnta_paper_s2",
+    "rnta_paper_s3",
+    "rnta_paper_s4",
+    "rnta_paper_s5"
+  ],
+  "taxonomy_credit": "Author's group: TENDRA and the Write Hammer draft"
+}
