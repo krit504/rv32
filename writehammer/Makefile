@@ -9,7 +9,7 @@ LATS    := 1 2 3 10
 RUN     := scripts/run.sh --   # every result-producing command is logged to logs/runs/ (spec 0B.1)
 
 .PHONY: all lint test arch-test random bench caches wear attacks calibrate eval synth plots \
-        attacks-validate hypotheses locks locks-selftest audit clean arch-test test-nohazard test-hazard test-cache test-mem test-stall test-dcache test-invariant invariant caches test-subword test-perf test-toolchain test-arch-control test-mutants
+        attacks-validate hypotheses locks locks-selftest audit clean arch-test test-nohazard test-hazard test-cache test-mem test-stall test-dcache test-invariant invariant caches test-subword test-perf test-toolchain test-arch-control test-mutants test-guard
 
 all: lint test arch-test random bench caches wear attacks calibrate eval synth plots hypotheses audit
 
@@ -17,7 +17,7 @@ lint:
 	$(RUN) verilator --lint-only -Wall --top-module $(TOP) $(RTL)
 	@echo "[lint] OK: 0 warnings, 0 errors"
 
-test: locks test-mem test-stall test-dcache test-invariant test-nohazard test-hazard test-cache test-subword test-perf test-toolchain test-arch-control random bench test-mutants
+test: locks test-mem test-stall test-dcache test-invariant test-nohazard test-hazard test-cache test-subword test-perf test-toolchain test-arch-control random bench test-mutants test-guard
 	@echo "[test] OK"
 
 test-nohazard:
@@ -92,6 +92,11 @@ invariant:
 caches:
 	$(RUN) $(VENV_PY) analysis/caches.py
 
+# T5.7: write_guard unit tests (RTL vs independent model, directed) and its mutants
+test-guard:
+	$(RUN) $(PY) tests/write_guard_test.py
+	$(RUN) $(PY) tests/guard_mutants.py
+
 test-mutants:
 	$(RUN) $(PY) tests/run_mutants.py
 
@@ -115,7 +120,8 @@ attacks-validate:
 	$(RUN) $(VENV_PY) analysis/attack_validate.py --benign analysis/wear_baseline_f3a7ccb0eb4d.csv
 	$(VENV_PY) analysis/attack_pmr_table.py analysis/wear_baseline_f3a7ccb0eb4d.csv analysis/attack_*_validation.csv
 
-calibrate:  ; @scripts/not_implemented.sh $@ T5.6
+calibrate:
+	$(RUN) $(VENV_PY) analysis/calibrate.py
 eval:       ; @scripts/not_implemented.sh $@ T6.1
 synth:      ; @scripts/not_implemented.sh $@ T6.5
 plots:      ; @scripts/not_implemented.sh $@ T6.2

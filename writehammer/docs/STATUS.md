@@ -41,13 +41,13 @@ Times are IST.
 | T4.6 | DONE | `scripts/run.sh -- .venv/bin/python analysis/attack_mixed.py` | 4/4 HALT 0, exact replay; PHASE 0–3 gaps all within 1% of 1M cycles; marker negative controls rejected | 2026-11-03; re-run independently from main 2026-11-03 |
 | T4.7 | PARTIAL | `scripts/run.sh -- .venv/bin/python analysis/attack_validate.py --benign analysis/wear_baseline_f3a7ccb0eb4d.csv`; `scripts/run.sh -- python3 analysis/attack_pmr_table.py analysis/wear_baseline_f3a7ccb0eb4d.csv analysis/attack_6e72b1b2034e_validation.csv` | 24/24 wear/replay; 13 benign + 24 attack PMR table and heatmaps; wandering visible; binding PMR rule fails 23/24 (benign crc32 PMR 127.937) | 2026-11-03; PMR rule fails 23/24: DEC-010, KI-017 |
 | T4.8 | DONE | `scripts/run.sh -- python3 analysis/attack_tfail.py analysis/wear_baseline_f3a7ccb0eb4d.csv` | Baseline T_fail table generated for 13 benign and 24 attack workloads at 50/100/500 MHz, with source-hash sidecar | 2026-11-03; re-run independently from main 2026-11-03 |
-| T5.1 | NOT RUN | | | |
-| T5.2 | NOT RUN | | | |
-| T5.3 | NOT RUN | | | |
-| T5.4 | NOT RUN | | | |
+| T5.1 | PARTIAL | `make lint`; cache_integration; random 60 x2 | interface and window logic in; NONE unchanged on quick regression. Unmet: full `make test` (bit-identical NONE) not yet run | 2026-11-03 |
+| T5.2 | DONE | `tests/write_guard_test.py`, `tests/guard_mutants.py` | D1: unit 62/62 vs independent model; 17/17 guard mutants caught (docs/logs/T5.1-T5.7.md) | 2026-11-03 |
+| T5.3 | DONE | `tests/write_guard_test.py`, `tests/guard_mutants.py` | D2: unit 62/62 vs independent model; 17/17 guard mutants caught (docs/logs/T5.1-T5.7.md) | 2026-11-03 |
+| T5.4 | DONE | `tests/write_guard_test.py`, `tests/guard_mutants.py` | D3: unit 62/62 vs independent model; 17/17 guard mutants caught (docs/logs/T5.1-T5.7.md) | 2026-11-03 |
 | T5.5 | NOT RUN | | | |
-| T5.6 | NOT RUN | | | |
-| T5.7 | NOT RUN | | | |
+| T5.6 | DONE | `make calibrate` | `analysis/calibration.csv` from Dhrystone+CoreMark only; windows 1000/10000/100000; held-out never built | 2026-11-03 |
+| T5.7 | DONE | `tests/write_guard_test.py`, `tests/guard_mutants.py` | 62/62; 17/17 mutants caught | 2026-11-03 |
 | T5.8 | NOT RUN | | | |
 | T5.9 | NOT RUN | | | |
 | T5.10 | NOT RUN | | | |

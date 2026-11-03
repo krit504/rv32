@@ -11,7 +11,16 @@ module rv32_top_pipelined #(
     parameter int MEM_SEED = 1,                   // seed of the random latency
     parameter int DC_WRITE_LATENCY = 1,           // extra pipeline cycles per D$ array write (1 = none)
     parameter int INJECT_STALL_SEED = 0,           // test only (T2.2): non-zero adds random freezes and fetch bubbles, see below
-    parameter int DETECTOR = 0,                   // write_guard: 0 = NONE, 1 = ALWAYS (test control); T5 adds D1-D3
+    parameter int DETECTOR = 0,                   // write_guard: 0 NONE, 1 ALWAYS, 2 D1, 3 D2, 4 D3, 5 NEVER, 6 PLACEBO
+    parameter int WG_ACTION = 0,                  // 0 = A1 (bypass)
+    parameter int WG_MODE = 0,                    // D3: 0 STATIC, 1 ADAPTIVE
+    parameter int WG_WINDOW = 10000,
+    parameter int WG_THRESHOLD = 1000,
+    parameter int WG_M = 16,
+    parameter int WG_W = 16,
+    parameter int WG_PLACEBO_RATE = 0,            // PLACEBO restricted fraction in 1/65536
+    parameter int WG_PLACEBO_SEED = 1,
+    parameter bit OBSERVE = 1'b1,                 // 0 compiles the write_guard observation counters out
     parameter IMEM_FILE = "program.hex",   // untyped on purpose: Icarus 12 cannot bind a string-typed parameter inside generate blocks
     // Words in main memory: each of imem and dmem with CACHES_ON = 0, the one unified memory with
     // CACHES_ON = 1 (256 = 1 KiB, the default the earlier tests rely on; the C flow uses 65536 =
@@ -48,6 +57,12 @@ module rv32_top_pipelined #(
     output logic [31:0] dc_cnt_wb,
     output logic [31:0] dc_cnt_bypass,
     output logic [31:0] dc_cnt_rab,
+    // write_guard observation (T5.9; zero when OBSERVE = 0)
+    output logic        wg_restricted,
+    output logic [31:0] wg_cycles_restricted,
+    output logic [31:0] wg_first_restrict,
+    output logic [31:0] wg_stores,
+    output logic [31:0] wg_stores_restricted,
     output logic [31:0] dc_cnt_stall,
     output logic [31:0] ic_cnt_lookup,
     output logic [31:0] ic_cnt_miss,
@@ -553,18 +568,26 @@ logic                 dc_mem_done;
 
 // restricted-store decision (T5 detectors; NONE by default)
 logic dc_bypass_w;
-write_guard #(.DETECTOR(DETECTOR)) u_write_guard(
+write_guard #(.DETECTOR(DETECTOR), .ACTION(WG_ACTION), .MODE(WG_MODE), .WINDOW_CYCLES(WG_WINDOW),
+             .THRESHOLD(WG_THRESHOLD), .M(WG_M), .W(WG_W), .LINES(DCACHE_BYTES/LINE_BYTES),
+             .PLACEBO_RATE(WG_PLACEBO_RATE), .PLACEBO_SEED(WG_PLACEBO_SEED), .OBSERVE(OBSERVE)) u_write_guard(
     .clk(clk),
     .rst_n(rst_n),
     .store_valid(MemStoreM),
+    .store_busy(dmiss),
+    .store_line(32'(ALUResultM[$clog2(LINE_BYTES) +: $clog2(DCACHE_BYTES/LINE_BYTES)])),
     .array_write_valid(dc_aw_valid),
     .line_idx(dc_aw_line),
     .cycle_strobe(1'b1),
     .bypass_store(dc_bypass_w),
-    /* verilator lint_off PINCONNECTEMPTY */  // KI-016: stall_req and restricted are used from T5 on
+    /* verilator lint_off PINCONNECTEMPTY */  // KI-016: stall_req is used by A2 (not implemented)
     .stall_req(),
-    .restricted()
     /* verilator lint_on PINCONNECTEMPTY */
+    .restricted(wg_restricted),
+    .obs_cycles_restricted(wg_cycles_restricted),
+    .obs_first_restrict(wg_first_restrict),
+    .obs_stores(wg_stores),
+    .obs_stores_restricted(wg_stores_restricted)
 );
 
 generate

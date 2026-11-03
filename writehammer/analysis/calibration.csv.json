@@ -1,0 +1,48 @@
+{
+  "script": "analysis/calibrate.py",
+  "git_commit": "86cffbb188f0c62ce64af64c4a792b1beb780909",
+  "table_sha256": "3811e63a78d37e8e071039952752cef836a16c1b443d797860d0fa0a5945757c",
+  "source_csv_sha256": {
+    "w1000/dhrystone_500_runs": {
+      "wear_windows.csv": "83034027e0f2c7fbee3ad374ae84cec7207d8f29e716c9b9ad5bb405d65e72db",
+      "dc_trace.csv": "f46fc4400bdb3b06025c7c569ffd269ab2d2b1b205a04273f757a837633526b2"
+    },
+    "w1000/coremark_10_iterations": {
+      "wear_windows.csv": "79fc5dc5f8310774e0c2050295dde196710209d31ef48a11ba1ea59a34114e04",
+      "dc_trace.csv": "a1f1538b4ff22d676fd7ceda47457134852741b209e043948a34e4336cb2f64a"
+    },
+    "w10000/dhrystone_500_runs": {
+      "wear_windows.csv": "1daffa97d7cf9f12b3bf0bf7e35637677684cca9f1d8c4884c9c154c2a784d3c",
+      "dc_trace.csv": "f46fc4400bdb3b06025c7c569ffd269ab2d2b1b205a04273f757a837633526b2"
+    },
+    "w10000/coremark_10_iterations": {
+      "wear_windows.csv": "c647d561e62dd98f75fd7837cf57fa947e19dc7436d28bdb28a89c1802e6d328",
+      "dc_trace.csv": "a1f1538b4ff22d676fd7ceda47457134852741b209e043948a34e4336cb2f64a"
+    },
+    "w100000/dhrystone_500_runs": {
+      "wear_windows.csv": "ecd1eb343795d3321ba0e9d04b00f2b0935f09a97e466634252d8b20a90d5f65",
+      "dc_trace.csv": "f46fc4400bdb3b06025c7c569ffd269ab2d2b1b205a04273f757a837633526b2"
+    },
+    "w100000/coremark_10_iterations": {
+      "wear_windows.csv": "93f1813e6c9bc55c0ae36933c3f61115e4241cfa1c5ddb84364216db18d488ef",
+      "dc_trace.csv": "a1f1538b4ff22d676fd7ceda47457134852741b209e043948a34e4336cb2f64a"
+    }
+  },
+  "windows": [
+    1000,
+    10000,
+    100000
+  ],
+  "k": [
+    1.5,
+    2,
+    4
+  ],
+  "lines": 128,
+  "configuration": {
+    "dcache_bytes": 2048,
+    "line_bytes": 16,
+    "memory_latency_cycles": 20,
+    "detector": "NONE"
+  }
+}
