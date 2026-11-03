@@ -41,7 +41,12 @@
 #define ATTACK_CYCLES_PER_STORE (ATTACK_FORM_DIRECT ? 12u : 17u)
 #endif
 #if ATTACK_FORM_DIRECT
+#if ATTACK_KIND >= 3
+/* Random target selection measured 11.6 cycles/store in the frozen RTL. */
+#define ATTACK_MAX_STORES ((ATTACK_RUN_CYCLES * 5u) / 58u)
+#else
 #define ATTACK_MAX_STORES (ATTACK_RUN_CYCLES / ATTACK_CYCLES_PER_STORE)
+#endif
 #else
 #define ATTACK_MAX_STORES (ATTACK_RUN_CYCLES / (ATTACK_CYCLES_PER_STORE * ATTACK_WORDS_PER_TARGET))
 #endif
@@ -89,15 +94,12 @@ static int check_targets(uint32_t rounds) {
     return total == rounds ? 0 : 127;
 }
 
-int main(void) {
-    if (data_page_anchor != 1u) return 126;
+static uint32_t attack_execute(void) {
     uint32_t rng = attack_lfsr_seed(ATTACK_SEED);
     uint32_t first = 0u, second = 1u;
     uint32_t active = first;
     uint32_t dwell = next_dwell(&rng);
     uint32_t rounds = 0u;
-    phase(1u);
-    perf_start();
     while (rounds < ATTACK_MAX_STORES) {
         write_target(active, rounds);
         ++rounds;
@@ -122,8 +124,17 @@ int main(void) {
 #endif
         dwell = next_dwell(&rng);
     }
+    return rounds;
+}
+#ifndef ATTACK_NO_MAIN
+int main(void) {
+    if (data_page_anchor != 1u) return 126;
+    phase(1u);
+    perf_start();
+    uint32_t rounds = attack_execute();
     perf_stop();
     phase(2u);
     return check_targets(rounds);
 }
+#endif
 #endif
