@@ -1,0 +1,10 @@
+{
+  "script": "analysis/attack_mixed.py",
+  "git_commit": "93d0d5de435fc8cdb2e1d1d2cdf8584baedc413b",
+  "table_sha256": "24b10c04227898565758458e777309e325b2dd917480643037eeaa491857f4de",
+  "source_sha256": {
+    "sw/attacks/mixed.c": "3017c91f219c5e8bce28921572ddc4144c0e1042b634552a6fd0a48221ec755e",
+    "sw/attacks/attack_core.h": "9679fc584026a263378335ef52381f033504b4111bc12b2a858d329f632b7dd6"
+  },
+  "taxonomy_credit": "Author's group: TENDRA and the Write Hammer draft"
+}

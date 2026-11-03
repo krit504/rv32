@@ -1,0 +1,44 @@
+run_id: 20261103-142159-1997504-python
+timestamp: 2026-11-03 14:22:26 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: .venv/bin/python tests/attack_mutant_control.py --kind RLA --kind RTA --kind RnLA --kind RnTA
+git_commit: 93d0d5de435fc8cdb2e1d1d2cdf8584baedc413b
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 27
+outputs:
+full_output: work/runs/20261103-142159-1997504-python.out
+output_tail: |
+  PASS rla_direct_s1: broken D$ produced self-check HALT 127
+  PASS rla_paper_s1: broken D$ produced self-check HALT 127
+  PASS rta_direct_s1: broken D$ produced self-check HALT 127
+  PASS rta_paper_s1: broken D$ produced self-check HALT 127
+  PASS rnla_direct_s1: broken D$ produced self-check HALT 127
+  PASS rnla_direct_s2: broken D$ produced self-check HALT 127
+  PASS rnla_direct_s3: broken D$ produced self-check HALT 127
+  PASS rnla_direct_s4: broken D$ produced self-check HALT 127
+  PASS rnla_direct_s5: broken D$ produced self-check HALT 127
+  PASS rnla_paper_s1: broken D$ produced self-check HALT 127
+  PASS rnla_paper_s2: broken D$ produced self-check HALT 127
+  PASS rnla_paper_s3: broken D$ produced self-check HALT 127
+  PASS rnla_paper_s4: broken D$ produced self-check HALT 127
+  PASS rnla_paper_s5: broken D$ produced self-check HALT 127
+  PASS rnta_direct_s1: broken D$ produced self-check HALT 127
+  PASS rnta_direct_s2: broken D$ produced self-check HALT 127
+  PASS rnta_direct_s3: broken D$ produced self-check HALT 127
+  PASS rnta_direct_s4: broken D$ produced self-check HALT 127
+  PASS rnta_direct_s5: broken D$ produced self-check HALT 127
+  PASS rnta_paper_s1: broken D$ produced self-check HALT 127
+  PASS rnta_paper_s2: broken D$ produced self-check HALT 127
+  PASS rnta_paper_s3: broken D$ produced self-check HALT 127
+  PASS rnta_paper_s4: broken D$ produced self-check HALT 127
+  PASS rnta_paper_s5: broken D$ produced self-check HALT 127
+  [attack-mutant-control] 24/24 passed

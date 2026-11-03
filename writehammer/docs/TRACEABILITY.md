@@ -20,3 +20,13 @@ Task to RTL files, tests, result rows, figures and the document sections that ci
 | T2.5 | `sw/link.ld` | `ASSERT` in the linker script | n/a | `docs/CODE_DATA_SEPARATION.md` |
 | T2.6 | testbench parameters in `tb/` | `tests/invariant_test.py`, `tests/dcache_test.py` | n/a | `docs/logs/T2.6.md` |
 | T2.7 | counters in `rtl/icache.sv`, `rtl/dcache.sv` | `analysis/caches.py` | `analysis/caches.csv`, `analysis/caches_size.png`, `analysis/caches_line.png` | `docs/logs/T2.7.md` |
+| T3.1 | `rtl/dcache.sv` (aw_* events) | `tb/wear_monitor.sv` (second agent) | `work/wear_*` | `docs/logs/T3.1.md` |
+| T3.2 | n/a | `analysis/wear_stats.py` | per-line plots, heatmaps with sidecars | `docs/logs/T3.2.md` |
+| T3.3 | n/a | `tests/wear_known.py` | n/a | `docs/logs/T3.3.md` |
+| T3.4 | n/a | `analysis/wear_baseline.py` | `analysis/wear_baseline_f3a7ccb0eb4d.csv`, heatmaps | `docs/logs/T3.4.md` |
+| T3.5 | `rtl/dcache.sv` (tr_* trace) | `analysis/wear_replay_suite.py`, `analysis/attack_replay_suite.py`, `tests/cache_model.py`, `tests/mutants/wear_mutants.py` | `analysis/attack_replay_results.csv` | `docs/logs/T3.5.md` |
+| T4.1 | n/a | `tests/attack_lfsr.py` | n/a | `docs/logs/T4.1.md` |
+| T4.2-T4.5 | `sw/attacks/` (RLA, RTA, RnLA, RnTA; direct and paper forms) | `tests/attack_program.py`, `tests/attack_mutant_control.py`, `analysis/attack_runner.py` | `analysis/attack_*.csv` | `docs/logs/T4.2.md` to `T4.5.md` |
+| T4.6 | `sw/attacks/` mixed workloads | `analysis/attack_mixed.py` | `analysis/attack_mixed.csv` | `docs/logs/T4.6.md` |
+| T4.7 | n/a | `analysis/attack_validate.py`, `analysis/attack_pmr_table.py` | `analysis/attack_pmr_all_workloads.csv`, heatmaps | `docs/logs/T4.7.md`, DEC-010 |
+| T4.8 | n/a | `analysis/attack_tfail.py` | `analysis/attack_tfail_baseline.csv` | `docs/logs/T4.8.md` |

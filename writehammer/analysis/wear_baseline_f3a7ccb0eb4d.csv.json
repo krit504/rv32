@@ -1,0 +1,83 @@
+{
+  "script": "analysis/wear_baseline.py",
+  "git_commit": "93d0d5de435fc8cdb2e1d1d2cdf8584baedc413b",
+  "rtl_tree": "f3a7ccb0eb4d137ed8139d0285d4a9600de07f0f",
+  "run_set_id": "baseline_f3a7ccb0eb4d",
+  "table_sha256": "a66d9dd5e6753eb7158c34948a0675441dddd4e8ac5c074acf4ab25d4267429a",
+  "source_csv_sha256": {
+    "Dhrystone (500 runs)": {
+      "wear_lines.csv": "9563ea6feba6bacc3ec841cb95b0244131c4917df5bad387a3f46312c800ccdd",
+      "wear_windows.csv": "1daffa97d7cf9f12b3bf0bf7e35637677684cca9f1d8c4884c9c154c2a784d3c",
+      "dc_trace.csv": "f46fc4400bdb3b06025c7c569ffd269ab2d2b1b205a04273f757a837633526b2"
+    },
+    "CoreMark (10 iterations)": {
+      "wear_lines.csv": "37c6e2bb01329a315dcf41f255913e8be085da4cf3a8a6d8739721caeee5f411",
+      "wear_windows.csv": "c647d561e62dd98f75fd7837cf57fa947e19dc7436d28bdb28a89c1802e6d328",
+      "dc_trace.csv": "a1f1538b4ff22d676fd7ceda47457134852741b209e043948a34e4336cb2f64a"
+    },
+    "crc32": {
+      "wear_lines.csv": "6a12232be6279b0d3a6814e8151a81d4bc41bc7596937ad3d4aa3047bf38f4e9",
+      "wear_windows.csv": "552610cc649b42e123a48496a6bddef48dd9c1665d7aa8aadfc5d14bcc3884d8",
+      "dc_trace.csv": "980131c5b1f803c11012f165da12e4f2cdbacbacbe19e5c205670f3f8c3c1b53"
+    },
+    "md5sum": {
+      "wear_lines.csv": "834ee9cd6e370489aefadd7c977d257a2ef10f15ecf55011953d237938fdb859",
+      "wear_windows.csv": "c4c74e6b4cfbb61f76766bd9805332f55d7606f465b81e7a0d764131a6441281",
+      "dc_trace.csv": "6a099b0fecccfe4bd9613034f6bdf89363db2ef6a2410f528ecb41755c0375d7"
+    },
+    "nettle-sha256": {
+      "wear_lines.csv": "981a587cc7e02192f8cbf9d7826317d402c67637e1ebfcc4cc9574b6ae4127ec",
+      "wear_windows.csv": "7bf55b91a1622f48af61bca2049cc99c189471392d56a9c16fac2c3616bfbf7d",
+      "dc_trace.csv": "8464895d438bed283bb4e582e33b5c79108780775d7a2412e2ce135415a8fa95"
+    },
+    "nettle-aes": {
+      "wear_lines.csv": "548ba1e329ca8c3c3c680492d7109efc871c98dd5f8363c81e9fca41bd1ebaae",
+      "wear_windows.csv": "d0718d00c0e654b242d70a087f2e9eb730962818807ad225d16fa6dcec990239",
+      "dc_trace.csv": "1e1f413e4f5f191c004c269681a8765e9e0a3c12b5862ba77f253e1150d69757"
+    },
+    "huffbench": {
+      "wear_lines.csv": "9f2811cad662e2ba9a3e68662e02397f288dd203d1119c0f384869b5b02963d7",
+      "wear_windows.csv": "c3f23061716ad22f4955a68ab8f3d83d507ae6d0c8fe349d729afec2c70055ac",
+      "dc_trace.csv": "f09e493c5295ea2f62470504f816939536c245503d3a50686dede7539ffa4c1d"
+    },
+    "wikisort": {
+      "wear_lines.csv": "7708d2ae26420834f086a9cc92c872c991e2c73f171958362030f10b7a6075ce",
+      "wear_windows.csv": "ad98d77025168f3e1e04b2659eda446e21beb5184f2b6026e03f2025b38123a7",
+      "dc_trace.csv": "d226660c6e65340ad605e89fb95ce739657217e25beff0abcae04e75310ca723"
+    },
+    "sglib-combined": {
+      "wear_lines.csv": "982135fc0b14c8cca24e56f66288679048104e83820a41d2bd198c7f0fa06ba4",
+      "wear_windows.csv": "5ac6390a311ded8bf67152037a96e1565db3a4d8ee2f24b7c2850edf0dc926cf",
+      "dc_trace.csv": "30f795b423d688124faee843d303be68cca07fbcd454a26a2cb816bc3bb6ffa3"
+    },
+    "qrduino": {
+      "wear_lines.csv": "cae6893faccf0d86de0e036fbd5782b5365ac5d985c521b79c120377c84f1b67",
+      "wear_windows.csv": "2c3bbb7cf3b7d815a6c2c110beb53832a9a066f8e1cfdf9df3884d5745eb3303",
+      "dc_trace.csv": "b0918007bfc5e7b5b24d8cd2969290de6f0e7e7a41cf6dde9efb0b088a1f10c6"
+    },
+    "memcpy_big": {
+      "wear_lines.csv": "4518a7b300275e704ab1c0b85abf31ddc76e54837b368263ccb070eb59a609c1",
+      "wear_windows.csv": "068f0090f22de4fe36154cc3c1bbcee5d293dbbfd5c06e4a6006ffafe0397352",
+      "dc_trace.csv": "7f362089af34c2cd4aef01e902684116642d5c144dd2743e03e3cf4c5ec0e29a"
+    },
+    "memset_big": {
+      "wear_lines.csv": "4d7f07c08d5b913e174cbee7cc0939c6d682bbdebd2e5eb876eab8e1ebd2f555",
+      "wear_windows.csv": "e285498ecd26577d759cb99b8a4ebb845f71ec58611e5c76a6ae985f1a252124",
+      "dc_trace.csv": "f98ad60ee1af3269bf173f05d3a16ce1a487c50f50358d3cf50f1d1d068364e7"
+    },
+    "storeloop": {
+      "wear_lines.csv": "f6f58db77fa2a27ee1c4b7f24474eb5332aa47292323c59c47ea513f67275be8",
+      "wear_windows.csv": "cd68adb198b751fc8b06921f30444a87bd1b9f2716ba50a96b663fda360f0a35",
+      "dc_trace.csv": "b060639edde4b97069aa33bf6bd7b29db0a5171349a0701297422ad0271ef959"
+    }
+  },
+  "workloads": 13,
+  "configuration": {
+    "dcache_bytes": 2048,
+    "line_bytes": 16,
+    "memory_latency_cycles": 20,
+    "detector": "NONE",
+    "window_cycles": 10000,
+    "assumed_endurance_writes": 1000000000000000
+  }
+}

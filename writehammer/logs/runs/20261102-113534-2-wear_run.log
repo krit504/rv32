@@ -1,0 +1,31 @@
+run_id: 20261102-113534-2-wear_run
+timestamp: 2026-11-02 11:35:40 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: python3 analysis/wear_run.py work/wear_smoke/program.hex work/wear_smoke/run --maxcyc 100000
+git_commit: 3b2e8bdcef9fe72e896b28db2bf197982f4664aa
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 1
+duration_s: 6
+outputs:
+full_output: work/runs/20261102-113534-2-wear_run.out
+output_tail: |
+  Traceback (most recent call last):
+    File "/home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/analysis/wear_run.py", line 48, in <module>
+      run(args.image, args.outdir, args.maxcyc, args.window, args.memw, args.lat)
+    File "/home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/analysis/wear_run.py", line 32, in run
+      raise RuntimeError(f"wear run failed: {outdir / 'simulation.log'}\n{output[-1000:]}")
+  RuntimeError: wear run failed: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_smoke/run/simulation.log
+  HALT 1892521041
+  PERF,2249,1453,1,628,134,57
+  WEAR cycles=2257 fills=13 stores=58
+  DC_CNT access=108 hit=95 miss=13 fill=13 wb=0 bypass=0 rab=0 write=58
+  - /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/tb/tb_wear.sv:60: Verilog $finish
+  

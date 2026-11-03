@@ -1,0 +1,11 @@
+{
+  "script": "analysis/attack_validate.py; analysis/wear_stats.py",
+  "git_commit": "6e3dd513fa5f8bd2aee540b3359ad3d39e1eb5ba",
+  "run_set_id": "6e72b1b2034e",
+  "case_id": "rnta_direct_s2",
+  "source_csv_sha256": {
+    "wear_lines.csv": "04229d89cdea18d977634b8915c2eab46a9b04edf5e2bb058a89f7e0880829c8",
+    "wear_windows.csv": "6628e3f67e15e3f7c99b47256da9f69e2626295f944f4c86633704e99ee252cb"
+  },
+  "figure_sha256": "2dc274c39c82cc16d5d08c9ff1e9dd61c259309beb0ddeb4c39cfd3d4111b98b"
+}

@@ -28,19 +28,19 @@ Times are IST.
 | T2.5 | DONE | `docs/CODE_DATA_SEPARATION.md`; linker `ASSERT` | note written; linker script separates code (.text/.rodata) from data (4 KiB page) and stack | 2026-11-02 |
 | T2.6 | DONE | `make invariant`, `make test` | arch 37/37 (= Spike), workloads 13/13, random 200/200, identical across 9 configurations incl. 3 small-cache geometries | 2026-11-02 |
 | T2.7 | DONE | `make caches` | 78 runs, `analysis/caches.csv`, `caches_size.png`, `caches_line.png` with provenance sidecars | 2026-11-02 |
-| T3.1 | NOT RUN | | | |
-| T3.2 | NOT RUN | | | |
-| T3.3 | NOT RUN | | | |
-| T3.4 | NOT RUN | | | |
-| T3.5 | NOT RUN | | | |
-| T4.1 | NOT RUN | | | |
-| T4.2 | NOT RUN | | | |
-| T4.3 | NOT RUN | | | |
-| T4.4 | NOT RUN | | | |
-| T4.5 | NOT RUN | | | |
-| T4.6 | NOT RUN | | | |
-| T4.7 | NOT RUN | | | |
-| T4.8 | NOT RUN | | | |
+| T3.1 | DONE | `scripts/run.sh -- python3 analysis/wear_run.py work/wear_smoke/program.hex work/wear_smoke/run --maxcyc 100000 --expect-exit 1892521041` | Verilator smoke compiled; HALT matched; four CSVs and simulation log written | 2026-11-02; re-run independently from main 2026-11-03 |
+| T3.2 | DONE | `scripts/run.sh -- .venv/bin/python analysis/wear_stats.py work/wear_smoke/run` | JSON/CSV summary, two PNG figures, provenance sidecars; 71 writes, w_max=9 | 2026-11-02; re-run independently from main 2026-11-03 |
+| T3.3 | DONE | `scripts/run.sh -- python3 tests/wear_known.py` | 2/2 exact known-answer programs passed, including fills, byte merge and dirty eviction | 2026-11-02; re-run independently from main 2026-11-03 |
+| T3.4 | DONE | `make wear` | 13/13 benign workloads, summary row and heatmap per workload; exact golden replay on every run; frozen RTL tree f3a7ccb0eb4d | 2026-11-02; re-run independently from main 2026-11-03 |
+| T3.5 | DONE | `scripts/run.sh -- python3 analysis/attack_replay_suite.py`; `scripts/run.sh -- python3 analysis/wear_replay_suite.py --benign`; `scripts/run.sh -- python3 tests/mutants/wear_mutants.py work/attack_run/rla_direct_s1/wear` | 24/24 attack and 13/13 benign exact replays; mis-counting attack monitor mutant caught | 2026-11-03; re-run independently from main 2026-11-03 |
+| T4.1 | DONE | `scripts/run.sh -- python3 tests/attack_lfsr.py` | 4/4: native and RV32I known answer; broken-tap control caught in both | 2026-11-02; re-run independently from main 2026-11-03 |
+| T4.2 | DONE | `scripts/run.sh -- .venv/bin/python tests/attack_program.py --kind RLA` and `scripts/run.sh -- .venv/bin/python analysis/attack_runner.py --case rla_direct_s1 --case rla_paper_s1` | Local TENDRA/Write Hammer papers resolved Q-004; both RLA forms HALT 0, C5 mutant rejected, exact replay; 2M-cycle windows | 2026-11-02; re-run independently from main 2026-11-03 |
+| T4.3 | DONE | `scripts/run.sh -- .venv/bin/python tests/attack_program.py --kind RTA`; `scripts/run.sh -- .venv/bin/python tests/attack_mutant_control.py --kind RTA`; `scripts/run.sh -- .venv/bin/python analysis/attack_runner.py --case rta_direct_s1 --case rta_paper_s1` | Both forms HALT 0 on native and caches off/on; scoped broken core self-check HALT 127; exact replay; ~2M measured cycles | 2026-11-02; re-run independently from main 2026-11-03 |
+| T4.4 | DONE | `scripts/run.sh -- .venv/bin/python tests/attack_program.py --kind RnLA`; `scripts/run.sh -- .venv/bin/python tests/attack_mutant_control.py --kind RnLA`; `scripts/run.sh -- .venv/bin/python analysis/attack_runner.py --case rnla_direct_s1 --case rnla_direct_s2 --case rnla_direct_s3 --case rnla_direct_s4 --case rnla_direct_s5 --case rnla_paper_s1 --case rnla_paper_s2 --case rnla_paper_s3 --case rnla_paper_s4 --case rnla_paper_s5` | 10/10 native and RTL, 10/10 broken-core HALT 127, 10/10 exact replay; ~2M-cycle windows | 2026-11-02; re-run independently from main 2026-11-03 |
+| T4.5 | DONE | `scripts/run.sh -- .venv/bin/python tests/attack_program.py --kind RnTA`; `scripts/run.sh -- .venv/bin/python tests/attack_mutant_control.py --kind RnTA`; `scripts/run.sh -- .venv/bin/python analysis/attack_runner.py --case rnta_direct_s1 --case rnta_direct_s2 --case rnta_direct_s3 --case rnta_direct_s4 --case rnta_direct_s5 --case rnta_paper_s1 --case rnta_paper_s2 --case rnta_paper_s3 --case rnta_paper_s4 --case rnta_paper_s5` | 10/10 native and RTL, 10/10 broken-core HALT 127, 10/10 exact replay; ~2M-cycle windows | 2026-11-02; re-run independently from main 2026-11-03 |
+| T4.6 | DONE | `scripts/run.sh -- .venv/bin/python analysis/attack_mixed.py` | 4/4 HALT 0, exact replay; PHASE 0–3 gaps all within 1% of 1M cycles; marker negative controls rejected | 2026-11-03; re-run independently from main 2026-11-03 |
+| T4.7 | PARTIAL | `scripts/run.sh -- .venv/bin/python analysis/attack_validate.py --benign analysis/wear_baseline_f3a7ccb0eb4d.csv`; `scripts/run.sh -- python3 analysis/attack_pmr_table.py analysis/wear_baseline_f3a7ccb0eb4d.csv analysis/attack_6e72b1b2034e_validation.csv` | 24/24 wear/replay; 13 benign + 24 attack PMR table and heatmaps; wandering visible; binding PMR rule fails 23/24 (benign crc32 PMR 127.937) | 2026-11-03; PMR rule fails 23/24: DEC-010, KI-017 |
+| T4.8 | DONE | `scripts/run.sh -- python3 analysis/attack_tfail.py analysis/wear_baseline_f3a7ccb0eb4d.csv` | Baseline T_fail table generated for 13 benign and 24 attack workloads at 50/100/500 MHz, with source-hash sidecar | 2026-11-03; re-run independently from main 2026-11-03 |
 | T5.1 | NOT RUN | | | |
 | T5.2 | NOT RUN | | | |
 | T5.3 | NOT RUN | | | |

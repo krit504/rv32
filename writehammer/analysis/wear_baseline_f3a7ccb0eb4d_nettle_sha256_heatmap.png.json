@@ -1,0 +1,14 @@
+{
+  "script": "analysis/wear_baseline.py; analysis/wear_stats.py",
+  "git_commit": "93d0d5de435fc8cdb2e1d1d2cdf8584baedc413b",
+  "rtl_tree": "f3a7ccb0eb4d137ed8139d0285d4a9600de07f0f",
+  "run_set_id": "baseline_f3a7ccb0eb4d",
+  "workload": "nettle-sha256",
+  "source_csv_sha256": {
+    "wear_lines.csv": "981a587cc7e02192f8cbf9d7826317d402c67637e1ebfcc4cc9574b6ae4127ec",
+    "wear_windows.csv": "7bf55b91a1622f48af61bca2049cc99c189471392d56a9c16fac2c3616bfbf7d",
+    "dc_trace.csv": "8464895d438bed283bb4e582e33b5c79108780775d7a2412e2ce135415a8fa95"
+  },
+  "figure_sha256": "acba753ea64531ebfd3e62fa63979b49f1951e7f23875145c97021e2b24e00cd",
+  "assumed_endurance_writes": 1000000000000000
+}

@@ -1,0 +1,10 @@
+{
+  "script": "analysis/attack_pmr_table.py",
+  "git_commit": "6e3dd513fa5f8bd2aee540b3359ad3d39e1eb5ba",
+  "source_sha256": {
+    "analysis/wear_baseline_f3a7ccb0eb4d.csv": "a66d9dd5e6753eb7158c34948a0675441dddd4e8ac5c074acf4ab25d4267429a",
+    "analysis/attack_6e72b1b2034e_validation.csv": "2ce79f35f9f986b99523d20c6ff44e9fc91e801448771a498cc7c695a264b69c"
+  },
+  "table_sha256": "651f6fd376d21249da873f66ffec16adcbe472d6f05ee00e37339432fc41bfbe",
+  "taxonomy_credit": "Author's group: TENDRA and the Write Hammer draft"
+}

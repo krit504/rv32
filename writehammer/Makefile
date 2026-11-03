@@ -9,7 +9,7 @@ LATS    := 1 2 3 10
 RUN     := scripts/run.sh --   # every result-producing command is logged to logs/runs/ (spec 0B.1)
 
 .PHONY: all lint test arch-test random bench caches wear attacks calibrate eval synth plots \
-        hypotheses locks locks-selftest audit clean arch-test test-nohazard test-hazard test-cache test-mem test-stall test-dcache test-invariant invariant caches test-subword test-perf test-toolchain test-arch-control test-mutants
+        attacks-validate hypotheses locks locks-selftest audit clean arch-test test-nohazard test-hazard test-cache test-mem test-stall test-dcache test-invariant invariant caches test-subword test-perf test-toolchain test-arch-control test-mutants
 
 all: lint test arch-test random bench caches wear attacks calibrate eval synth plots hypotheses audit
 
@@ -96,8 +96,25 @@ test-mutants:
 	$(RUN) $(PY) tests/run_mutants.py
 
 # Targets wired to the task that implements them. Until then each prints NOT IMPLEMENTED and fails.
-wear:       ; @scripts/not_implemented.sh $@ "T3.1-T3.5"
-attacks:    ; @scripts/not_implemented.sh $@ "T4.1-T4.8"
+wear:
+	$(RUN) $(VENV_PY) analysis/wear_baseline.py
+# T4 (T4.1-T4.6, T4.8): attack programs, their self-checks and broken-core controls, golden replays, mixed workloads,
+# time to failure. Must pass. The T4.7 criterion is separate (below): it fails by its fixed rule, see DEC-010.
+attacks:
+	$(RUN) $(VENV_PY) tests/attack_lfsr.py
+	$(RUN) $(VENV_PY) tests/attack_program.py --kind RLA --kind RTA --kind RnLA --kind RnTA
+	$(RUN) $(VENV_PY) tests/attack_mutant_control.py --kind RLA --kind RTA --kind RnLA --kind RnTA
+	$(RUN) $(VENV_PY) analysis/attack_runner.py
+	$(RUN) $(VENV_PY) analysis/attack_replay_suite.py
+	$(RUN) $(VENV_PY) analysis/attack_mixed.py
+	$(RUN) $(VENV_PY) analysis/attack_tfail.py analysis/wear_baseline_f3a7ccb0eb4d.csv
+
+# T4.7: each attack must show a higher PMR than every benign workload (fixed rule, spec 0A.B.5). Exits 1 today:
+# 23 of 24 variants fail because benign crc32 has PMR(all) 127.94 of a possible 128. Not part of `make all`.
+attacks-validate:
+	$(RUN) $(VENV_PY) analysis/attack_validate.py --benign analysis/wear_baseline_f3a7ccb0eb4d.csv
+	$(VENV_PY) analysis/attack_pmr_table.py analysis/wear_baseline_f3a7ccb0eb4d.csv analysis/attack_*_validation.csv
+
 calibrate:  ; @scripts/not_implemented.sh $@ T5.6
 eval:       ; @scripts/not_implemented.sh $@ T6.1
 synth:      ; @scripts/not_implemented.sh $@ T6.5
