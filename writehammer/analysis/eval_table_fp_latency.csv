@@ -1,0 +1,7 @@
+run_id,workload,detector,seed,fp_cycle_frac,fp_store_frac,detect_latency_cycles
+ev_1e45839953c1115c,storeloop,ALWAYS,1,,,
+ev_25a876b8ba2731a4,storeloop,NONE,1,,,
+ev_5130626ff2a690b2,rla_direct_s1,NONE,1,,,
+ev_b42e3e1c31face10,rla_direct_s1,NONE,1,,,
+ev_d84c3ac28a65f7f2,storeloop,NONE,1,,,
+ev_d9cb33059a7c9e24,rla_direct_s1,ALWAYS,1,,,

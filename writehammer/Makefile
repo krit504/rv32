@@ -118,7 +118,8 @@ attacks-validate:
 calibrate:  ; @scripts/not_implemented.sh $@ T5.6
 eval:       ; @scripts/not_implemented.sh $@ T6.1
 synth:      ; @scripts/not_implemented.sh $@ T6.5
-plots:      ; @scripts/not_implemented.sh $@ T6.2
+plots:
+	$(RUN) $(VENV_PY) analysis/plots.py
 hypotheses: ; @scripts/not_implemented.sh $@ T6.3
 audit:      ; @scripts/not_implemented.sh $@ T7.8
 
