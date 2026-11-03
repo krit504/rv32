@@ -1,0 +1,35 @@
+{
+  "status": "T5 owner must replace this template with final docs/T5_INTERFACE.md values",
+  "cache_top": "cache_system",
+  "core_top": "core_only",
+  "cache_sources": ["rtl/cache_system.sv", "rtl/icache.sv", "rtl/dcache.sv", "rtl/write_guard.sv"],
+  "core_sources": ["rtl/core_only.sv"],
+  "parameter_names": {
+    "icache_bytes": "ICACHE_BYTES",
+    "dcache_bytes": "DCACHE_BYTES",
+    "line_bytes": "LINE_BYTES",
+    "detector": "DETECTOR",
+    "M": "M",
+    "window_cycles": "WINDOW_CYCLES",
+    "threshold": "THRESHOLD"
+  },
+  "detector_values": {"NONE": "TODO", "D1": "TODO", "D2": "TODO", "D3": "TODO"},
+  "fixed_parameters": {"WINDOW_CYCLES": 10000},
+  "variant_parameters": {
+    "D1024_D1": {"THRESHOLD": "TODO_FROM_CALIBRATION"},
+    "D1024_D2_M4": {"THRESHOLD": "TODO_FROM_CALIBRATION"},
+    "D1024_D2_M8": {"THRESHOLD": "TODO_FROM_CALIBRATION"},
+    "D1024_D2_M16": {"THRESHOLD": "TODO_FROM_CALIBRATION"},
+    "D1024_D2_M32": {"THRESHOLD": "TODO_FROM_CALIBRATION"},
+    "D1024_D3": {"THRESHOLD": "TODO_FROM_CALIBRATION"},
+    "D2048_D1": {"THRESHOLD": "TODO_FROM_CALIBRATION"},
+    "D2048_D2_M4": {"THRESHOLD": "TODO_FROM_CALIBRATION"},
+    "D2048_D2_M8": {"THRESHOLD": "TODO_FROM_CALIBRATION"},
+    "D2048_D2_M16": {"THRESHOLD": "TODO_FROM_CALIBRATION"},
+    "D2048_D2_M32": {"THRESHOLD": "TODO_FROM_CALIBRATION"},
+    "D2048_D2_M64": {"THRESHOLD": "TODO_FROM_CALIBRATION"},
+    "D2048_D3": {"THRESHOLD": "TODO_FROM_CALIBRATION"}
+  },
+  "clock_port": "clk",
+  "reset_port": "rst_n"
+}
