@@ -1,0 +1,128 @@
+{
+  "script": "analysis/attack_replay_suite.py",
+  "git_commit": "6f20d0ca6a0463754f05a10ce7a5ca77291de25e",
+  "sources_sha256": {
+    "rla_direct_s1": {
+      "image": "e77ab68b75d4348bec92986c5a6e658dc4ec92b463fcfa6ae1218905ab32d608",
+      "trace": "bc9f7ec3a544a6872a5c851c5b098bbb4c4962f91bf53e6bad0d32faa4e79319",
+      "wear_lines": "11b56adb597272b63a631d771e9d22b6918a6524bb5fef5e971784e1e07e5f6a"
+    },
+    "rla_paper_s1": {
+      "image": "72db4d9f7474a3c5dba5594bf4a957cc95de7c1eda18c4c176a2f47d9e62eccf",
+      "trace": "d5fceb0662c6fdaddd4a3f9fb22fb734b51533f168453c86e75c9c33aebf99da",
+      "wear_lines": "cd3c72a719739980cbe8d78155e782776bd3ebd4d7eb0bc08495e74b765944f5"
+    },
+    "rta_direct_s1": {
+      "image": "bccb40241faf2a90a85659d481cfde993e741435a2c4825e91adbd2fe40388a8",
+      "trace": "ac73d43fd91a7c8ef26956088759571a2459f1d272da721c3939449f2f5c7136",
+      "wear_lines": "e73c68413bb7b2211ac715eb05308eed63d31d5f2a71b9c21b4d8a62b26e10f8"
+    },
+    "rta_paper_s1": {
+      "image": "422af111039877edebeba3e684c79a433fdb9e10145bd536e2f054fd44f1bade",
+      "trace": "93f4a162d23ea7332ace4d461c38656c92e57eb7e64f9a7a979996a5a5428327",
+      "wear_lines": "f3e2405ea1ea9d68bc1dfec8a2c28d89c7e81abf9825d77fb5a408a5a2a72013"
+    },
+    "rnla_direct_s1": {
+      "image": "fe0ef753f918fdb83ca0d6f6f638d952c1db2b2fc46663d5419093b27326b951",
+      "trace": "f3843c22f8e669faf9f859e787e76da8ccb962dca4e6d15ba5e96a6935e71925",
+      "wear_lines": "98e13d284604f81fd9b01b160e6c2e0f527aecd5476c594874f4fb798ad57c14"
+    },
+    "rnla_direct_s2": {
+      "image": "54c51a77d64d2d15ada5993aac1d45b083c5de502beff0f24b8a94fa15eb5569",
+      "trace": "7c3c0c4f79f518713a46b50baa140bc8ae27ff88b7cd37f360c741ef7d909af3",
+      "wear_lines": "96ab035e059f2cf2b592b42203a14cd26c3f90d589bfac7fced0f908ab539288"
+    },
+    "rnla_direct_s3": {
+      "image": "1f66fea3b1156f1acfb012ba7fd0e1dd4e12b1b55371eb28faad521527aa9749",
+      "trace": "fa556fae485893e5f812e6e745002046d1fd2d8d8a87635dae0ee231255aaadf",
+      "wear_lines": "b6402764984a52e1c9001dc94ac2311677c21368e51ec19fa3d28fef4fa0556e"
+    },
+    "rnla_direct_s4": {
+      "image": "f855ad805ea7736b6608eaf00f60c2aab16e7b80337b4dd895e0f2f9f50b52df",
+      "trace": "7d1092ec54d040fc9291746bd91511c773993857ef966027ee5b3f00c7199977",
+      "wear_lines": "b2d037413ae7f7a919626c183733a14bc5f1384be60d1060839c836e32982171"
+    },
+    "rnla_direct_s5": {
+      "image": "e502d793899736fb0196784c8d37c52ed646059cd716359133c56797274db215",
+      "trace": "c3e0e6cb3132cebafe54160b818950e0ac949d63adf837e9a65ff70749952c5b",
+      "wear_lines": "3157e1dbc65899a3389627a9e312b13b393f633185c1e7ca6e1f3aa44a734dfe"
+    },
+    "rnla_paper_s1": {
+      "image": "40383981a7ae58f8eda0c6ba6c2e83f5a7d7995aaf3e571681706a3756f05bb4",
+      "trace": "06d36c89922212f76ccf8ee632fbdb5a0949e2762bcc7b635c766870e4729718",
+      "wear_lines": "094c9aa0b908898313b89d8c151af7e0451c6bfd365efc9a24f4e5ab952a3097"
+    },
+    "rnla_paper_s2": {
+      "image": "48f64dd621a1200c01fb9e1907644d00cfae5f6955a9b1c598c314b9bc9cdb8d",
+      "trace": "4c78f330520b1873eea531537241f21c97722dccd20368bf7be73e9551eca741",
+      "wear_lines": "ddd6099cceae1cca07943e218f001dcc4a1b2fc3008077a433c96f25b7c772ff"
+    },
+    "rnla_paper_s3": {
+      "image": "f927a12f40f3e1a327288bca6d92a1974fc594c1b1774ca69e086a1195467244",
+      "trace": "6f601265bd79d95f6f147efbf1270d069f920342b83c629bafc87025c4109c4d",
+      "wear_lines": "af7147949b73d5728a126ea0c9bcab4f8bc0c8d0663333e3dad94883e4e514d3"
+    },
+    "rnla_paper_s4": {
+      "image": "a8b14fb223e8457dee6bdcbc5c9cbdfc0dd82a7cb22b13ed5816343b44690e7c",
+      "trace": "e48f6b580e962dd2b1fb35b2b3fbf1cc03644c3923986e4472d69a66ce0a0d33",
+      "wear_lines": "c5f195989ba487b26b7ae879553c7c20c9dba6767486539b4835da5f284eb9af"
+    },
+    "rnla_paper_s5": {
+      "image": "8def85ca74d1a95776c849266ce38909adbfe9757935c5c53af7569c8cfecead",
+      "trace": "93d34d6941905ce1c8a5aff148712ad894548ae8a1353770fd6d33d364c8ea4d",
+      "wear_lines": "17372a176c842ce564125a6264fa08715584b3f9ee235f5f43070949042b354f"
+    },
+    "rnta_direct_s1": {
+      "image": "f4c79c0caa4fa4ab36eb92a140968c573cc5851630eb302a11d4a4ed59d29628",
+      "trace": "f1f1b429eb8a36a22b1a41bd7a345984aec1d638242e63ab91af6e60ee3a1bb1",
+      "wear_lines": "76ecd4d2ef6beaa5ee0dbadec3994094ee4e6e6b11aa717ae1668c2eec21a303"
+    },
+    "rnta_direct_s2": {
+      "image": "1ee29967be48ffdd0f9ec9560046600755c658c5e1df8b60284838a32d0c50e4",
+      "trace": "15805392177cd63e3f1ef6b3e980b86c9d06b34a1664694faab9fd1128b3ef64",
+      "wear_lines": "04229d89cdea18d977634b8915c2eab46a9b04edf5e2bb058a89f7e0880829c8"
+    },
+    "rnta_direct_s3": {
+      "image": "aa58a5b3dcc31e87ccc5fa1f5035e0cdbd0d78d12d83053d116e4e4db9c2e8fc",
+      "trace": "823a7d36bd83738d45d62f890a419717bd319a5e6a45cf6187856d11a1ac5364",
+      "wear_lines": "92cc5d11c628823423d5558a3e82b81abde2b9bc8d743540ba05b49258926c2a"
+    },
+    "rnta_direct_s4": {
+      "image": "6899817692d18006ac3149c42b37674765839d54c2f80a3a34699f9996f81be0",
+      "trace": "1c7771bbc8f14d5d0a76be4d69bebb4af64f59b95ad1b334b405787fd29fdd9e",
+      "wear_lines": "93d9f3b0f552a09323fcd6b8d636dfdc0bcab4100fd9bd6b63ff09d63b94d665"
+    },
+    "rnta_direct_s5": {
+      "image": "8ffc412c0944b731f466bdd150c63bff96534a752afe6f61078fdcc9ae87d298",
+      "trace": "d60fe3169c93555dfb001e6e30b75cb3ddfdcb84e562c3bf3af6fdb4491fa712",
+      "wear_lines": "f88d552dc499a2a66597500ba7e44e4c7d5bb07ee14a202d1f4d452be916fd16"
+    },
+    "rnta_paper_s1": {
+      "image": "211b0d36a86f4a8600131eb6f474d5666bd6b78b494e31aaff5a45f71c1003dd",
+      "trace": "a1afc74099d8bf9418d47a12f3350bf01e823e6f23cc6c64c755785cbe4cbc4d",
+      "wear_lines": "7d8c4803ea92e4622e200cf7ae16ebc4aa1cb026825b76005dc8e4fd8b9fc373"
+    },
+    "rnta_paper_s2": {
+      "image": "15d520a9d2d07cd29dd048e4f4cc95170cc39e6c7518fc95ac984f49574f87b5",
+      "trace": "84e252f41ac99b4823fc287299b1d76ac9c75efcc8650db2b8d6337ff8eb7d0e",
+      "wear_lines": "3e60809ee5fa9bbf6c3d3dc76c5fa21045c76c2155775663fe324530c29e8d77"
+    },
+    "rnta_paper_s3": {
+      "image": "cfc0be72aa9b6c3f6ca8b2b219b91750299ed5f35ae2542deaf23f723fa10456",
+      "trace": "bccc1f3ece2ca49cf353628d677fe7d7a3b3d3fdc90d26b84b3eeefed2b9b70c",
+      "wear_lines": "bb9ed462d9a3208f0f73b4bb3adf8f02d75f6c25ee94eba1c47455505c8fea88"
+    },
+    "rnta_paper_s4": {
+      "image": "f84c979732ee4f1ebc18c5b16f2a92304cc5fbc21bb2e55df6b0543738147dae",
+      "trace": "c655f7c9cfcafcd3c5bee7544a676785943e05e1f024648c9d4150e22c74b40e",
+      "wear_lines": "c26b0b9189c85fca7ce605e37222f902dd38ed89ee32506526be5a14ecf8d52b"
+    },
+    "rnta_paper_s5": {
+      "image": "9672df954bf8c6189bb0674b1ea68bdf8bc2411c9dd4ed8548fb8f3fe8a70285",
+      "trace": "68347964a6141b06d58b34522f9aa1001a44a7b59e01befce3a6d16e0770012e",
+      "wear_lines": "99b34f094c76d663fead1a3534b7e36a6383fd745e0cbd4038092e9b4b125d84"
+    }
+  },
+  "table_sha256": "8467886fbef29e38de996b6f1d5653c082648bf05a25f7f892406db95fdc4fc3",
+  "taxonomy_credit": "Author's group: TENDRA and the Write Hammer draft"
+}
