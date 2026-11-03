@@ -20,7 +20,15 @@ module tb_prog #(
     parameter bit HASH = 1'b0,          // print REGHASH and MEMHASH (FNV-1a over registers / every memory word) at HALT
     parameter int ICB = 2048,           // I$ bytes
     parameter int DCB = 2048,           // D$ bytes
-    parameter int LINEB = 16            // line bytes (both caches)
+    parameter int LINEB = 16,           // line bytes (both caches)
+    // write_guard (T5); defaults = no detector. Names as in rv32_top_pipelined.
+    parameter int DETECTOR = 0,
+    parameter int WG_MODE = 0,
+    parameter int WG_WINDOW = 10000,
+    parameter int WG_THRESHOLD = 1000,
+    parameter int WG_M = 16,
+    parameter int WG_PLACEBO_RATE = 0,
+    parameter int WG_PLACEBO_SEED = 1
 );
     logic clk = 1'b0, rst_n = 1'b0;
     always #5 clk = ~clk;
@@ -33,17 +41,23 @@ module tb_prog #(
     logic [31:0] c_ic_lookup, c_ic_miss, c_ic_stall;
     logic        mmio_we;
     logic [31:0] mmio_addr, mmio_wdata;
+    logic        wg_restricted;
+    logic [31:0] wg_cycles_restricted, wg_first_restrict, wg_stores, wg_stores_restricted;
     rv32_top_pipelined #(.FORWARDING(FWD), .CACHES_ON(CACHES), .MEM_LATENCY(LAT),
                          .MEM_WORDS(MEMW), .DMEM_FROM_IMAGE(IMAGE), .INJECT_STALL_SEED(INJECT),
                          .MEM_RANDOM_LATENCY(RANDLAT), .MEM_SEED(MEM_SEED),
-                         .ICACHE_BYTES(ICB), .DCACHE_BYTES(DCB), .LINE_BYTES(LINEB)) dut (
+                         .ICACHE_BYTES(ICB), .DCACHE_BYTES(DCB), .LINE_BYTES(LINEB),
+                         .DETECTOR(DETECTOR), .WG_MODE(WG_MODE), .WG_WINDOW(WG_WINDOW), .WG_THRESHOLD(WG_THRESHOLD),
+                         .WG_M(WG_M), .WG_PLACEBO_RATE(WG_PLACEBO_RATE), .WG_PLACEBO_SEED(WG_PLACEBO_SEED)) dut (
         .clk(clk), .rst_n(rst_n),
         .ic_refill_cnt(ic_refill_cnt), .dc_refill_cnt(dc_refill_cnt), .dc_write_cnt(dc_write_cnt),
         .mmio_we(mmio_we), .mmio_addr(mmio_addr), .mmio_wdata(mmio_wdata),
         .dbg_widx(dbg_widx), .dbg_word(dbg_word),
         .dc_cnt_access(c_dc_access), .dc_cnt_hit(c_dc_hit), .dc_cnt_miss(c_dc_miss), .dc_cnt_wb(c_dc_wb),
         .dc_cnt_bypass(c_dc_bypass), .dc_cnt_rab(c_dc_rab), .dc_cnt_stall(c_dc_stall),
-        .ic_cnt_lookup(c_ic_lookup), .ic_cnt_miss(c_ic_miss), .ic_cnt_stall(c_ic_stall)
+        .ic_cnt_lookup(c_ic_lookup), .ic_cnt_miss(c_ic_miss), .ic_cnt_stall(c_ic_stall),
+        .wg_restricted(wg_restricted), .wg_cycles_restricted(wg_cycles_restricted),
+        .wg_first_restrict(wg_first_restrict), .wg_stores(wg_stores), .wg_stores_restricted(wg_stores_restricted)
     );
 
     logic halted;
@@ -102,6 +116,8 @@ module tb_prog #(
                 $display("CACHEWIN ic_lookup=%0d ic_miss=%0d ic_stall=%0d dc_access=%0d dc_hit=%0d dc_miss=%0d dc_fill=%0d dc_wb=%0d dc_bypass=%0d dc_rab=%0d dc_stall=%0d dc_write=%0d",
                          d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9], d[10], d[11]);
             end
+            $display("WG restricted_cycles=%0d first_restrict=%0d stores=%0d stores_restricted=%0d",
+                     wg_cycles_restricted, wg_first_restrict, wg_stores, wg_stores_restricted);
             $display("IC_REFILL %0d", ic_refill_cnt);
             $display("DC_REFILL %0d", dc_refill_cnt);
             $display("DC_WRITE %0d", dc_write_cnt);

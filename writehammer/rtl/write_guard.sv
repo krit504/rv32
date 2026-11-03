@@ -89,7 +89,9 @@ module write_guard #(
     endfunction
 
     wire freeze     = store_valid && store_busy;
+    /* verilator lint_off UNUSEDSIGNAL */  // unused in some DETECTOR/OBSERVE combinations
     wire store_done = store_valid && !store_busy;
+    /* verilator lint_on UNUSEDSIGNAL */
 
     // ---- window timer: counts cycles, processed at the first unfrozen cycle at or after the end ----
     logic [31:0] wtimer;
@@ -120,7 +122,9 @@ module write_guard #(
         end else begin : g_i
             assign widx = 32'(bucket({{(16-IDXW){1'b0}}, line_idx[IDXW-1:0]}));
         end
+        /* verilator lint_off UNUSEDSIGNAL */  // only the low bits index the hot flags
         logic [31:0] sidx;
+        /* verilator lint_on UNUSEDSIGNAL */
         if (DETECTOR == 2) begin : g_s
             assign sidx = 32'(store_line[IDXW-1:0]);
         end else begin : g_s
@@ -177,7 +181,9 @@ module write_guard #(
                 flag <= 1'b0;
             end else if (store_done) begin
                 rng  <= x3;
+                /* verilator lint_off UNSIGNED */  // PLACEBO_RATE = 0 makes the compare constant by design
                 flag <= (32'(x3[15:0]) < 32'(PLACEBO_RATE));
+                /* verilator lint_on UNSIGNED */
             end
         end
         assign hot_store = flag;

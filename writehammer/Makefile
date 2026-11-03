@@ -9,7 +9,7 @@ LATS    := 1 2 3 10
 RUN     := scripts/run.sh --   # every result-producing command is logged to logs/runs/ (spec 0B.1)
 
 .PHONY: all lint test arch-test random bench caches wear attacks calibrate eval synth plots \
-        attacks-validate hypotheses locks locks-selftest audit clean arch-test test-nohazard test-hazard test-cache test-mem test-stall test-dcache test-invariant invariant caches test-subword test-perf test-toolchain test-arch-control test-mutants test-guard
+        attacks-validate hypotheses locks locks-selftest audit clean arch-test test-nohazard test-hazard test-cache test-mem test-stall test-dcache test-invariant invariant caches test-subword test-perf test-toolchain test-arch-control test-mutants test-guard guard-integration
 
 all: lint test arch-test random bench caches wear attacks calibrate eval synth plots hypotheses audit
 
@@ -96,6 +96,12 @@ caches:
 test-guard:
 	$(RUN) $(PY) tests/write_guard_test.py
 	$(RUN) $(PY) tests/guard_mutants.py
+	$(RUN) $(PY) tests/bypass_verify.py
+	$(RUN) $(PY) tests/guard_integration.py --quick
+
+# T5.8: every arm x every benchmark, attack and mixed image x latency 1, 20, random (needs `make attacks` images; about an hour)
+guard-integration:
+	$(RUN) $(PY) tests/guard_integration.py --csv work/guard_integration/results_full.csv
 
 test-mutants:
 	$(RUN) $(PY) tests/run_mutants.py

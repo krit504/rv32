@@ -1,0 +1,20 @@
+run_id: 20261103-153707-2165294-perf_tests
+timestamp: 2026-11-03 15:37:07 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: python3 tests/perf_tests.py
+git_commit: 901447ece44088a78110111a1de71241caab1a39
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 0
+outputs:
+full_output: work/runs/20261103-153707-2165294-perf_tests.out
+output_tail: |
+  [perf] 21/21 passed

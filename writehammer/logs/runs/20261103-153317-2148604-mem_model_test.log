@@ -1,0 +1,36 @@
+run_id: 20261103-153317-2148604-mem_model_test
+timestamp: 2026-11-03 15:33:17 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: python3 tests/mem_model_test.py
+git_commit: 901447ece44088a78110111a1de71241caab1a39
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 0
+outputs:
+full_output: work/runs/20261103-153317-2148604-mem_model_test.out
+output_tail: |
+  PASS  LINE_BYTES=16 LATENCY=1 random=0 seed=5
+  PASS  LINE_BYTES=16 LATENCY=2 random=0 seed=5
+  PASS  LINE_BYTES=16 LATENCY=3 random=0 seed=5
+  PASS  LINE_BYTES=16 LATENCY=10 random=0 seed=5
+  PASS  LINE_BYTES=32 LATENCY=1 random=0 seed=5
+  PASS  LINE_BYTES=32 LATENCY=2 random=0 seed=5
+  PASS  LINE_BYTES=32 LATENCY=3 random=0 seed=5
+  PASS  LINE_BYTES=32 LATENCY=10 random=0 seed=5
+  PASS  LINE_BYTES=64 LATENCY=1 random=0 seed=5
+  PASS  LINE_BYTES=64 LATENCY=2 random=0 seed=5
+  PASS  LINE_BYTES=64 LATENCY=3 random=0 seed=5
+  PASS  LINE_BYTES=64 LATENCY=10 random=0 seed=5
+  PASS  LINE_BYTES=16 LATENCY=5 random=1 seed=5
+  PASS  LINE_BYTES=16 LATENCY=5 random=1 seed=9
+  PASS  LINE_BYTES=16 LATENCY=10 random=1 seed=5
+  PASS  LINE_BYTES=16 LATENCY=10 random=1 seed=9
+  [mem_model] 18/18 passed

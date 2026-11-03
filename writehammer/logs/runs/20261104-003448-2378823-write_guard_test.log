@@ -1,0 +1,59 @@
+run_id: 20261104-003448-2378823-write_guard_test
+timestamp: 2026-11-04 00:34:50 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: python3 tests/write_guard_test.py
+git_commit: 901447ece44088a78110111a1de71241caab1a39
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 2
+outputs:
+full_output: work/runs/20261104-003448-2378823-write_guard_test.out
+output_tail: |
+  PASS rand_4_burst
+  PASS rand_5_hot
+  PASS rand_5_burst
+  PASS rand_6_hot
+  PASS rand_6_burst
+  PASS rand_7_hot
+  PASS rand_7_burst
+  PASS rand_8_hot
+  PASS rand_8_burst
+  PASS rand_9_hot
+  PASS rand_9_burst
+  PASS rand_10_hot
+  PASS rand_10_burst
+  PASS rand_11_hot
+  PASS rand_11_burst
+  PASS rand_12_hot
+  PASS rand_12_burst
+  PASS rand_13_hot
+  PASS rand_13_burst
+  PASS rand_14_hot
+  PASS rand_14_burst
+  PASS rand_15_hot
+  PASS rand_15_burst
+  PASS rand_16_hot
+  PASS rand_16_burst
+  PASS rand_17_hot
+  PASS rand_17_burst
+  PASS rand_18_hot
+  PASS rand_18_burst
+  PASS rand_19_hot
+  PASS rand_19_burst
+  PASS rand_20_hot
+  PASS rand_20_burst
+  PASS rand_21_hot
+  PASS rand_21_burst
+  PASS rand_22_hot
+  PASS rand_22_burst
+  PASS rand_23_hot
+  PASS rand_23_burst
+  [write_guard] 62/62 passed

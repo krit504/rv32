@@ -1,0 +1,59 @@
+run_id: 20261104-000536-2335247-run_mutants
+timestamp: 2026-11-04 00:34:48 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: python3 tests/run_mutants.py
+git_commit: 901447ece44088a78110111a1de71241caab1a39
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 1752
+outputs:
+full_output: work/runs/20261104-000536-2335247-run_mutants.out
+output_tail: |
+  S4_lh_zero_extends                       CAUGHT       random: FAIL seed 11: 2 mismatches, first: x1=0xa000 expected 0xffffa000
+  S5_sh_upper_half_enable_stuck            CAUGHT       random: FAIL seed 3: 1 mismatches, first: mem[0x1730]=0xc expected 0xc0000
+  S6_sb_data_not_replicated                CAUGHT       random: FAIL seed 1: 1 mismatches, first: mem[0x1064]=0x0 expected 0xa000
+  S7_lbu_sign_extends                      CAUGHT       random: FAIL seed 39: 1 mismatches, first: x15=0xffffffb4 expected 0xb4
+  S8_funct3_not_carried                    CAUGHT       random: FAIL seed 1: 1 mismatches, first: mem[0x1064]=0x2ee660a0 expected 0xa000
+  P1_loaduse_never_counted                 CAUGHT       perf: FAIL window_hazards c0 l2: (cycles,instret,loaduse,flush)=(9, 6, 0, 2) expected (9, 6, 1, 2)
+  P2_bubbles_counted_as_retired            CAUGHT       perf: FAIL window_straight c1 l1: (instret,loaduse,flush)=(7, 0, 0) expected (4, 0, 0)
+  P3_stop_ignored                          CAUGHT       perf: FAIL window_straight c0 l2: (cycles,instret,loaduse,flush)=(6, 6, 0, 0) expected (4, 4, 0, 0)
+  P4_start_does_not_clear                  CAUGHT       perf: FAIL window_straight c0 l2: (cycles,instret,loaduse,flush)=(10, 6, 0, 0) expected (4, 4, 0, 0)
+  P5_redirect_counted_twice                CAUGHT       perf: FAIL window_hazards c0 l2: (cycles,instret,loaduse,flush)=(9, 6, 1, 4) expected (9, 6, 1, 2)
+  P6_no_halt_report                        CAUGHT       random: FAIL seed 1: RTL run timed out
+  P7_mmio_store_reaches_dmem               CAUGHT       perf: FAIL window_hazards c1 l1: (instret,loaduse,flush)=(5, 1, 2) expected (6, 1, 2)
+  T1_dmem_ignores_image                    CAUGHT       toolchain: FAIL caches=0 lat=2: halt=1308050122 timeout=False expected 1892521041
+  T2_unified_memory_ignores_image          CAUGHT       mem_model: FAIL  LINE_BYTES=16 LATENCY=1 random=0 seed=5  errors=4 ['FAIL init word 0 = 00000000 expected 000000a0', 'FAI
+  T3_imem_word_order                       CAUGHT       random: FAIL seed 1: RTL run timed out
+  M1_latency_off_by_one                    CAUGHT       cache_integration: FAIL L=1 first_fetch: imiss 1111000011 exp 1110000111
+  M2_icache_priority                       CAUGHT       mem_model: FAIL  LINE_BYTES=16 LATENCY=1 random=0 seed=5  errors=3 ['FAIL a request was never accepted', 'FAIL I$ not ser
+  M3_byte_enable_ignored                   CAUGHT       mem_model: FAIL  LINE_BYTES=16 LATENCY=1 random=0 seed=5  errors=1 ['FAIL byte-enable write: eeeeeeeeeeeeeeeeeeeeeeeeeeee
+  M4_line_lane_order_reversed              CAUGHT       cache_integration: FAIL L=1 loop_fits: IC_REFILL=1 exp 2
+  M5_random_latency_unbounded              CAUGHT       mem_model: FAIL  LINE_BYTES=16 LATENCY=5 random=1 seed=5  errors=3 ['FAIL random latency 10 outside 1..9', 'FAIL random l
+  M6_write_before_done                     CAUGHT       mem_model: FAIL  LINE_BYTES=16 LATENCY=1 random=0 seed=5  errors=7 ['FAIL line readback 00000000000000000000000000000000 
+  D1_store_hit_not_dirty                   CAUGHT       dcache_quick: FAIL  cache=2048 line=16 lat=3 wl=1 bypass=0.15 seed=101  <- op 51 load 0x3bcc: got 0 expected 0x72; counter a
+  D2_dirty_victim_not_written_back         CAUGHT       dcache_quick: FAIL  cache=2048 line=16 lat=3 wl=1 bypass=0.15 seed=101  <- op 51 load 0x3bcc: got 0 expected 0x72; counter a
+  D3a_bypass_clean_hit_not_invalidated     CAUGHT       dcache_quick: FAIL  cache=2048 line=16 lat=3 wl=1 bypass=0.15 seed=101  <- op 608 load 0x3bcc: got 2692517948 expected 0xe4b
+  D3b_bypass_dirty_hit_not_invalidated     CAUGHT       dcache_quick: FAIL  cache=2048 line=16 lat=3 wl=1 bypass=0.15 seed=101  <- op 229 load 0x24e4: got 2001176303 expected 0x774
+  D4_bypass_writes_array                   CAUGHT       dcache_quick: FAIL  cache=2048 line=16 lat=3 wl=1 bypass=0.15 seed=101  <- array writes on line 14: rtl 123 model 117
+  D5_byte_enable_ignored_in_merge          CAUGHT       stall_injection: FAIL  random programs caches=1 lat=3 inject_seed=3: 1/60  first: seed 1 1 mismatches, first mem[0x1064]
+  D6_fill_keeps_dirty_bit                  CAUGHT       dcache_quick: FAIL  cache=2048 line=16 lat=3 wl=1 bypass=0.15 seed=101  <- counter wb: rtl 664 model 422; stall cycles: rtl 
+  D7_writeback_to_wrong_address            CAUGHT       dcache_quick: FAIL  cache=2048 line=16 lat=3 wl=1 bypass=0.15 seed=101  <- op 34 load 0x2630: got 2656241553 expected 0x0; c
+  D8_misses_counted_as_hits                CAUGHT       dcache_quick: FAIL  cache=2048 line=16 lat=3 wl=1 bypass=0.15 seed=101  <- counter hit: rtl 1362 model 471; counter miss: rt
+  D9_bypass_skips_writeback_of_dirty_line  CAUGHT       dcache_quick: FAIL  cache=2048 line=16 lat=3 wl=1 bypass=0.15 seed=101  <- op 105 load 0x3e20: got 0 expected 0xc000000; cou
+  D10_refill_after_bypass_not_counted      CAUGHT       dcache_quick: FAIL  cache=2048 line=16 lat=3 wl=1 bypass=0.15 seed=101  <- counter refill_after_bypass: rtl 0 model 51
+  D11_wrong_word_selected                  CAUGHT       cache_integration: FAIL L=1 store_miss_hit_load: x6=00502023 exp 00000007; x8=00000007 exp 00000009
+  ST1_emreg_ignores_stallM                 CAUGHT       cache_integration: FAIL L=1 store_miss_hit_load: x6=00700293 exp 00000007; mem[0]=00700293 exp 00000007; DC_WRITE=1 exp 2
+  ST2_dereg_ignores_stallE                 CAUGHT       cache_integration: FAIL L=1 store_miss_hit_load: x6=00000000 exp 00000007
+  ST3_pc_ignores_stallF                    CAUGHT       cache_integration: FAIL L=1 loop_fits: IC_REFILL=98 exp 2
+  ST4_fdreg_ignores_stallD                 CAUGHT       cache_integration: FAIL L=1 store_miss_hit_load: x8=00000000 exp 00000009; mem[1]=00000000 exp 00000009
+  C6X_decoder_sw01_no_gate                 CAUGHT       perf: FAIL window_hazards c1 l1: (instret,loaduse,flush)=(5, 1, 2) expected (6, 1, 2)
+  C6X_control_decoder_sw01_with_gate       SURVIVED     
+  [mutants] 52/52 caught; 1 argued equivalent (C6, backed by C6X/C6X_control); OK

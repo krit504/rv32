@@ -1,0 +1,31 @@
+run_id: 20261103-153705-2164387-subword_tests
+timestamp: 2026-11-03 15:37:05 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: python3 tests/subword_tests.py
+git_commit: 901447ece44088a78110111a1de71241caab1a39
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 0
+outputs:
+full_output: work/runs/20261103-153705-2164387-subword_tests.out
+output_tail: |
+  PASS  loads_all_offsets
+  PASS  stores_all_offsets
+  PASS  half_stores_all_offsets
+  PASS  adjacent_byte_stores
+  PASS  adjacent_half_stores
+  PASS  load_forward_to_next
+  PASS  load_forward_gap1
+  PASS  loaduse_each_load
+  PASS  store_data_forwarding
+  PASS  store_then_load_same_byte
+  PASS  subword_with_negative_base
+  [subword CACHES=0 LAT=2] 11/11 passed
