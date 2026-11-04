@@ -21,6 +21,7 @@ module rv32_top_pipelined #(
     parameter int WG_PLACEBO_RATE = 0,            // PLACEBO restricted fraction in 1/65536
     parameter int WG_PLACEBO_SEED = 1,
     parameter bit OBSERVE = 1'b1,                 // 0 compiles the write_guard observation counters out
+    parameter bit CORE_ONLY = 1'b0,               // 1: no memory, caches or guard; instruction and data requests go to the ext_* ports (rtl/core_only.sv)
     parameter IMEM_FILE = "program.hex",   // untyped on purpose: Icarus 12 cannot bind a string-typed parameter inside generate blocks
     // Words in main memory: each of imem and dmem with CACHES_ON = 0, the one unified memory with
     // CACHES_ON = 1 (256 = 1 KiB, the default the earlier tests rely on; the C flow uses 65536 =
@@ -74,6 +75,21 @@ module rv32_top_pipelined #(
     input  logic [31:0] dbg_widx,   // simulation debug read port into the data memory: word index
     /* verilator lint_on UNUSEDSIGNAL */
     output logic [31:0] dbg_word,   // the data memory's word dbg_widx (combinational; the D$ overlaid on memory)
+
+    // core-only interface (CORE_ONLY = 1; ignored and unused otherwise): fetch and Memory-stage data port, stable
+    // while the stage is stalled. ext_imiss / ext_dmiss freeze fetch / the pipeline like the cache misses do.
+    /* verilator lint_off UNUSEDSIGNAL */
+    input  logic [31:0] ext_instr,
+    input  logic        ext_imiss,
+    input  logic [31:0] ext_rdata,
+    input  logic        ext_dmiss,
+    /* verilator lint_on UNUSEDSIGNAL */
+    output logic [31:0] ext_iaddr,
+    output logic [31:0] ext_daddr,
+    output logic [31:0] ext_wdata,
+    output logic [3:0]  ext_be,
+    output logic        ext_we,
+    output logic        ext_re,
 
     output logic        mmio_we,
     output logic [31:0] mmio_addr,
@@ -167,7 +183,16 @@ logic [LINE_BITS-1:0] ic_mem_rdata;
 logic                 ic_mem_done;
 
 generate
-    if (CACHES_ON) begin : g_icache
+    if (CORE_ONLY) begin : g_core_i
+        assign instruction_imem_to_FETCH = ext_instr;
+        assign imiss_c = ext_imiss;
+        assign ic_mem_valid = 1'b0;
+        assign ic_mem_addr = 32'b0;
+        assign ic_refill_cnt = 32'b0;
+        assign ic_cnt_lookup = 32'b0;
+        assign ic_cnt_miss = 32'b0;
+        assign ic_cnt_stall = 32'b0;
+    end else if (CACHES_ON) begin : g_icache
         // the I$ lives in cache_system (instantiated in g_dcache below)
     end else begin : g_imem
         imem #(.DEPTH(MEM_WORDS), .INIT_FILE(IMEM_FILE)) u_imem(
@@ -502,6 +527,14 @@ always_comb begin
     end
 end
 
+// core-only request ports (CORE_ONLY = 1): plain taps on the fetch address and the Memory-stage request
+assign ext_iaddr = A_PC_to_imem_and_ALU;
+assign ext_daddr = ALUResultM;
+assign ext_wdata = StoreDataM;
+assign ext_be    = StoreBEM;
+assign ext_we    = MemStoreM;
+assign ext_re    = RegWriteM & (ResultSrcM == 2'b01);
+
 // Load extender: shift the addressed byte/half to bit 0, then sign- or zero-extend.
 logic [15:0] LoadShiftM;    // only the low half is ever needed (lw bypasses the shift)
 assign LoadShiftM = 16'(ReadRawM >> (8 * ALUResultM[1:0]));
@@ -553,7 +586,24 @@ logic [LINE_BITS-1:0] dc_mem_rdata;
 logic                 dc_mem_done;
 
 generate
-    if (CACHES_ON) begin : g_dcache
+    if (CORE_ONLY) begin : g_core_d
+        assign ReadRawM = ext_rdata;
+        assign dmiss_c = ext_dmiss;
+        for (genvar i = 0; i < 4; i++) begin : g_dbg
+            assign dbg_dmem[i] = 32'b0;
+        end
+        assign dbg_word = 32'b0;
+        assign dc_mem_valid = 1'b0; assign dc_mem_we = 1'b0; assign dc_mem_addr = 32'b0;
+        assign dc_mem_wdata = '0; assign dc_mem_be = '0; assign dc_mem_done = 1'b0;
+        assign ic_mem_done = 1'b0; assign ic_mem_rdata = '0;
+        assign dc_refill_cnt = 32'b0; assign dc_write_cnt = 32'b0;
+        assign dc_aw_valid = 1'b0; assign dc_aw_line = 32'b0; assign dc_aw_kind = 1'b0;
+        assign dc_tr_valid = 1'b0; assign dc_tr_we = 1'b0; assign dc_tr_addr = 32'b0; assign dc_tr_size = 3'b0; assign dc_tr_bypass = 1'b0;
+        assign dc_cnt_access = 32'b0; assign dc_cnt_hit = 32'b0; assign dc_cnt_miss = 32'b0; assign dc_cnt_wb = 32'b0; assign dc_cnt_bypass = 32'b0;
+        assign dc_cnt_rab = 32'b0; assign dc_cnt_stall = 32'b0;
+        assign wg_restricted = 1'b0; assign wg_cycles_restricted = 32'b0; assign wg_first_restrict = 32'b0;
+        assign wg_stores = 32'b0; assign wg_stores_restricted = 32'b0;
+    end else if (CACHES_ON) begin : g_dcache
         logic [4:0]    peek_hit;
         logic [159:0]  peek_data;
         cache_system #(.ICACHE_BYTES(ICACHE_BYTES), .DCACHE_BYTES(DCACHE_BYTES), .LINE_BYTES(LINE_BYTES),
