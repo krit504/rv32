@@ -42,3 +42,21 @@ Verilator: pass as `-G<name>=<value>`.
 ## How the results rows are produced
 `tests/guard_integration.py` writes `work/guard_integration/results*.csv` with columns image, arm, latency, cycles, restricted_cycles, first_restrict, stores, stores_restricted, dc_bypass, dc_rab, dc_write: the T5.9 metric hooks as the evaluation will read them. Detection latency = `first_restrict` minus the cycle of the PHASE marker that starts the attack (both from the same run).
 PLACEBO needs two passes per workload: run the real detector, compute `stores_restricted/stores`, then run PLACEBO with `WG_PLACEBO_RATE = round(65536 * that fraction)` (T6 harness; the RTL side is verified: `tests/write_guard_test.py` placebo_rate*).
+
+## Per-phase snapshots and the evaluation metrics (T5.9)
+`tb_prog` prints, at every PHASE marker write (MMIO +0xC) and at HALT:
+```
+WGPHASE id=<marker value> cycle=<n> restricted_cycles=<c> stores=<s> stores_restricted=<r> restricted_now=<0|1> first_restrict_prev_phase=<cycle|4294967295>
+WGEND   cycle=<n> restricted_cycles=<c> stores=<s> stores_restricted=<r> restricted_now=<0|1> first_restrict_prev_phase=<cycle|4294967295>
+```
+`cycle` counts from reset release (same clock for every field; it can differ by a few cycles from the `PHASE ... cycle=` line of `sys_monitor`, so use the `WGPHASE` cycle for everything below). A snapshot describes the interval since the previous snapshot (the first one, since reset). `first_restrict_prev_phase` is the first cycle in that interval with `restricted=1`. Counters are cumulative since reset. Taking consecutive differences gives per-phase values; benign and attack phases are the workload's own marker intervals (mixed: benign, attack, benign).
+
+| CSV column | Definition |
+|---|---|
+| `restricted_cycle_frac` | `WGEND.restricted_cycles / WGEND.cycle` (whole run) |
+| `fp_cycle_frac` | restricted cycles in benign intervals / cycles in benign intervals (a pure benign workload: the whole run; every restriction there is a false positive) |
+| `fp_store_frac` | restricted stores in benign intervals / completed stores in benign intervals |
+| `detect_latency_cycles` | for an attack interval that starts at snapshot k-1 and ends at snapshot k: `first_restrict_prev_phase(k) - cycle(k-1)`; empty if it is 4294967295 (not detected in that phase); 0 and flagged "carry-over" if `restricted_now` was already 1 at snapshot k-1 |
+| `bypassed_stores` | `WGEND.stores_restricted` (equals `dc_bypass` of the D$ counters) |
+
+Example (mixed RLA, D1, window 10000, threshold 740): benign phase 0 restricted_cycles 0; attack phase restriction first at cycle 1008588, 5230 cycles after the marker at 1003358; restriction ended about 2,200 cycles into the last benign phase (release after the attack, a measured false-positive tail).

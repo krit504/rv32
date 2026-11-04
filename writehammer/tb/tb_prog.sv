@@ -88,6 +88,22 @@ module tb_prog #(
         if (mmio_addr[7:0] == 8'h08 && !have_stop) begin for (int i = 0; i < NC; i++) snap1[i] <= cur[i]; have_stop <= 1'b1; end
     end
 
+    // write_guard snapshot at every PHASE marker (MMIO +0xC), for the false-positive and detection-latency
+    // metrics of the evaluation: the harness differences consecutive snapshots to get per-phase restricted
+    // cycles and restricted stores. first_restrict_prev_phase is the cycle of the first restriction seen in the
+    // phase that this marker ends, i.e. since the previous marker (4294967295 if none). WGEND is the same
+    // snapshot at HALT, closing the last phase. Cycle numbers here count from reset release, like each other.
+    int cyc_ph = 0;
+    logic [31:0] first_since_phase = 32'hFFFFFFFF;
+    always @(posedge clk) if (rst_n) begin
+        cyc_ph <= cyc_ph + 1;
+        if (mmio_we && mmio_addr[7:0] == 8'h0C) first_since_phase <= 32'hFFFFFFFF;
+        else if (wg_restricted && first_since_phase == 32'hFFFFFFFF) first_since_phase <= 32'(cyc_ph);
+        if (mmio_we && mmio_addr[7:0] == 8'h0C)
+            $display("WGPHASE id=%0d cycle=%0d restricted_cycles=%0d stores=%0d stores_restricted=%0d restricted_now=%0d first_restrict_prev_phase=%0d",
+                     mmio_wdata, cyc_ph, wg_cycles_restricted, wg_stores, wg_stores_restricted, wg_restricted, first_since_phase);
+    end
+
     // run-time cycle limit: +maxcyc=<n> overrides MAXCYC (lets one build serve workloads of very different length)
     int maxcyc_r = MAXCYC;
     initial begin
@@ -116,6 +132,8 @@ module tb_prog #(
                 $display("CACHEWIN ic_lookup=%0d ic_miss=%0d ic_stall=%0d dc_access=%0d dc_hit=%0d dc_miss=%0d dc_fill=%0d dc_wb=%0d dc_bypass=%0d dc_rab=%0d dc_stall=%0d dc_write=%0d",
                          d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9], d[10], d[11]);
             end
+            $display("WGEND cycle=%0d restricted_cycles=%0d stores=%0d stores_restricted=%0d restricted_now=%0d first_restrict_prev_phase=%0d",
+                     cyc_ph, wg_cycles_restricted, wg_stores, wg_stores_restricted, wg_restricted, first_since_phase);
             $display("WG restricted_cycles=%0d first_restrict=%0d stores=%0d stores_restricted=%0d",
                      wg_cycles_restricted, wg_first_restrict, wg_stores, wg_stores_restricted);
             $display("IC_REFILL %0d", ic_refill_cnt);
