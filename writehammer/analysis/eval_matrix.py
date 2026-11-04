@@ -30,6 +30,7 @@ sys.path.insert(0, str(ROOT / "analysis"))
 from baseline import workloads as benign_workloads  # noqa: E402
 from attack_runner import flags as attack_flags  # noqa: E402
 from eval_wear_stats import summarize as wear_stats  # noqa: E402
+from eval_phase import metrics as phase_metrics  # noqa: E402
 
 RESULT_COLUMNS = """run_id git_commit workload workload_class icache_bytes dcache_bytes line_bytes mem_latency dc_write_latency detector action mode window_cycles threshold_k threshold M seed cycles instret cpi stall_loaduse stall_flush stall_imiss stall_dmiss i_miss_rate d_miss_rate array_writes_total w_max w_mean pmr_all pmr_written t_fail_50mhz t_fail_100mhz t_fail_500mhz bypassed_stores refills_after_bypass restricted_cycle_frac fp_cycle_frac fp_store_frac detect_latency_cycles signature_hash correct""".split()
 MANIFEST_COLUMNS = ["run_id", "workload", "workload_class", "source_kind", "source_id", "icache_bytes", "dcache_bytes", "line_bytes", "mem_latency", "dc_write_latency", "detector", "action", "mode", "window_cycles", "threshold_k", "threshold", "M", "seed", "control_for", "manifest_status"]
@@ -239,12 +240,14 @@ def sim_one(plan, image, bench, baseline_signature=None, placebo_rate=None):
     sources = CORE_RTL + [str(ROOT / "tb/sys_monitor.sv"),
                           str(bench.parent / "wear_monitor_eval.sv"), str(bench)]
     input_signature = hashlib.sha256(json.dumps({
+        "runner_git_commit": git_commit(),
         "plan": plan, "image": sha(image),
         "sources": {str(Path(path).relative_to(ROOT)): sha(path) for path in sources},
         "params": params, "baseline_signature": baseline_signature,
         "calibration_sha256": sha(ROOT / "analysis/calibration.csv"),
         "runner_sha256": sha(Path(__file__)),
         "wear_summary_script_sha256": sha(ROOT / "analysis/eval_wear_stats.py"),
+        "phase_script_sha256": sha(ROOT / "analysis/eval_phase.py"),
     }, sort_keys=True).encode()).hexdigest()
     meta_path = run_dir / "provenance.json"
     saved_row = run_dir / "result_row.json"
@@ -295,10 +298,13 @@ def sim_one(plan, image, bench, baseline_signature=None, placebo_rate=None):
                     "stall_imiss": perf["imiss_cycles"], "stall_dmiss": perf["dmiss_cycles"],
                     "i_miss_rate": counters["ic_miss"] / counters["ic_lookup"] if counters["ic_lookup"] else 0,
                     "d_miss_rate": counters["dc_miss"] / counters["dc_access"] if counters["dc_access"] else 0,
-                    "bypassed_stores": counters["dc_bypass"],
+                    "bypassed_stores": wg["stores_restricted"],
                     "refills_after_bypass": counters["dc_rab"]})
         if not {"restricted_cycles", "first_restrict", "stores", "stores_restricted"} <= wg.keys():
             raise ValueError(f"missing WG metrics for {rid}")
+        phases = phase_metrics(output, plan["workload_class"])
+        carry_over = phases.pop("_carry_over")
+        row.update(phases)
         if caches:
             wear = wear_stats(run_dir)
             row.update({"array_writes_total": wear["array_writes"], "w_max": wear["w_max"],
@@ -316,6 +322,8 @@ def sim_one(plan, image, bench, baseline_signature=None, placebo_rate=None):
             "rtl_sha256": hashlib.sha256("".join(sha(x) for x in CORE_RTL).encode()).hexdigest(),
             "simulation_sha256": sha(run_dir / "simulation.log"), "reason": reason,
             "wg": wg, "max_cycles": limit, "wall_timeout_seconds": 1800}
+    if row["correct"]:
+        meta["attack_carry_over"] = carry_over
     (run_dir / "provenance.json").write_text(json.dumps(meta, indent=2) + "\n")
     saved_row.write_text(json.dumps(row, indent=2) + "\n")
     return row, reason
