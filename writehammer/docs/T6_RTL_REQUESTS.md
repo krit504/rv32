@@ -2,6 +2,10 @@
 
 No RTL file was edited on `t6-eval`. T6.5 needs two synthesizable, observation-free tops on `main` before the author launches the pinned physical flow:
 
+As of `phase-T5-done` (`53f0280`), `rtl/cache_system.sv` is delivered with
+`OBSERVE=0`; the core-only top remains pending. The request below records the
+original interface requirement and the outstanding core-only work.
+
 1. `rtl/cache_system.sv`: I$ + D$ + `write_guard`, without the simulation memory model. D$ flop arrays remain present. The top needs `clk`, `rst_n`, stable request/response ports, and parameters for `ICACHE_BYTES`, `DCACHE_BYTES`, `LINE_BYTES`, `DETECTOR`, `ACTION`, `MODE`, `WINDOW_CYCLES`, `THRESHOLD`, `M` and counter width `W` (use the final T5 names, documented in `docs/T5_INTERFACE.md`). Its request/response ports must be constrained identically for every variant.
 2. A core-only top (proposed `rtl/core_only.sv`) with the caches and write guard removed, so the same script can measure the core-area denominator for “% of core.” It needs `clk`, `rst_n` and stable I/D request/response ports. Please give its final module/file name in `docs/T5_INTERFACE.md`.
 

@@ -16,11 +16,13 @@ period to 0.1 ns resolution and saves each tested period and its timing report.
 
 1. Merge the branch carrying `docs/T6_RTL_REQUESTS.md` into `main`; obtain the
    observation-free tops and final T5 interface. Verify `phase-T5-done` exists.
-2. Copy `flow/interface.template.json` to `flow/interface.json`, replace all
-   provisional names/values from `docs/T5_INTERFACE.md`, list every RTL source
-   file needed by both tops, and set detector-specific calibrated thresholds.
-   The runner refuses a remaining `TODO` token. Verify threshold values against
-   `analysis/calibration.csv`; do not use a held-out workload for calibration.
+2. Run `flow/make_interface.py --write` after the core-only RTL source exists.
+   It reads detector-specific k=2/window=10,000 thresholds directly from
+   `analysis/calibration.csv` and writes a hashed `flow/interface.json`.
+   The runner checks `OBSERVE=0`, A1, static D3, 16-bit counters and source
+   availability. Verify the final core-only source list with the delivered
+   `rtl/core_only.sv`; add dependencies to the template if its module needs
+   them. Do not use a held-out workload for calibration.
 3. Confirm the exact pinned image ID and the PDK location below. The author
    launches the container and the `--execute` command; the agent does neither.
 
@@ -28,6 +30,7 @@ period to 0.1 ns resolution and saves each tested period and its timing report.
 
 ```sh
 scripts/run.sh -- python3 flow/plan.py
+scripts/run.sh -- python3 flow/make_interface.py --write
 docker image inspect ghcr.io/librelane/librelane:3.1.0.dev3 --format '{{.Id}}'
 docker run --rm -it -v "$PWD:/work" -v "$HOME/.cache/tt-pdk/root/ciel/sky130/versions/74c0e6b118a67d94c24172143d3bd597473fa63d/sky130A:/pdk:ro" -w /work -e PDK_ROOT=/pdk -e WH_AUTHORIZED_FLOW=1 -e WH_PINNED_IMAGE_ID=sha256:369c964be30bcec52d98bf18b2f8c7d80f133c5c9cf34cc1f7d5a0d2890a3103 ghcr.io/librelane/librelane:3.1.0.dev3 scripts/run.sh -- python3 flow/run_flow.py --execute --repeats 3
 scripts/run.sh -- python3 flow/parse_results.py --repeats 3

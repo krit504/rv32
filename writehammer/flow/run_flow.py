@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import threading
 
 ROOT = Path(__file__).resolve().parents[1]
 FLOW = Path(__file__).resolve().parent
@@ -27,7 +28,17 @@ def sha(path):
 
 
 def command(argv, *, cwd=None, timeout=3600):
-    proc = subprocess.run(argv, cwd=cwd, capture_output=True, text=True, timeout=timeout)
+    stop = threading.Event()
+    def heartbeat():
+        while not stop.wait(30):
+            print(f"physical-flow heartbeat: {' '.join(argv[:2])}", flush=True)
+    thread = threading.Thread(target=heartbeat, daemon=True)
+    thread.start()
+    try:
+        proc = subprocess.run(argv, cwd=cwd, capture_output=True, text=True, timeout=timeout)
+    finally:
+        stop.set()
+        thread.join()
     if proc.returncode:
         raise RuntimeError(f"failed {argv}: {proc.stdout[-1000:]} {proc.stderr[-1000:]}")
     return proc.stdout + proc.stderr
@@ -44,6 +55,11 @@ def load_interface():
     cfg = json.loads(path.read_text())
     if "TODO" in json.dumps(cfg):
         raise RuntimeError("flow/interface.json still contains TODO values")
+    required = {"OBSERVE": 0, "WG_ACTION": 0, "WG_MODE": 0,
+                "WG_WINDOW": 10000, "WG_W": 16, "DC_WRITE_LATENCY": 1}
+    for name, value in required.items():
+        if int(cfg.get("fixed_parameters", {}).get(name, -1)) != value:
+            raise ValueError(f"physical interface requires {name}={value}")
     return cfg
 
 
@@ -89,7 +105,27 @@ def yosys_script(row, cfg, lib, netlist):
              "abc -liberty " + str(lib),
              "clean -purge", "write_verilog -noattr " + str(netlist),
              "stat -liberty " + str(lib)]
-    return "\n".join(lines) + "\n", top, sources
+    return "\n".join(lines) + "\n", top, sources, params
+
+
+OBSERVATION_PORTS = ("stall_req", "wg_restricted", "wg_cycles_restricted", "wg_first_restrict",
+                     "wg_stores", "wg_stores_restricted", "ic_refill_cnt", "ic_cnt_lookup",
+                     "ic_cnt_miss", "ic_cnt_stall", "dc_refill_cnt", "dc_write_cnt",
+                     "dc_aw_valid", "dc_aw_line", "dc_aw_kind", "dc_tr_valid", "dc_tr_we",
+                     "dc_tr_addr", "dc_tr_size", "dc_tr_bypass", "dc_cnt_access", "dc_cnt_hit",
+                     "dc_cnt_miss", "dc_cnt_wb", "dc_cnt_bypass", "dc_cnt_rab", "dc_cnt_stall",
+                     "peek_hit", "peek_data")
+
+
+def check_observation_outputs(netlist_text):
+    """The retained observation output ports must each be tied to zero."""
+    for port in OBSERVATION_PORTS:
+        match = re.search(rf"\bassign\s+{port}\s*=\s*(\d+)'([bhd])([0-9a-fA-F_]+)\s*;", netlist_text)
+        if not match:
+            raise ValueError(f"observation port {port} is not a constant assignment in mapped netlist")
+        base = {"b": 2, "h": 16, "d": 10}[match.group(2)]
+        if int(match.group(3).replace("_", ""), base) != 0:
+            raise ValueError(f"observation port {port} is not tied to zero")
 
 
 def parse_area(log):
@@ -150,13 +186,12 @@ def run_one(row, repeat, cfg, lib, versions):
     outdir = FLOW / "raw" / row["variant"] / f"repeat_{repeat}"
     outdir.mkdir(parents=True, exist_ok=True)
     netlist = outdir / "mapped.v"
-    script, top, sources = yosys_script(row, cfg, lib, netlist)
+    script, top, sources, params = yosys_script(row, cfg, lib, netlist)
     (outdir / "synth.ys").write_text(script)
     ylog = command(["yosys", "-s", str(outdir / "synth.ys")], cwd=outdir)
     (outdir / "yosys.log").write_text(ylog)
-    netlist_text = netlist.read_text()
-    if re.search(r"\b(?:dbg|trace|peek|dc_aw|dc_tr|perf|counter)[A-Za-z_0-9]*\b", netlist_text, re.I):
-        raise ValueError("observation-only signal survived synthesis; reject area result")
+    if row["top"] == "cache":
+        check_observation_outputs(netlist.read_text())
     area = parse_area(ylog)
     passing, tested = sweep(top, netlist, lib, outdir)
     raw = {"variant": row["variant"], "repeat": repeat, "top": top,
@@ -167,6 +202,7 @@ def run_one(row, repeat, cfg, lib, versions):
            "critical_startpoint": passing["startpoint"],
            "critical_endpoint": passing["endpoint"],
            "period_sweep": tested, "tool_versions": versions,
+           "parameters": params, "interface_sha256": sha(FLOW / "interface.json"),
            "pdk_lib_sha256": sha(lib), "constraints_sha256": sha(FLOW / "constraints.sdc.in"),
            "source_sha256": {str(p.relative_to(ROOT)): sha(p) for p in sources},
            "mapped_netlist_sha256": sha(netlist), "pinned_image_id": IMAGE_ID}

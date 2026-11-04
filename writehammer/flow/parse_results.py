@@ -45,7 +45,8 @@ def main():
             if raw["area_um2"] <= 0 or raw["min_passing_period_ns"] <= 0 or raw["fmax_mhz"] <= 0:
                 raise ValueError(f"invalid physical result: {path}")
             measured = (raw["tool_versions"], raw["pdk_lib_sha256"],
-                        raw["constraints_sha256"], raw["pinned_image_id"])
+                        raw["constraints_sha256"], raw["pinned_image_id"],
+                        raw["interface_sha256"])
             if common is None:
                 common = measured
             elif common != measured:
@@ -55,6 +56,9 @@ def main():
         groups[variant["variant"]] = group
     if common is None:
         raise ValueError("no raw outputs")
+    interface = FLOW / "interface.json"
+    if not interface.is_file() or sha(interface) != common[4]:
+        raise ValueError("physical interface absent or differs from author outputs")
     core = statistics.mean(r["area_um2"] for r in groups["CORE_ONLY"])
     baseline = {}
     for dbytes in (1024, 2048):
@@ -114,7 +118,7 @@ def main():
     (FLOW / "cost_table.md").write_text("\n".join(lines) + "\n")
     sidecar = {"script": "flow/parse_results.py", "git_commit": subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
-        "raw_source_sha256": hashes, "table_sha256": sha(table),
+        "raw_source_sha256": hashes, "interface_sha256": common[4], "table_sha256": sha(table),
         "markdown_sha256": sha(FLOW / "cost_table.md"), "variants_sha256": sha(FLOW / "variants.csv")}
     (FLOW / "cost_table.csv.json").write_text(json.dumps(sidecar, indent=2) + "\n")
     print(f"physical cost: {len(rows)} real variants parsed from {len(hashes)} author runs")
