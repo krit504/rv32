@@ -1,13 +1,13 @@
 {
   "script": "analysis/eval_matrix.py",
-  "git_commit": "86cffbb188f0c62ce64af64c4a792b1beb780909",
-  "manifest_sha256": "198c09aeab6908247be46c56ccb1515a7e8e9676ad5b888099d2603aa4298816",
+  "git_commit": "b366953bbdd5ee6e6318717629febeca2603dc5f",
+  "manifest_sha256": "11572b690d0d8b0cc3852eda8e14bbe5127bf804fc979e8bdba16c27798bf339",
   "inputs_sha256": {
     "tests/workloads.py": "fe4989ee1a279f54fdb04fd4ba01da4477ac0d23fd99acf0f0238ec1617b770b",
     "tests/attacks.py": "55ce5cc7c5f64b7057b7b42b9b94415032121777015b3180a53dd112d3522ad4",
     "sw/attacks/manifest.json": "50fe3b9cc52504dc87075bb200779e18163ab54e41aca8d75cc598a6ea2debc5",
     "../docs/writehammer.md": "2b8b09103f9c42f6a5dc0e137d6d81f48c701f3295b34ef04de048d8b17eb179"
   },
-  "calibration": "pending docs/T5_INTERFACE.md and analysis/calibration.csv",
+  "calibration_sha256": "3811e63a78d37e8e071039952752cef836a16c1b443d797860d0fa0a5945757c",
   "taxonomy_credit": "Author's group: TENDRA and the Write Hammer draft"
 }
