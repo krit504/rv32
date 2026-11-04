@@ -1,0 +1,34 @@
+run_id: 20261103-154304-2176436-workload_test
+timestamp: 2026-11-03 15:46:09 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: python3 tests/workload_test.py
+git_commit: 901447ece44088a78110111a1de71241caab1a39
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 185
+outputs:
+full_output: work/runs/20261103-154304-2176436-workload_test.out
+output_tail: |
+  PASS  crc32
+  PASS  md5sum
+  PASS  nettle-sha256
+  PASS  nettle-aes
+  PASS  huffbench
+  PASS  wikisort
+  PASS  sglib-combined
+  PASS  qrduino
+  PASS  memcpy_big
+  PASS  memset_big
+  PASS  storeloop
+  control H1_no_fwd_from_M_srcA: fails 11 of 11 workloads (crc32, huffbench, md5sum, memcpy_big...)
+  control H3_no_load_use_stall: fails 5 of 11 workloads (huffbench, nettle-sha256, qrduino, sglib-combined...)
+  control C4_mwreg_not_held: fails 8 of 11 workloads (huffbench, md5sum, memcpy_big, nettle-aes...)
+  [workloads] 14/14 passed

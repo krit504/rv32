@@ -8,7 +8,15 @@ module tb_wear #(
     parameter int MAXCYC = 200000,
     parameter int DCACHE_BYTES = 2048,
     parameter int LINE_BYTES = 16,
-    parameter int WINDOW_CYCLES = 10000
+    parameter int WINDOW_CYCLES = 10000,
+    // write_guard (T5); default = no detector
+    parameter int DETECTOR = 0,
+    parameter int WG_MODE = 0,
+    parameter int WG_WINDOW = 10000,
+    parameter int WG_THRESHOLD = 1000,
+    parameter int WG_M = 16,
+    parameter int WG_PLACEBO_RATE = 0,
+    parameter int WG_PLACEBO_SEED = 1
 );
     logic clk = 0, rst_n = 0;
     always #5 clk = ~clk;
@@ -25,7 +33,9 @@ module tb_wear #(
     int cyc = 0;
 
     rv32_top_pipelined #(.CACHES_ON(1'b1), .MEM_LATENCY(LAT), .MEM_WORDS(MEMW),
-                         .DCACHE_BYTES(DCACHE_BYTES), .LINE_BYTES(LINE_BYTES)) dut (
+                         .DCACHE_BYTES(DCACHE_BYTES), .LINE_BYTES(LINE_BYTES),
+                         .DETECTOR(DETECTOR), .WG_MODE(WG_MODE), .WG_WINDOW(WG_WINDOW), .WG_THRESHOLD(WG_THRESHOLD),
+                         .WG_M(WG_M), .WG_PLACEBO_RATE(WG_PLACEBO_RATE), .WG_PLACEBO_SEED(WG_PLACEBO_SEED)) dut (
         .clk(clk), .rst_n(rst_n), .dbg_widx(32'b0),
         .ic_refill_cnt(ic_refill_cnt), .dc_refill_cnt(dc_refill_cnt), .dc_write_cnt(dc_write_cnt),
         .dc_aw_valid(aw_valid), .dc_aw_line(aw_line), .dc_aw_kind(aw_kind),
@@ -34,8 +44,11 @@ module tb_wear #(
         .dc_cnt_access(cnt_access), .dc_cnt_hit(cnt_hit), .dc_cnt_miss(cnt_miss),
         .dc_cnt_wb(cnt_wb), .dc_cnt_bypass(cnt_bypass), .dc_cnt_rab(cnt_rab),
         .dc_cnt_stall(cnt_stall),
-        .mmio_we(mmio_we), .mmio_addr(mmio_addr), .mmio_wdata(mmio_wdata)
+        .mmio_we(mmio_we), .mmio_addr(mmio_addr), .mmio_wdata(mmio_wdata),
+        .wg_restricted(), .wg_cycles_restricted(), .wg_first_restrict(), .wg_stores(), .wg_stores_restricted()
     );
+    int aw_store_cnt = 0;    // data-array writes made by a store hit (not fills): must be 0 for a restricted store
+    always @(posedge clk) if (rst_n && aw_valid && !aw_kind) aw_store_cnt <= aw_store_cnt + 1;
     sys_monitor mon (
         .clk(clk), .rst_n(rst_n), .mmio_we(mmio_we), .mmio_addr(mmio_addr), .mmio_wdata(mmio_wdata),
         .imiss(dut.imiss), .dmiss(dut.dmiss),
@@ -54,6 +67,7 @@ module tb_wear #(
         if (halted) begin
             repeat (6) @(posedge clk);
             #1 wear.finish_run();
+            $display("AW_STORE %0d", aw_store_cnt);
             $display("DC_CNT access=%0d hit=%0d miss=%0d fill=%0d wb=%0d bypass=%0d rab=%0d write=%0d",
                      cnt_access, cnt_hit, cnt_miss, dc_refill_cnt, cnt_wb,
                      cnt_bypass, cnt_rab, dc_write_cnt);

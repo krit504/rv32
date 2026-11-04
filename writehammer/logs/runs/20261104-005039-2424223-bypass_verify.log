@@ -1,0 +1,44 @@
+run_id: 20261104-005039-2424223-bypass_verify
+timestamp: 2026-11-04 00:51:23 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: python3 tests/bypass_verify.py
+git_commit: 901447ece44088a78110111a1de71241caab1a39
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 44
+outputs:
+full_output: work/runs/20261104-005039-2424223-bypass_verify.out
+output_tail: |
+  PASS storeloop: NONE control makes store-hit array writes
+  PASS storeloop: ALWAYS makes zero store-hit array writes
+  PASS storeloop: ALWAYS logs every store as bypassed
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer/work/bypass_verify/storeloop_always: 139264 accesses, 1024 array writes
+  PASS storeloop: ALWAYS replay matches the independent cache model
+  PASS storeloop: D1 stress (threshold 1) restricts some stores
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer/work/bypass_verify/storeloop_d1: 139264 accesses, 1280 array writes
+  PASS storeloop: D1 replay matches the independent cache model
+  PASS memset_big: NONE control makes store-hit array writes
+  PASS memset_big: ALWAYS makes zero store-hit array writes
+  PASS memset_big: ALWAYS logs every store as bypassed
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer/work/bypass_verify/memset_big_always: 86042 accesses, 1027 array writes
+  PASS memset_big: ALWAYS replay matches the independent cache model
+  PASS memset_big: D1 stress (threshold 1) restricts some stores
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer/work/bypass_verify/memset_big_d1: 86042 accesses, 1283 array writes
+  PASS memset_big: D1 replay matches the independent cache model
+  PASS rla_direct_s1: NONE control makes store-hit array writes
+  PASS rla_direct_s1: ALWAYS makes zero store-hit array writes
+  PASS rla_direct_s1: ALWAYS logs every store as bypassed
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer/work/bypass_verify/rla_direct_s1_always: 571434 accesses, 285716 array writes
+  PASS rla_direct_s1: ALWAYS replay matches the independent cache model
+  PASS rla_direct_s1: D1 stress (threshold 1) restricts some stores
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer/work/bypass_verify/rla_direct_s1_d1: 571434 accesses, 285718 array writes
+  PASS rla_direct_s1: D1 replay matches the independent cache model
+  [bypass_verify] 18/18 passed

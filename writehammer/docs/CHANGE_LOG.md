@@ -113,3 +113,21 @@ Entry format:
 - Why: the previous random-program data window exactly fit the 2 KiB D$, so dirty write-back defects could survive without an eviction. Small caches force evictions and expose them.
 - Evidence: `docs/logs/T2.6.md` reports the full 9-configuration invariant run passing and dirty write-back mutants failing the expanded check.
 - New sha256: faa77bb0914deb14b2925285c3bc788d8d0ae283f468a919842fb22852e5765a
+
+## CHG-018 2026-11-03 tests/guard_mutants.py
+- What changed: added two invariant-breaking bypass-path mutants (X1 the restricted store is dropped, X2 it writes wrong data) run against `tests/guard_integration.py --mini`, and a `--bypass-only` option. The 17 write_guard mutants are unchanged.
+- Why: spec 0A.D / T5.10 requires a bypass that drops a store to be caught by the T5.8 check. Adds only; nothing removed or loosened.
+- Evidence the original was wrong: not a correction; the file was locked in the T5 commit one step before this addition.
+- New sha256: 8a8d576a1734a6ef8218892f3ba29702bf3f9206bd53913ba70f944f519c0c13
+
+## CHG-019 2026-11-03 tests/paths.py
+- What changed: `CORE_RTL` lists the new `rtl/cache_system.sv` (I$ + D$ + write_guard, T5 synthesis deliverable; `rv32_top_pipelined` now instantiates it instead of the two caches and the guard separately).
+- Why: without the file every simulation build fails (module not found). No check removed or loosened.
+- Evidence the original was wrong: not a correction; a source list that must follow the RTL file set.
+- New sha256: 843f6fb891fc8c08edd51a1b89570e600e9804c23fb64f73a12f203067130bcc
+
+## CHG-020 2026-11-04 tests/mutants/core_mutants.py
+- What changed: the text patched by mutant `C6_re_without_RegWriteM` (and so C6X) is `.d_re(...)` instead of `.re(...)`: the D$ read-enable connection moved from a `dcache` port in `rv32_top_pipelined` to the `cache_system` instance port (`.d_re`) when the top was routed through `rtl/cache_system.sv`. The mutation is the same one (drop `RegWriteM &` from the read enable) on the same file.
+- Why: without it the patch finds 0 matches and C6X reports PATCH_FAILED. No mutant removed, no check loosened.
+- Evidence the original was wrong: not a correction; a retarget after a signal rename. `make test-mutants` rerun after this entry (docs/logs/T5.1-T5.7.md).
+- New sha256: cc6078eb3196872537602b62a3af6cf058ad1005fb2f92a0cc5e4cd4e114e81f

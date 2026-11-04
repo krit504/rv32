@@ -11,7 +11,16 @@ module rv32_top_pipelined #(
     parameter int MEM_SEED = 1,                   // seed of the random latency
     parameter int DC_WRITE_LATENCY = 1,           // extra pipeline cycles per D$ array write (1 = none)
     parameter int INJECT_STALL_SEED = 0,           // test only (T2.2): non-zero adds random freezes and fetch bubbles, see below
-    parameter int DETECTOR = 0,                   // write_guard: 0 = NONE, 1 = ALWAYS (test control); T5 adds D1-D3
+    parameter int DETECTOR = 0,                   // write_guard: 0 NONE, 1 ALWAYS, 2 D1, 3 D2, 4 D3, 5 NEVER, 6 PLACEBO
+    parameter int WG_ACTION = 0,                  // 0 = A1 (bypass)
+    parameter int WG_MODE = 0,                    // D3: 0 STATIC, 1 ADAPTIVE
+    parameter int WG_WINDOW = 10000,
+    parameter int WG_THRESHOLD = 1000,
+    parameter int WG_M = 16,
+    parameter int WG_W = 16,
+    parameter int WG_PLACEBO_RATE = 0,            // PLACEBO restricted fraction in 1/65536
+    parameter int WG_PLACEBO_SEED = 1,
+    parameter bit OBSERVE = 1'b1,                 // 0 compiles the write_guard observation counters out
     parameter IMEM_FILE = "program.hex",   // untyped on purpose: Icarus 12 cannot bind a string-typed parameter inside generate blocks
     // Words in main memory: each of imem and dmem with CACHES_ON = 0, the one unified memory with
     // CACHES_ON = 1 (256 = 1 KiB, the default the earlier tests rely on; the C flow uses 65536 =
@@ -48,6 +57,12 @@ module rv32_top_pipelined #(
     output logic [31:0] dc_cnt_wb,
     output logic [31:0] dc_cnt_bypass,
     output logic [31:0] dc_cnt_rab,
+    // write_guard observation (T5.9; zero when OBSERVE = 0)
+    output logic        wg_restricted,
+    output logic [31:0] wg_cycles_restricted,
+    output logic [31:0] wg_first_restrict,
+    output logic [31:0] wg_stores,
+    output logic [31:0] wg_stores_restricted,
     output logic [31:0] dc_cnt_stall,
     output logic [31:0] ic_cnt_lookup,
     output logic [31:0] ic_cnt_miss,
@@ -153,21 +168,7 @@ logic                 ic_mem_done;
 
 generate
     if (CACHES_ON) begin : g_icache
-        icache #(.CACHE_BYTES(ICACHE_BYTES), .LINE_BYTES(LINE_BYTES)) u_icache(
-            .clk(clk),
-            .rst_n(rst_n),
-            .addr(A_PC_to_imem_and_ALU),
-            .rdata(instruction_imem_to_FETCH),
-            .imiss(imiss_c),
-            .mem_valid(ic_mem_valid),
-            .mem_addr(ic_mem_addr),
-            .mem_rdata(ic_mem_rdata),
-            .mem_done(ic_mem_done),
-            .refill_cnt(ic_refill_cnt),
-            .cnt_lookup(ic_cnt_lookup),
-            .cnt_miss(ic_cnt_miss),
-            .cnt_stall(ic_cnt_stall)
-        );
+        // the I$ lives in cache_system (instantiated in g_dcache below)
     end else begin : g_imem
         imem #(.DEPTH(MEM_WORDS), .INIT_FILE(IMEM_FILE)) u_imem(
             .A(A_PC_to_imem_and_ALU),
@@ -551,64 +552,69 @@ logic [LINE_BYTES-1:0] dc_mem_be;
 logic [LINE_BITS-1:0] dc_mem_rdata;
 logic                 dc_mem_done;
 
-// restricted-store decision (T5 detectors; NONE by default)
-logic dc_bypass_w;
-write_guard #(.DETECTOR(DETECTOR)) u_write_guard(
-    .clk(clk),
-    .rst_n(rst_n),
-    .store_valid(MemStoreM),
-    .array_write_valid(dc_aw_valid),
-    .line_idx(dc_aw_line),
-    .cycle_strobe(1'b1),
-    .bypass_store(dc_bypass_w),
-    /* verilator lint_off PINCONNECTEMPTY */  // KI-016: stall_req and restricted are used from T5 on
-    .stall_req(),
-    .restricted()
-    /* verilator lint_on PINCONNECTEMPTY */
-);
-
 generate
     if (CACHES_ON) begin : g_dcache
-        logic [$clog2(DCACHE_BYTES/LINE_BYTES)-1:0] aw_line_w;
-        assign dc_aw_line = 32'(aw_line_w);
         logic [4:0]    peek_hit;
         logic [159:0]  peek_data;
-        dcache #(.CACHE_BYTES(DCACHE_BYTES), .LINE_BYTES(LINE_BYTES), .DC_WRITE_LATENCY(DC_WRITE_LATENCY), .NPEEK(5)) u_dcache(
+        cache_system #(.ICACHE_BYTES(ICACHE_BYTES), .DCACHE_BYTES(DCACHE_BYTES), .LINE_BYTES(LINE_BYTES),
+                       .DC_WRITE_LATENCY(DC_WRITE_LATENCY), .DETECTOR(DETECTOR), .WG_ACTION(WG_ACTION),
+                       .WG_MODE(WG_MODE), .WG_WINDOW(WG_WINDOW), .WG_THRESHOLD(WG_THRESHOLD), .WG_M(WG_M),
+                       .WG_W(WG_W), .WG_PLACEBO_RATE(WG_PLACEBO_RATE), .WG_PLACEBO_SEED(WG_PLACEBO_SEED),
+                       .OBSERVE(OBSERVE)) u_caches(
             .clk(clk),
             .rst_n(rst_n),
-            .addr(ALUResultM),
-            .wdata(StoreDataM),
-            .be(StoreBEM),
-            .we(MemStoreM),
-            .re(RegWriteM & (ResultSrcM == 2'b01)),
-            .bypass(dc_bypass_w),
-            .rdata(ReadRawM),
+            .i_addr(A_PC_to_imem_and_ALU),
+            .i_rdata(instruction_imem_to_FETCH),
+            .imiss(imiss_c),
+            .d_addr(ALUResultM),
+            .d_wdata(StoreDataM),
+            .d_be(StoreBEM),
+            .d_we(MemStoreM),
+            .d_re(RegWriteM & (ResultSrcM == 2'b01)),
+            .d_stall(dmiss),
+            .d_rdata(ReadRawM),
             .dmiss(dmiss_c),
-            .mem_valid(dc_mem_valid),
-            .mem_we(dc_mem_we),
-            .mem_addr(dc_mem_addr),
-            .mem_wdata(dc_mem_wdata),
-            .mem_be(dc_mem_be),
-            .mem_done(dc_mem_done),
-            .mem_rdata(dc_mem_rdata),
-            .aw_valid(dc_aw_valid),
-            .aw_line(aw_line_w),
-            .aw_kind(dc_aw_kind),
-            .tr_valid(dc_tr_valid),
-            .tr_we(dc_tr_we),
-            .tr_addr(dc_tr_addr),
-            .tr_size(dc_tr_size),
-            .tr_bypass(dc_tr_bypass),
-            .cnt_access(dc_cnt_access),
-            .cnt_hit(dc_cnt_hit),
-            .cnt_miss(dc_cnt_miss),
-            .cnt_fill(dc_refill_cnt),
-            .cnt_wb(dc_cnt_wb),
-            .cnt_bypass(dc_cnt_bypass),
-            .cnt_refill_after_bypass(dc_cnt_rab),
-            .cnt_stall(dc_cnt_stall),
-            .cnt_write(dc_write_cnt),
-            .peek_addr({32'd12, 32'd8, 32'd4, 32'd0, dbg_widx[29:0], 2'b00}),
+            .ic_mem_valid(ic_mem_valid),
+            .ic_mem_addr(ic_mem_addr),
+            .ic_mem_rdata(ic_mem_rdata),
+            .ic_mem_done(ic_mem_done),
+            .dc_mem_valid(dc_mem_valid),
+            .dc_mem_we(dc_mem_we),
+            .dc_mem_addr(dc_mem_addr),
+            .dc_mem_wdata(dc_mem_wdata),
+            .dc_mem_be(dc_mem_be),
+            .dc_mem_done(dc_mem_done),
+            .dc_mem_rdata(dc_mem_rdata),
+            /* verilator lint_off PINCONNECTEMPTY */  // KI-016: stall_req is used by A2 (not implemented)
+            .stall_req(),
+            /* verilator lint_on PINCONNECTEMPTY */
+            .wg_restricted(wg_restricted),
+            .wg_cycles_restricted(wg_cycles_restricted),
+            .wg_first_restrict(wg_first_restrict),
+            .wg_stores(wg_stores),
+            .wg_stores_restricted(wg_stores_restricted),
+            .ic_refill_cnt(ic_refill_cnt),
+            .ic_cnt_lookup(ic_cnt_lookup),
+            .ic_cnt_miss(ic_cnt_miss),
+            .ic_cnt_stall(ic_cnt_stall),
+            .dc_refill_cnt(dc_refill_cnt),
+            .dc_write_cnt(dc_write_cnt),
+            .dc_aw_valid(dc_aw_valid),
+            .dc_aw_line(dc_aw_line),
+            .dc_aw_kind(dc_aw_kind),
+            .dc_tr_valid(dc_tr_valid),
+            .dc_tr_we(dc_tr_we),
+            .dc_tr_addr(dc_tr_addr),
+            .dc_tr_size(dc_tr_size),
+            .dc_tr_bypass(dc_tr_bypass),
+            .dc_cnt_access(dc_cnt_access),
+            .dc_cnt_hit(dc_cnt_hit),
+            .dc_cnt_miss(dc_cnt_miss),
+            .dc_cnt_wb(dc_cnt_wb),
+            .dc_cnt_bypass(dc_cnt_bypass),
+            .dc_cnt_rab(dc_cnt_rab),
+            .dc_cnt_stall(dc_cnt_stall),
+            .peek_word(dbg_widx[29:0]),
             .peek_hit(peek_hit),
             .peek_data(peek_data)
         );
@@ -681,6 +687,8 @@ generate
         assign dc_tr_valid = 1'b0; assign dc_tr_we = 1'b0; assign dc_tr_addr = 32'b0; assign dc_tr_size = 3'b0; assign dc_tr_bypass = 1'b0;
         assign dc_cnt_access = 32'b0; assign dc_cnt_hit = 32'b0; assign dc_cnt_miss = 32'b0; assign dc_cnt_wb = 32'b0; assign dc_cnt_bypass = 32'b0;
         assign dc_cnt_rab = 32'b0; assign dc_cnt_stall = 32'b0;
+        assign wg_restricted = 1'b0; assign wg_cycles_restricted = 32'b0; assign wg_first_restrict = 32'b0;
+        assign wg_stores = 32'b0; assign wg_stores_restricted = 32'b0;
     end
 endgenerate
 

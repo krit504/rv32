@@ -1,0 +1,27 @@
+run_id: 20261103-150309-2091314-python
+timestamp: 2026-11-03 15:04:59 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: .venv/bin/python analysis/calibrate.py
+git_commit: 86cffbb188f0c62ce64af64c4a792b1beb780909
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 110
+outputs:
+full_output: work/runs/20261103-150309-2091314-python.out
+output_tail: |
+  calibrating on: Dhrystone (500 runs), CoreMark (10 iterations)
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer/work/calibration/w1000/dhrystone_500_runs HALT 0
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer/work/calibration/w1000/coremark_10_iterations HALT 0
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer/work/calibration/w10000/dhrystone_500_runs HALT 0
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer/work/calibration/w10000/coremark_10_iterations HALT 0
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer/work/calibration/w100000/dhrystone_500_runs HALT 0
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer/work/calibration/w100000/coremark_10_iterations HALT 0
+  calibrate: wrote /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer/analysis/calibration.csv (63 rows)

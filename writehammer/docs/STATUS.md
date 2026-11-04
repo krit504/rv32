@@ -41,16 +41,16 @@ Times are IST.
 | T4.6 | DONE | `scripts/run.sh -- .venv/bin/python analysis/attack_mixed.py` | 4/4 HALT 0, exact replay; PHASE 0–3 gaps all within 1% of 1M cycles; marker negative controls rejected | 2026-11-03; re-run independently from main 2026-11-03 |
 | T4.7 | PARTIAL | `scripts/run.sh -- .venv/bin/python analysis/attack_validate.py --benign analysis/wear_baseline_f3a7ccb0eb4d.csv`; `scripts/run.sh -- python3 analysis/attack_pmr_table.py analysis/wear_baseline_f3a7ccb0eb4d.csv analysis/attack_6e72b1b2034e_validation.csv` | 24/24 wear/replay; 13 benign + 24 attack PMR table and heatmaps; wandering visible; binding PMR rule fails 23/24 (benign crc32 PMR 127.937) | 2026-11-03; PMR rule fails 23/24: DEC-010, KI-017 |
 | T4.8 | DONE | `scripts/run.sh -- python3 analysis/attack_tfail.py analysis/wear_baseline_f3a7ccb0eb4d.csv` | Baseline T_fail table generated for 13 benign and 24 attack workloads at 50/100/500 MHz, with source-hash sidecar | 2026-11-03; re-run independently from main 2026-11-03 |
-| T5.1 | NOT RUN | | | |
-| T5.2 | NOT RUN | | | |
-| T5.3 | NOT RUN | | | |
-| T5.4 | NOT RUN | | | |
-| T5.5 | NOT RUN | | | |
-| T5.6 | NOT RUN | | | |
-| T5.7 | NOT RUN | | | |
-| T5.8 | NOT RUN | | | |
-| T5.9 | NOT RUN | | | |
-| T5.10 | NOT RUN | | | |
+| T5.1 | DONE | `make lint test` | lint 0 warnings; full test green incl. mutants 52/52 and NONE unchanged; interface in docs/T5_INTERFACE.md | 2026-11-04 |
+| T5.2 | DONE | `tests/write_guard_test.py`, `tests/guard_mutants.py` | D1: unit 62/62 vs independent model; 17/17 guard mutants caught (docs/logs/T5.1-T5.7.md) | 2026-11-03 |
+| T5.3 | DONE | `tests/write_guard_test.py`, `tests/guard_mutants.py` | D2: unit 62/62 vs independent model; 17/17 guard mutants caught (docs/logs/T5.1-T5.7.md) | 2026-11-03 |
+| T5.4 | DONE | `tests/write_guard_test.py`, `tests/guard_mutants.py` | D3: unit 62/62 vs independent model; 17/17 guard mutants caught (docs/logs/T5.1-T5.7.md) | 2026-11-03 |
+| T5.5 | PARTIAL | `tests/guard_integration.py`, `tests/bypass_verify.py` | A1 integrated and verified (invariant holds, 41 images x 9 arms x 3 latencies, 0 mismatches). Unmet: A2 (stall-throttle) NOT RUN (KI-020) | 2026-11-04 |
+| T5.6 | DONE | `make calibrate` | `analysis/calibration.csv` from Dhrystone+CoreMark only; windows 1000/10000/100000; held-out never built | 2026-11-03 |
+| T5.7 | DONE | `tests/write_guard_test.py`, `tests/guard_mutants.py` | 62/62; 17/17 mutants caught | 2026-11-03 |
+| T5.8 | DONE | `tests/guard_integration.py` (full, `make guard-integration`) | 41/41 images (13 benign, 24 attack, 4 mixed) x 9 arms x LAT 1, 20, random: 1107 rows, 0 signature mismatches; non-vacuity checked (every restricting arm restricted stores); quick subset in `make test` | 2026-11-04 |
+| T5.9 | DONE | `tests/guard_integration.py` | restricted cycles, first-restriction cycle, stores and restricted stores, dc_bypass, dc_rab appear in the run CSV (work/guard_integration/results_full.csv) | 2026-11-04 |
+| T5.10 | PARTIAL | `tests/bypass_verify.py`, `tests/guard_integration.py`, `tests/guard_mutants.py` | bypass verification 18/18 (zero store-hit array writes under ALWAYS, replay vs independent cache model, memory equals caches-off golden); NEVER == NONE in cycles and counters on every image; dropped-store and wrong-data bypass mutants caught. Unmet: rate-matched PLACEBO two-pass runs and control rows in results.csv/report are the T6 harness (RTL side verified) | 2026-11-04 |
 | T6.1 | NOT RUN | | | |
 | T6.2 | NOT RUN | | | |
 | T6.3 | NOT RUN | | | |
