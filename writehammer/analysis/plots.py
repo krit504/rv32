@@ -9,6 +9,7 @@ from collections import defaultdict
 import hashlib
 import json
 from pathlib import Path
+import re
 import subprocess
 
 import matplotlib
@@ -47,41 +48,65 @@ def write_table(name, rows, fields, sources):
 def miss_plot(rows):
     by_workload = defaultdict(list)
     for row in rows:
-        if row["detector"] == "NONE" and row["icache_bytes"] not in ("", "0") and row["d_miss_rate"]:
+        if (row["workload_class"] in ("calibration", "held-out") and row["detector"] == "NONE"
+                and row["icache_bytes"] not in ("", "0") and row["d_miss_rate"]):
             by_workload[row["workload"]].append((int(row["dcache_bytes"]), float(row["d_miss_rate"])))
     if not by_workload:
         return
-    fig, ax = plt.subplots(figsize=(8, 4))
     for name, vals in sorted(by_workload.items()):
         vals.sort()
-        ax.plot([x / 1024 for x, _ in vals], [y for _, y in vals], marker="o", label=name)
-    ax.set(xlabel="D$ size (KiB)", ylabel="D$ miss rate", title="Measured NONE runs")
-    ax.legend(fontsize=7); fig.tight_layout()
-    path = HERE / "eval_fig_miss_vs_size.png"
-    fig.savefig(path, dpi=150); plt.close(fig)
-    provenance(path, [RESULT], sum(len(v) for v in by_workload.values()))
+        if len(vals) != 4:
+            raise ValueError(f"incomplete cache-size sweep for {name}")
+        fig, ax = plt.subplots(figsize=(6, 4))
+        ax.plot([x / 1024 for x, _ in vals], [y for _, y in vals], marker="o")
+        ax.set(xlabel="D$ size (KiB)", ylabel="D$ miss rate", title=f"{name}: NONE detector")
+        ax.set_xticks([1, 2, 4, 8]); ax.grid(alpha=0.2); fig.tight_layout()
+        slug = re.sub(r"[^a-z0-9]+", "_", name.lower()).strip("_")
+        path = HERE / f"eval_fig_miss_{slug}.png"
+        fig.savefig(path, dpi=150); plt.close(fig)
+        provenance(path, [RESULT], len(vals))
 
 
 def cpi_plot(rows):
-    good = [r for r in rows if r["correct"] == "1" and r["cycles"] and r["instret"]]
-    if not good:
-        return
-    labels = [f"{r['workload']}\n{r['detector']} {'off' if r['icache_bytes']=='0' else 'on'}" for r in good]
-    fig, ax = plt.subplots(figsize=(max(8, len(good)*1.2), 4))
-    x = np.arange(len(good))
-    for field, name, color in (("stall_loaduse", "load-use", "#4477aa"),
-                               ("stall_flush", "flush", "#cc6677"),
-                               ("stall_imiss", "I$ miss", "#228833"),
-                               ("stall_dmiss", "D$ miss", "#aa3377")):
-        y = [float(r[field]) / float(r["instret"]) if r[field] else 0.0 for r in good]
-        ax.plot(x, y, marker="o", label=name, color=color)
-    ax.plot(x, [float(r["cpi"]) for r in good], marker="s", label="total CPI", color="black")
-    ax.set_xticks(x, labels, rotation=45, ha="right", fontsize=7)
-    ax.set(ylabel="Cycles per instruction", title="CPI and measured stall components")
-    ax.legend(fontsize=7); fig.tight_layout()
-    path = HERE / "eval_fig_cpi_stalls.png"
-    fig.savefig(path, dpi=150); plt.close(fig)
-    provenance(path, [RESULT], len(good))
+    benign = sorted({r["workload"] for r in rows if r["workload_class"] in ("calibration", "held-out")})
+    selected = []
+    for name in benign:
+        cases = [("No cache", lambda r: r["detector"] == "NONE" and r["dcache_bytes"] == "0"),
+                 ("Cache", lambda r: r["detector"] == "NONE" and r["dcache_bytes"] == "2048"),
+                 ("D1", lambda r: r["detector"] == "D1" and r["mode"] == "STATIC" and r["window_cycles"] == "10000" and r["threshold_k"] == "2"),
+                 ("D2 M16", lambda r: r["detector"] == "D2" and r["M"] == "16" and r["mode"] == "STATIC" and r["window_cycles"] == "10000" and r["threshold_k"] == "2"),
+                 ("D3", lambda r: r["detector"] == "D3" and r["mode"] == "ADAPTIVE" and r["window_cycles"] == "10000" and r["threshold_k"] == "2")]
+        group = []
+        for label, predicate in cases:
+            matches = [r for r in rows if r["workload"] == name and predicate(r)]
+            if len(matches) != 1:
+                raise ValueError(f"incomplete primary CPI comparison for {name}: {label}")
+            group.append((label, matches[0]))
+            selected.append(matches[0])
+        labels = [label for label, _ in group]
+        chosen = [r for _, r in group]
+        x = np.arange(len(chosen))
+        fig, axes = plt.subplots(2, 1, figsize=(7, 7), sharex=True)
+        axes[0].bar(x, [float(r["cpi"]) for r in chosen], color="#4477aa")
+        axes[0].set(ylabel="Cycles / instruction", title=f"{name}: CPI")
+        bottom = np.zeros(len(chosen))
+        for field, label, color in (("stall_loaduse", "load-use", "#4477aa"),
+                                    ("stall_flush", "flush", "#cc6677"),
+                                    ("stall_imiss", "I$ miss", "#228833"),
+                                    ("stall_dmiss", "D$ miss", "#aa3377")):
+            values = np.array([float(r[field]) / float(r["instret"]) for r in chosen])
+            axes[1].bar(x, values, bottom=bottom, label=label, color=color)
+            bottom += values
+        axes[1].set(ylabel="Stall cycles / instruction", title="Measured stall components")
+        axes[1].set_xticks(x, labels, rotation=30, ha="right")
+        axes[1].legend(fontsize=8); fig.tight_layout()
+        slug = re.sub(r"[^a-z0-9]+", "_", name.lower()).strip("_")
+        path = HERE / f"eval_fig_cpi_{slug}.png"
+        fig.savefig(path, dpi=150); plt.close(fig)
+        provenance(path, [RESULT], len(chosen))
+    fields = ["run_id", "workload", "detector", "mode", "M", "cycles", "instret", "cpi",
+              "stall_loaduse", "stall_flush", "stall_imiss", "stall_dmiss"]
+    write_table("eval_table_perf.csv", [{k: r[k] for k in fields} for r in selected], fields, [RESULT])
 
 
 def heatmaps(results, window_rows):
@@ -91,7 +116,7 @@ def heatmaps(results, window_rows):
         if row["run_id"] not in meta:
             raise ValueError(f"wear CSV has unknown run {row['run_id']}")
         by_run[row["run_id"]].append(row)
-    for run_id, entries in by_run.items():
+    for index, (run_id, entries) in enumerate(by_run.items(), 1):
         result = meta[run_id]
         nlines = int(result["dcache_bytes"]) // int(result["line_bytes"])
         nwindows = max(int(e["window"]) for e in entries) + 1
@@ -112,6 +137,8 @@ def heatmaps(results, window_rows):
         path = HERE / f"eval_fig_heatmap_{run_id}.png"
         fig.savefig(path, dpi=150); plt.close(fig)
         provenance(path, [RESULT, WINDOWS], len(entries))
+        if index % 10 == 0:
+            print(f"[plots] heatmap progress {index}/{len(by_run)}", flush=True)
     return len(by_run)
 
 
@@ -121,6 +148,10 @@ def main():
     rows = list(csv.DictReader(RESULT.open()))
     if not rows or any(r["correct"] != "1" for r in rows):
         raise ValueError("results.csv has no complete correct rows")
+    for pattern in ("eval_fig_*.png", "eval_fig_*.png.json",
+                    "eval_table_*.csv", "eval_table_*.csv.json"):
+        for old in HERE.glob(pattern):
+            old.unlink()
     miss_plot(rows)
     cpi_plot(rows)
     nheat = heatmaps(rows, list(csv.DictReader(WINDOWS.open())))
@@ -130,8 +161,8 @@ def main():
     fields = ["run_id", "workload", "detector", "seed", "fp_cycle_frac",
               "fp_store_frac", "detect_latency_cycles"]
     write_table("eval_table_fp_latency.csv", [{k: r[k] for k in fields} for r in rows], fields, [RESULT])
-    print(f"[plots] regenerated miss-rate, CPI/stall plots, {nheat} measured heatmaps and two tables from CSVs")
-    print("[plots] sensitivity, area/Fmax and hypotheses await T5 and author physical-flow results")
+    print(f"[plots] regenerated per-benign miss-rate and CPI/stall plots, {nheat} measured heatmaps and three tables from CSVs")
+    print("[plots] sensitivity and hypotheses await phase snapshots; area/Fmax awaits author physical-flow results")
 
 
 if __name__ == "__main__":

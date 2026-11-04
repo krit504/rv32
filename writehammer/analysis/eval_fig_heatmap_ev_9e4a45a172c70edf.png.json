@@ -1,0 +1,11 @@
+{
+  "script": "analysis/plots.py",
+  "git_commit": "cded6091ceee805aa297203ba94b55b20cd984a7",
+  "source_sha256": {
+    "analysis/results.csv": "bbe02ca769930fa7a9f6c3d1fa869fef403ec2fbd9dc9c2b9cddd7f9382ff342",
+    "analysis/eval_wear_windows.csv": "c2c079ebb28b0f83968cf226e6d234eeaaae73d51080dd73ba487a47e8adb3b4"
+  },
+  "artifact_sha256": "7703683efc6ddcfa2d2936b78dab7066568d260a24b63fc23f1baa1b65c845f4",
+  "source_rows": 3072,
+  "development_subset": false
+}
