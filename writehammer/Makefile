@@ -135,6 +135,7 @@ plots:
 	$(RUN) $(VENV_PY) analysis/eval_wear_export.py
 	$(RUN) $(VENV_PY) analysis/plots.py
 	$(RUN) $(VENV_PY) analysis/eval_exploratory.py
+	$(RUN) $(VENV_PY) analysis/eval_control_compare.py
 hypotheses: ; @scripts/not_implemented.sh $@ T6.3
 audit:      ; @scripts/not_implemented.sh $@ T7.8
 
