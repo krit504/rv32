@@ -128,7 +128,8 @@ attacks-validate:
 
 calibrate:
 	$(RUN) $(VENV_PY) analysis/calibrate.py
-eval:       ; @scripts/not_implemented.sh $@ T6.1
+eval:
+	JOBS=2 $(RUN) $(VENV_PY) analysis/eval_matrix.py --run --jobs 2
 synth:      ; @scripts/not_implemented.sh $@ T6.5
 plots:
 	$(RUN) $(VENV_PY) analysis/plots.py

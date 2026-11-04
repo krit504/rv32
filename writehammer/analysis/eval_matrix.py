@@ -29,7 +29,7 @@ from vl_tb import _build as vl_build  # noqa: E402
 sys.path.insert(0, str(ROOT / "analysis"))
 from baseline import workloads as benign_workloads  # noqa: E402
 from attack_runner import flags as attack_flags  # noqa: E402
-from wear_stats import main as wear_stats  # noqa: E402
+from eval_wear_stats import summarize as wear_stats  # noqa: E402
 
 RESULT_COLUMNS = """run_id git_commit workload workload_class icache_bytes dcache_bytes line_bytes mem_latency dc_write_latency detector action mode window_cycles threshold_k threshold M seed cycles instret cpi stall_loaduse stall_flush stall_imiss stall_dmiss i_miss_rate d_miss_rate array_writes_total w_max w_mean pmr_all pmr_written t_fail_50mhz t_fail_100mhz t_fail_500mhz bypassed_stores refills_after_bypass restricted_cycle_frac fp_cycle_frac fp_store_frac detect_latency_cycles signature_hash correct""".split()
 MANIFEST_COLUMNS = ["run_id", "workload", "workload_class", "source_kind", "source_id", "icache_bytes", "dcache_bytes", "line_bytes", "mem_latency", "dc_write_latency", "detector", "action", "mode", "window_cycles", "threshold_k", "threshold", "M", "seed", "control_for", "manifest_status"]
@@ -96,6 +96,20 @@ def planned_rows():
                 control_for=d)
     ids = [r["run_id"] for r in rows]
     assert len(ids) == len(set(ids)), "run_id collision"
+    calibration = ROOT / "analysis/calibration.csv"
+    if calibration.is_file():
+        thresholds = {(r["detector"], int(r["M"]), int(r["window_cycles"]), float(r["k"])): r["threshold"]
+                      for r in csv.DictReader(calibration.open())}
+        for row in rows:
+            detector = row["control_for"] if row["detector"] == "PLACEBO" else row["detector"]
+            if detector in ("D1", "D2", "D3"):
+                key = (detector, int(row["M"] or 0), int(row["window_cycles"]), float(row["threshold_k"]))
+                if key not in thresholds:
+                    raise ValueError(f"missing calibrated threshold {key}")
+                row["threshold"] = thresholds[key]
+                row["manifest_status"] = "READY"
+            elif row["detector"] == "NEVER":
+                row["manifest_status"] = "READY"
     return rows
 
 
@@ -108,24 +122,19 @@ def write_manifest(rows):
                "manifest_sha256": sha(path),
                "inputs_sha256": {p: sha(ROOT / p) for p in
                                  ("tests/workloads.py", "tests/attacks.py", "sw/attacks/manifest.json", "../docs/writehammer.md")},
-               "calibration": "pending docs/T5_INTERFACE.md and analysis/calibration.csv",
+               "calibration_sha256": sha(ROOT / "analysis/calibration.csv") if (ROOT / "analysis/calibration.csv").is_file() else None,
                "taxonomy_credit": "Author's group: TENDRA and the Write Hammer draft"}
     Path(str(path) + ".json").write_text(json.dumps(sidecar, indent=2) + "\n")
     return path
 
 
 def eval_bench():
-    """Generate an observation-only Phase A bench; never edit locked tb/ or rtl/."""
+    """Generate an observation-only wear bench; never edit locked tb/ or rtl/."""
     source = (ROOT / "tb" / "tb_prog.sv").read_text()
     def patch(old, new):
         nonlocal source
         assert source.count(old) == 1, f"tb_prog interface changed: {old[:60]}"
         source = source.replace(old, new)
-    patch("parameter int LINEB = 16            // line bytes (both caches)",
-          "parameter int LINEB = 16,           // line bytes (both caches)\n"
-          "    parameter int EVAL_DETECTOR = 0,\n    parameter int EVAL_WINDOW = 10000")
-    patch(".CACHES_ON(CACHES), .MEM_LATENCY(LAT)",
-          ".CACHES_ON(CACHES), .DETECTOR(EVAL_DETECTOR), .MEM_LATENCY(LAT)")
     patch("    rv32_top_pipelined #(",
           "    logic eval_aw_valid, eval_aw_kind, eval_tr_valid, eval_tr_we, eval_tr_bypass;\n"
           "    logic [31:0] eval_aw_line, eval_tr_addr;\n"
@@ -135,7 +144,7 @@ def eval_bench():
           "        .dc_tr_valid(eval_tr_valid), .dc_tr_we(eval_tr_we), .dc_tr_addr(eval_tr_addr),\n"
           "        .dc_tr_size(eval_tr_size), .dc_tr_bypass(eval_tr_bypass),\n"
           "        .ic_refill_cnt(ic_refill_cnt),")
-    patch("    logic halted;", "    wear_monitor #(.NLINES(DCB/LINEB), .WINDOW_CYCLES(EVAL_WINDOW)) eval_wear (\n"
+    patch("    logic halted;", "    wear_monitor #(.NLINES(DCB/LINEB), .WINDOW_CYCLES(100000)) eval_wear (\n"
           "        .clk(clk), .rst_n(rst_n), .aw_valid(eval_aw_valid), .aw_line(eval_aw_line),\n"
           "        .aw_kind(eval_aw_kind), .tr_valid(eval_tr_valid), .tr_we(eval_tr_we),\n"
           "        .tr_addr(eval_tr_addr), .tr_size(eval_tr_size), .tr_bypass(eval_tr_bypass),\n"
@@ -149,6 +158,11 @@ def eval_bench():
     out = ROOT / "work" / "eval" / "tb_eval.sv"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(source)
+    monitor = (ROOT / "tb/wear_monitor.sv").read_text()
+    old = "            if (tr_valid)\n                $fdisplay(ftrace,"
+    assert monitor.count(old) == 1, "wear monitor trace interface changed"
+    monitor = monitor.replace(old, "            if (1'b0 && tr_valid)\n                $fdisplay(ftrace,")
+    (out.parent / "wear_monitor_eval.sv").write_text(monitor)
     return out
 
 
@@ -201,25 +215,36 @@ def signature(output, parsed):
                                       reg.group(1), mem.group(1)]).encode()).hexdigest()
 
 
-def sim_one(plan, image, bench, baseline_signature=None):
+def sim_one(plan, image, bench, baseline_signature=None, placebo_rate=None):
     rid = plan["run_id"]
     run_dir = ROOT / "work" / "eval" / "runs" / rid
     run_dir.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(image, run_dir / "program.hex")
-    detector = {"NONE": 0, "ALWAYS": 1}[plan["detector"]]
+    detector = {"NONE": 0, "ALWAYS": 1, "D1": 2, "D2": 3, "D3": 4,
+                "NEVER": 5, "PLACEBO": 6}[plan["detector"]]
+    if detector == 6 and placebo_rate is None:
+        raise ValueError("PLACEBO requires the paired real detector's measured store fraction")
     caches = int(plan["icache_bytes"]) > 0
     icb = int(plan["icache_bytes"]) or 2048
     dcb = int(plan["dcache_bytes"]) or 2048
     params = {"CACHES": int(caches), "LAT": int(plan["mem_latency"]),
               "RANDLAT": 0, "MEM_SEED": 1, "MEMW": 65536, "IMAGE": 1, "HASH": 1,
               "MAXCYC": 800_000_000, "ICB": icb, "DCB": dcb, "LINEB": int(plan["line_bytes"]),
-              "EVAL_DETECTOR": detector, "EVAL_WINDOW": int(plan["window_cycles"])}
+              "DETECTOR": detector, "WG_MODE": int(plan["mode"] == "ADAPTIVE"),
+              "WG_WINDOW": int(plan["window_cycles"]),
+              "WG_THRESHOLD": int(plan["threshold"] or 1000),
+              "WG_M": int(plan["M"] or 16),
+              "WG_PLACEBO_RATE": placebo_rate or 0,
+              "WG_PLACEBO_SEED": int(plan["seed"]) or 1}
     sources = CORE_RTL + [str(ROOT / "tb/sys_monitor.sv"),
-                          str(ROOT / "tb/wear_monitor.sv"), str(bench)]
+                          str(bench.parent / "wear_monitor_eval.sv"), str(bench)]
     input_signature = hashlib.sha256(json.dumps({
         "plan": plan, "image": sha(image),
         "sources": {str(Path(path).relative_to(ROOT)): sha(path) for path in sources},
         "params": params, "baseline_signature": baseline_signature,
+        "calibration_sha256": sha(ROOT / "analysis/calibration.csv"),
+        "runner_sha256": sha(Path(__file__)),
+        "wear_summary_script_sha256": sha(ROOT / "analysis/eval_wear_stats.py"),
     }, sort_keys=True).encode()).hexdigest()
     meta_path = run_dir / "provenance.json"
     saved_row = run_dir / "result_row.json"
@@ -249,6 +274,8 @@ def sim_one(plan, image, bench, baseline_signature=None):
                                    "detector", "action", "mode", "window_cycles", "threshold_k",
                                    "threshold", "M", "seed")})
     row["git_commit"] = git_commit()
+    wg = {k: int(v) for k, v in re.findall(r"(\w+)=(\d+)",
+          (re.search(r"^WG .*$", output, re.M) or re.search(r"^$", "")).group(0))}
     if proc.returncode or parsed["timeout"] or parsed["halt"] != 0:
         row["correct"] = 0
         reason = f"sim_failed rc={proc.returncode} timeout={parsed['timeout']} halt={parsed['halt']}"
@@ -266,9 +293,10 @@ def sim_one(plan, image, bench, baseline_signature=None):
                     "d_miss_rate": counters["dc_miss"] / counters["dc_access"] if counters["dc_access"] else 0,
                     "bypassed_stores": counters["dc_bypass"],
                     "refills_after_bypass": counters["dc_rab"]})
+        if not {"restricted_cycles", "first_restrict", "stores", "stores_restricted"} <= wg.keys():
+            raise ValueError(f"missing WG metrics for {rid}")
         if caches:
-            wear_stats(run_dir)
-            wear = json.loads((run_dir / "wear_summary.json").read_text())
+            wear = wear_stats(run_dir)
             row.update({"array_writes_total": wear["array_writes"], "w_max": wear["w_max"],
                         "w_mean": wear["mean_all"], "pmr_all": wear["pmr_all"],
                         "pmr_written": wear["pmr_written"],
@@ -278,10 +306,12 @@ def sim_one(plan, image, bench, baseline_signature=None):
         reason = "" if row["correct"] else "signature_mismatch"
     meta = {"run_id": rid, "script": "analysis/eval_matrix.py", "git_commit": row["git_commit"],
             "input_signature": input_signature,
+            "runner_sha256": sha(Path(__file__)),
+            "wear_summary_script_sha256": sha(ROOT / "analysis/eval_wear_stats.py"),
             "image_sha256": sha(image), "bench_sha256": sha(bench),
             "rtl_sha256": hashlib.sha256("".join(sha(x) for x in CORE_RTL).encode()).hexdigest(),
             "simulation_sha256": sha(run_dir / "simulation.log"), "reason": reason,
-            "max_cycles": limit, "wall_timeout_seconds": 1800}
+            "wg": wg, "max_cycles": limit, "wall_timeout_seconds": 1800}
     (run_dir / "provenance.json").write_text(json.dumps(meta, indent=2) + "\n")
     saved_row.write_text(json.dumps(row, indent=2) + "\n")
     return row, reason
@@ -298,7 +328,7 @@ def write_results(rows, *, development_subset=True):
     Path(str(out) + ".json").write_text(json.dumps(sidecar, indent=2) + "\n")
 
 
-def write_exclusions(plans, completed, *, phase):
+def write_exclusions(plans, completed, *, phase, reasons=None):
     done = {r["run_id"] for r in completed}
     missing = [r for r in plans if r["run_id"] not in done]
     manifest = ROOT / "analysis/matrix_manifest.csv"
@@ -309,8 +339,9 @@ def write_exclusions(plans, completed, *, phase):
              "Every missing run is listed below. A pending run is not an observed result.", "",
              "| Run ID | Workload | Detector | Reason |", "|---|---|---|---|"]
     for row in missing:
-        reason = ("T5 interface and calibration unavailable" if row["manifest_status"] == "PROVISIONAL"
-                  else "not selected in Phase A smoke")
+        reason = (reasons or {}).get(row["workload"],
+                 "T5 interface and calibration unavailable" if row["manifest_status"] == "PROVISIONAL"
+                 else "not selected in Phase A smoke" if phase == "Phase A smoke" else "execution pending")
         lines.append(f"| `{row['run_id']}` | {row['workload']} | {row['detector']} | {reason} |")
     (ROOT / "docs/EXCLUDED_RUNS.md").write_text("\n".join(lines) + "\n")
     sidecar = {"script": "analysis/eval_matrix.py", "git_commit": git_commit(),
@@ -348,12 +379,101 @@ def smoke(rows):
     print(f"[eval-smoke] {len(result)}/{len(result)} passed")
 
 
+def full_matrix(plans, jobs):
+    if not 1 <= jobs <= 4:
+        raise ValueError("JOBS must be between 1 and 4")
+    if not (ROOT / "docs/T5_INTERFACE.md").is_file() or not (ROOT / "analysis/calibration.csv").is_file():
+        raise RuntimeError("full matrix requires T5 interface and calibration")
+    if any(p["manifest_status"] != "READY" for p in plans):
+        raise RuntimeError("uncalibrated planned run in manifest")
+    stop_heartbeat = threading.Event()
+    def heartbeat():
+        while not stop_heartbeat.wait(30):
+            print(f"eval heartbeat: full matrix active; {len(list((ROOT / 'work/eval/runs').glob('*/result_row.json')))}/{len(plans)} saved run rows", flush=True)
+    heart = threading.Thread(target=heartbeat, daemon=True)
+    heart.start()
+    try:
+        return _full_matrix(plans, jobs)
+    finally:
+        stop_heartbeat.set()
+        heart.join()
+
+
+def _full_matrix(plans, jobs):
+    images = build_images(all_workloads())
+    bench = eval_bench()
+    groups = {}
+    for plan in plans:
+        groups.setdefault(plan["workload"], []).append(plan)
+
+    def worker(name, group):
+        done = []
+        try:
+            baseline = None
+            base_plans = sorted((p for p in group if p["detector"] == "NONE"),
+                                key=lambda p: int(p["dcache_bytes"]))
+            for plan in base_plans:
+                row, reason = sim_one(plan, images[name], bench, baseline)
+                done.append(row)
+                if reason:
+                    raise RuntimeError(f"{plan['run_id']}: {reason}")
+                if int(plan["dcache_bytes"]) == 0:
+                    baseline = row["signature_hash"]
+                if int(plan["dcache_bytes"]) == 2048:
+                    primary_signature = row["signature_hash"]
+            if baseline is None:
+                raise RuntimeError("missing caches-off reference")
+            for plan in (p for p in group if p["detector"] in ("NEVER", "ALWAYS")):
+                row, reason = sim_one(plan, images[name], bench, primary_signature)
+                done.append(row)
+                if reason:
+                    raise RuntimeError(f"{plan['run_id']}: {reason}")
+            placebo = {(p["control_for"], p["mode"], p["window_cycles"], p["threshold_k"], p["M"]): p
+                       for p in group if p["detector"] == "PLACEBO"}
+            for plan in (p for p in group if p["detector"] in ("D1", "D2", "D3")):
+                row, reason = sim_one(plan, images[name], bench, primary_signature)
+                done.append(row)
+                if reason:
+                    raise RuntimeError(f"{plan['run_id']}: {reason}")
+                wg = json.loads((ROOT / "work/eval/runs" / plan["run_id"] / "provenance.json").read_text())["wg"]
+                rate = round(65536 * wg["stores_restricted"] / wg["stores"]) if wg["stores"] else 0
+                rate = min(65536, max(0, rate))
+                key = (plan["detector"], plan["mode"], plan["window_cycles"], plan["threshold_k"], plan["M"])
+                control = placebo[key]
+                crow, reason = sim_one(control, images[name], bench, primary_signature, placebo_rate=rate)
+                done.append(crow)
+                if reason:
+                    raise RuntimeError(f"{control['run_id']}: {reason}")
+            return name, done, ""
+        except Exception as error:
+            return name, done, f"{type(error).__name__}: {error}"
+
+    completed, reasons = [], {}
+    with ThreadPoolExecutor(max_workers=jobs) as executor:
+        futures = {executor.submit(worker, name, group): name for name, group in groups.items()}
+        for future in as_completed(futures):
+            name, rows, reason = future.result()
+            completed.extend(rows)
+            if reason:
+                reasons[name] = reason
+            write_results(completed, development_subset=len(completed) != len(plans))
+            write_exclusions(plans, completed, phase="full matrix", reasons=reasons)
+            print(f"eval progress {len(completed)}/{len(plans)} rows; {name}: " +
+                  (f"FAILED {reason}" if reason else f"{len(rows)} passed"), flush=True)
+    if reasons:
+        raise RuntimeError(f"full matrix has {len(reasons)} affected workloads; see docs/EXCLUDED_RUNS.md")
+    if len(completed) != len(plans):
+        raise RuntimeError(f"full matrix incomplete: {len(completed)}/{len(plans)}")
+    print(f"full matrix PASS: {len(completed)} rows")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     group = ap.add_mutually_exclusive_group(required=True)
     group.add_argument("--manifest-only", action="store_true")
     group.add_argument("--smoke", action="store_true")
     group.add_argument("--run", action="store_true")
+    ap.add_argument("--jobs", type=int, default=int(os.environ.get("JOBS", "4")))
     args = ap.parse_args()
     rows = planned_rows()
     path = write_manifest(rows)
@@ -361,9 +481,7 @@ def main():
     if args.smoke:
         smoke(rows)
     elif args.run:
-        if not (ROOT / "docs/T5_INTERFACE.md").is_file() or not (ROOT / "analysis/calibration.csv").is_file():
-            raise SystemExit("full T6.1 run waits for docs/T5_INTERFACE.md and analysis/calibration.csv")
-        raise SystemExit("full T6.1 execution adapter pending final T5 parameter names")
+        full_matrix(rows, args.jobs)
 
 
 if __name__ == "__main__":
