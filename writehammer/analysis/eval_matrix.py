@@ -254,6 +254,10 @@ def sim_one(plan, image, bench, baseline_signature=None, placebo_rate=None):
             print(f"eval resume {rid}: unchanged inputs, reusing completed row", flush=True)
             return json.loads(saved_row.read_text()), ""
     exe = vl_build("tb_prog", sources, params)
+    # vl_tb keeps the executable outside obj/ and checks that executable on
+    # every reuse. Its lock is released before _build returns. PLACEBO rates
+    # yield many parameter sets, so discard only the completed build objects.
+    shutil.rmtree(Path(exe).parent / "obj", ignore_errors=True)
     limit = 20_000_000 if plan["workload_class"] in ("attack", "mixed") else 500_000_000
     stop = threading.Event()
     def heartbeat():
