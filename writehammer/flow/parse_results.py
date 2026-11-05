@@ -66,7 +66,9 @@ def main():
         baseline[dbytes] = groups[name]
     fields = ["variant", "dcache_bytes", "detector", "M", "repeats",
               "area_um2_mean", "area_um2_min", "area_um2_max", "area_delta_um2",
-              "area_delta_pct_cache", "area_delta_pct_core", "fmax_mhz_mean",
+              "area_delta_pct_cache", "area_delta_pct_core",
+              "min_passing_period_ns_mean", "min_passing_period_ns_min", "min_passing_period_ns_max",
+              "fmax_mhz_mean",
               "fmax_mhz_min", "fmax_mhz_max", "fmax_delta_mhz", "fmax_delta_pct",
               "critical_path", "critical_path_changed", "yosys_version", "sta_version",
               "pdk_lib_sha256", "constraints_sha256", "pinned_image_id"]
@@ -75,6 +77,7 @@ def main():
         name, dbytes = variant["variant"], int(variant["dcache_bytes"])
         group = groups[name]
         areas = [r["area_um2"] for r in group]
+        periods = [r["min_passing_period_ns"] for r in group]
         fmaxes = [r["fmax_mhz"] for r in group]
         area = statistics.mean(areas)
         fmax = statistics.mean(fmaxes)
@@ -93,6 +96,9 @@ def main():
                          area_delta_um2=delta,
                          area_delta_pct_cache=100 * delta / base_area,
                          area_delta_pct_core=100 * delta / core,
+                         min_passing_period_ns_mean=statistics.mean(periods),
+                         min_passing_period_ns_min=min(periods),
+                         min_passing_period_ns_max=max(periods),
                          fmax_mhz_mean=fmax, fmax_mhz_min=min(fmaxes), fmax_mhz_max=max(fmaxes),
                          fmax_delta_mhz=fmax - base_fmax,
                          fmax_delta_pct=100 * (fmax - base_fmax) / base_fmax,
@@ -104,23 +110,25 @@ def main():
     with table.open("w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=fields, lineterminator="\n")
         writer.writeheader(); writer.writerows(rows)
-    lines = ["# T6.5 physical cost (author-run pinned flow)", "",
+    lines = ["# T6.5 physical cost (author-authorized pinned flow)", "",
              f"Yosys: `{common[0]['yosys']}`. OpenSTA: `{common[0]['sta']}`.",
              f"Pinned image: `{common[3]}`. sky130_fd_sc_hd liberty SHA-256: `{common[1]}`.",
              f"Constraint SHA-256: `{common[2]}`. Each variant: {args.repeats} repeats.", "",
-             "| Variant | D$ bytes | Area µm² | Δ area µm² | Δ cache % | Δ core % | Fmax MHz | Δ Fmax % | Path changed |",
-             "|---|---:|---:|---:|---:|---:|---:|---:|---|"]
+             "| Variant | D$ bytes | Area µm² | Δ area µm² | Δ cache % | Δ core % | Min period ns | Fmax MHz | Δ Fmax % | Path changed |",
+             "|---|---:|---:|---:|---:|---:|---:|---:|---:|---|"]
     for r in rows:
         lines.append(f"| {r['variant']} | {r['dcache_bytes']} | {r['area_um2_mean']:.2f} | "
                      f"{r['area_delta_um2']:+.2f} | {r['area_delta_pct_cache']:+.2f} | "
-                     f"{r['area_delta_pct_core']:+.2f} | {r['fmax_mhz_mean']:.2f} | "
+                     f"{r['area_delta_pct_core']:+.2f} | {r['min_passing_period_ns_mean']:.2f} | {r['fmax_mhz_mean']:.2f} | "
                      f"{r['fmax_delta_pct']:+.2f} | {bool(r['critical_path_changed'])} |")
     (FLOW / "cost_table.md").write_text("\n".join(lines) + "\n")
-    sidecar = {"script": "flow/parse_results.py", "git_commit": subprocess.check_output(
+    sidecar = {"script": "flow/parse_results.py", "script_sha256": sha(Path(__file__)),
+               "git_commit": subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "raw_source_sha256": hashes, "interface_sha256": common[4], "table_sha256": sha(table),
         "markdown_sha256": sha(FLOW / "cost_table.md"), "variants_sha256": sha(FLOW / "variants.csv")}
     (FLOW / "cost_table.csv.json").write_text(json.dumps(sidecar, indent=2) + "\n")
+    (FLOW / "cost_table.md.json").write_text(json.dumps(sidecar, indent=2) + "\n")
     print(f"physical cost: {len(rows)} real variants parsed from {len(hashes)} author runs")
 
 

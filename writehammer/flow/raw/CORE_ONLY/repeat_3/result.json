@@ -1,0 +1,138 @@
+{
+  "variant": "CORE_ONLY",
+  "repeat": 3,
+  "top": "core_only",
+  "dcache_bytes": 0,
+  "detector": "CORE",
+  "M": "",
+  "area_um2": 76323.2,
+  "min_passing_period_ns": 17.81,
+  "fmax_mhz": 56.14823133071309,
+  "critical_startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+  "critical_endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)",
+  "period_sweep": [
+    {
+      "period_ns": 2.0,
+      "slack_ns": -15.76,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 3.0,
+      "slack_ns": -14.76,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 4.0,
+      "slack_ns": -13.76,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 5.0,
+      "slack_ns": -12.76,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 6.0,
+      "slack_ns": -11.76,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 8.0,
+      "slack_ns": -9.76,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 10.0,
+      "slack_ns": -7.76,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 12.0,
+      "slack_ns": -5.76,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 15.0,
+      "slack_ns": -2.76,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 20.0,
+      "slack_ns": 2.24,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 17.5,
+      "slack_ns": -0.26,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 18.75,
+      "slack_ns": 0.99,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 18.12,
+      "slack_ns": 0.36,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 17.81,
+      "slack_ns": 0.05,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 17.66,
+      "slack_ns": -0.1,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 17.73,
+      "slack_ns": -0.03,
+      "startpoint": "_13757_ (rising edge-triggered flip-flop clocked by clk)",
+      "endpoint": "_13702_ (rising edge-triggered flip-flop clocked by clk)"
+    }
+  ],
+  "tool_versions": {
+    "yosys": "Yosys 0.66 (git sha1 86f2ddebce7e98ce7cacc27e8a5c14cb53b51b51, clang++ 21.1.8 -fPIC -O3)",
+    "sta": "2.7.0",
+    "image_id": "sha256:369c964be30bcec52d98bf18b2f8c7d80f133c5c9cf34cc1f7d5a0d2890a3103"
+  },
+  "parameters": {},
+  "interface_sha256": "9d97bd877384f560b6b1ce3c60eb680ea250f86c0afdaad348b8690826f3deda",
+  "pdk_lib_sha256": "8e78e14442062dba34d414fca6490b2f6b96038d4510d1438ca44fee31487135",
+  "constraints_sha256": "0d2076a97a9ff0bd81f068e65f0fbe7a3578829aa0d1fcf4142997b593aa4780",
+  "source_sha256": {
+    "rtl/core_only.sv": "18b617f175bec53b3ee865f8c744ca854aec2cf4b035ce16a5fe46e6dc58675e",
+    "flow/generated/rv32_top_pipelined.sv": "fc02e5490ff3324553a3379eeacf58363cb7006e9f7fe5e7d24c67352454b7eb",
+    "rtl/f_d_reg.sv": "ded3753871933bb15098b1bbd55cfa963a9e9fbd7251b473898d445a7c42aaf9",
+    "rtl/d_e_reg.sv": "817f1113e7af3ff0d3ed715c19dddcf00547424ef203417126cb9fb40b59491d",
+    "rtl/e_m_reg.sv": "162f8b64a2a3d1dbbd04ff9bb67d799fd39c3c294d4220aca58c71cefc58753b",
+    "rtl/m_w_reg.sv": "226ea4d17d24535f072c16ee3c5645ea20d818272dcdfeaf3c779bddcd5c7918",
+    "rtl/control_unit.sv": "d4ad416aeff80c66a83f5a8a341046a382d8762efed0c662e143ac73dcbce37c",
+    "rtl/main_decoder.sv": "6b60e9e75912f7dd10ffe779402a7e5afc4c77b20c1fda06d5eea8501f0dbb99",
+    "rtl/alu_decoder.sv": "52d41c4903e8210f0c9c7876954bf4f6896955cee926d13b52c0bf0d5b7bb101",
+    "rtl/alu.sv": "d6999acc3f18f773ba968d86b27de427f87978d6a3cd3c4b67cee7b07bfc10d0",
+    "rtl/immediate_generator.sv": "22cd6e776594634a7394d04312a7fc5b8723b20ec073976fc712b877dd3cd016",
+    "rtl/pc.sv": "1e9b04b766b5679fbbc1827a2f88e4f93941c9a30bd56ec9f0eb13a314bb50e9",
+    "rtl/regfile.sv": "05270eac28ddc450502f4a528e843ec0ee428f165a51c3bdca7e51ca5427905a",
+    "rtl/hazard_unit.sv": "e1d06c403688950f6847216799b1ec12fa6aecb726c2dd9a7086470970c96ffb"
+  },
+  "mapped_netlist_sha256": "14c4517959aa2b3a697bbbdcad6680ae012720549c8ecc55039103a4cb0a0b2b",
+  "pinned_image_id": "sha256:369c964be30bcec52d98bf18b2f8c7d80f133c5c9cf34cc1f7d5a0d2890a3103"
+}

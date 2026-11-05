@@ -1,0 +1,206 @@
+{
+  "variant": "D2048_D1",
+  "repeat": 1,
+  "top": "cache_system",
+  "dcache_bytes": 2048,
+  "detector": "D1",
+  "M": "",
+  "area_um2": 1545920.159999,
+  "min_passing_period_ns": 162.79,
+  "fmax_mhz": 6.142883469500584,
+  "critical_startpoint": "d_addr[4] (input port clocked by clk)",
+  "critical_endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)",
+  "period_sweep": [
+    {
+      "period_ns": 2.0,
+      "slack_ns": -160.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 3.0,
+      "slack_ns": -159.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 4.0,
+      "slack_ns": -158.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 5.0,
+      "slack_ns": -157.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 6.0,
+      "slack_ns": -156.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 8.0,
+      "slack_ns": -154.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 10.0,
+      "slack_ns": -152.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 12.0,
+      "slack_ns": -150.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 15.0,
+      "slack_ns": -147.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 20.0,
+      "slack_ns": -142.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 25.0,
+      "slack_ns": -137.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 30.0,
+      "slack_ns": -132.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 40.0,
+      "slack_ns": -122.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 50.0,
+      "slack_ns": -112.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 75.0,
+      "slack_ns": -87.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 100.0,
+      "slack_ns": -62.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 150.0,
+      "slack_ns": -12.78,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 200.0,
+      "slack_ns": 37.22,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 175.0,
+      "slack_ns": 12.22,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 162.5,
+      "slack_ns": -0.28,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 168.75,
+      "slack_ns": 5.97,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 165.62,
+      "slack_ns": 2.84,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 164.06,
+      "slack_ns": 1.28,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 163.28,
+      "slack_ns": 0.5,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 162.89,
+      "slack_ns": 0.11,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 162.69,
+      "slack_ns": -0.09,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    },
+    {
+      "period_ns": 162.79,
+      "slack_ns": 0.01,
+      "startpoint": "d_addr[4] (input port clocked by clk)",
+      "endpoint": "_120835_ (rising edge-triggered flip-flop clocked by clk)"
+    }
+  ],
+  "tool_versions": {
+    "yosys": "Yosys 0.66 (git sha1 86f2ddebce7e98ce7cacc27e8a5c14cb53b51b51, clang++ 21.1.8 -fPIC -O3)",
+    "sta": "2.7.0",
+    "image_id": "sha256:369c964be30bcec52d98bf18b2f8c7d80f133c5c9cf34cc1f7d5a0d2890a3103"
+  },
+  "parameters": {
+    "ICACHE_BYTES": 2048,
+    "DCACHE_BYTES": 2048,
+    "LINE_BYTES": 16,
+    "DETECTOR": 2,
+    "WG_ACTION": 0,
+    "WG_MODE": 0,
+    "WG_WINDOW": 10000,
+    "WG_W": 16,
+    "DC_WRITE_LATENCY": 1,
+    "OBSERVE": 0,
+    "WG_THRESHOLD": 740
+  },
+  "interface_sha256": "9d97bd877384f560b6b1ce3c60eb680ea250f86c0afdaad348b8690826f3deda",
+  "pdk_lib_sha256": "8e78e14442062dba34d414fca6490b2f6b96038d4510d1438ca44fee31487135",
+  "constraints_sha256": "0d2076a97a9ff0bd81f068e65f0fbe7a3578829aa0d1fcf4142997b593aa4780",
+  "source_sha256": {
+    "rtl/cache_system.sv": "81d0c61a22764143903446c961b56148af7613048f275e339b65eff0b827cb2a",
+    "rtl/icache.sv": "1d9d728822dedd6772b89e05b50ec06a1e1f98a4ebb8003e277f480e829f575a",
+    "rtl/dcache.sv": "03c2a0949c5b73651f148bc693c311d26d939458419513d9e8600a49d33fb6c7",
+    "rtl/write_guard.sv": "2228e6588ef9420ed12a26f045f15531ecc0c6f74dcd99abb23bffc0f29932ee"
+  },
+  "mapped_netlist_sha256": "6c629da13f3128e1b1d2c6f60d084910e915394d5674e34976f263dd228718d4",
+  "pinned_image_id": "sha256:369c964be30bcec52d98bf18b2f8c7d80f133c5c9cf34cc1f7d5a0d2890a3103"
+}

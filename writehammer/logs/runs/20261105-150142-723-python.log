@@ -1,0 +1,20 @@
+run_id: 20261105-150142-723-python
+timestamp: 2026-11-05 15:01:43 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: .venv/bin/python flow/plot_area.py --if-available
+git_commit: 7de42bb5df4f1155034b39c8e7ff8e8a0e543e1b
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 1
+outputs:
+full_output: work/runs/20261105-150142-723-python.out
+output_tail: |
+  physical area/Fmax plot: 16 measured variants

@@ -48,8 +48,11 @@ The inspected Docker image ID must equal
 If it differs, stop. Do not substitute another image. The PDK is sky130A with
 `sky130_fd_sc_hd__tt_025C_1v80.lib`.
 
-The author returns the complete `flow/raw/` directory and run log. The parser
-requires every planned variant and every repeat, validates the pinned image,
+The complete 48-repeat raw directory is retained as `flow/raw.tar.zst` with a
+SHA-256 sidecar. The 48 `result.json` records are also committed individually,
+so the table parser works immediately after merge. To inspect all Yosys and
+OpenSTA logs and mapped netlists, run `tar --zstd -xf flow/raw.tar.zst -C flow`.
+The parser requires every planned variant and every repeat, validates the pinned image,
 tool/PDK/constraint consistency, and only then writes `flow/cost_table.csv`,
 `flow/cost_table.md`, and a provenance sidecar. `make plots` then generates
 `flow/area_fmax.png` from that measured CSV. Until parsing succeeds, T6.5 is

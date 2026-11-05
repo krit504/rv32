@@ -1,0 +1,20 @@
+run_id: 20261105-150110-7-parse_results
+timestamp: 2026-11-05 15:01:10 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: python3 flow/parse_results.py --repeats 3
+git_commit: 7de42bb5df4f1155034b39c8e7ff8e8a0e543e1b
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 0
+outputs:
+full_output: work/runs/20261105-150110-7-parse_results.out
+output_tail: |
+  physical cost: 16 real variants parsed from 48 author runs

@@ -1,0 +1,5 @@
+# Full tool reports and mapped netlists are preserved in raw.tar.zst.
+# Keep the small per-repeat records directly available to parse_results.py.
+raw/**/*
+!raw/**/
+!raw/**/result.json

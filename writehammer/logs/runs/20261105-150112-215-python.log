@@ -1,0 +1,31 @@
+run_id: 20261105-150112-215-python
+timestamp: 2026-11-05 15:01:37 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: .venv/bin/python analysis/plots.py
+git_commit: 7de42bb5df4f1155034b39c8e7ff8e8a0e543e1b
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 25
+outputs:
+full_output: work/runs/20261105-150112-215-python.out
+output_tail: |
+  [plots] heatmap progress 10/109
+  [plots] heatmap progress 20/109
+  [plots] heatmap progress 30/109
+  [plots] heatmap progress 40/109
+  [plots] heatmap progress 50/109
+  [plots] heatmap progress 60/109
+  [plots] heatmap progress 70/109
+  [plots] heatmap progress 80/109
+  [plots] heatmap progress 90/109
+  [plots] heatmap progress 100/109
+  [plots] regenerated per-benign miss-rate and CPI/stall plots, 109 measured heatmaps and three tables from CSVs
+  [plots] phase-based detector tables regenerated; physical area/Fmax awaits author flow outputs
