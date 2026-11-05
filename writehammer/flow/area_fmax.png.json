@@ -1,0 +1,8 @@
+{
+  "script": "flow/plot_area.py",
+  "git_commit": "33c36f58df7772482abee2a09566c3aee0ef43d5",
+  "script_sha256": "f6399f995898b9d0238f8fd719df386f107f90e42a3bf8c878696c222380600f",
+  "cost_table_sha256": "f883fe229096ad4bf10fececa4f88b8f5fd445bd339be400061563b7d0a0054c",
+  "variants_sha256": "0de7f7a0fe46944529e6b636e64d015d3224f8ee19eb92f2bf5cd878d06cd969",
+  "figure_sha256": "ede00b177e2baa3140663f506c13030fd1892b6de03f9d9534ead88f4e43ff3d"
+}
