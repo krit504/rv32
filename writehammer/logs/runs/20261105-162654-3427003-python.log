@@ -1,0 +1,20 @@
+run_id: 20261105-162654-3427003-python
+timestamp: 2026-11-05 16:26:55 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer
+command: .venv/bin/python analysis/results_md.py
+git_commit: 4249abc56ef5712904d0ff107403e74ab82e8fd8
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 1
+outputs:
+full_output: work/runs/20261105-162654-3427003-python.out
+output_tail: |
+  wrote /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I/writehammer/docs/RESULTS.md (42 blocks)

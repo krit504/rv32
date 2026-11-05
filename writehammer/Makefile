@@ -8,10 +8,10 @@ TOP     := rv32_top_pipelined
 LATS    := 1 2 3 10
 RUN     := scripts/run.sh --   # every result-producing command is logged to logs/runs/ (spec 0B.1)
 
-.PHONY: all lint test arch-test random bench caches wear attacks calibrate eval synth plots \
+.PHONY: results all lint test arch-test random bench caches wear attacks calibrate eval synth plots \
         attacks-validate hypotheses locks locks-selftest audit clean arch-test test-nohazard test-hazard test-cache test-mem test-stall test-dcache test-invariant invariant caches test-subword test-perf test-toolchain test-arch-control test-mutants test-guard test-core-only guard-integration
 
-all: lint test arch-test random bench caches wear attacks calibrate eval synth plots hypotheses audit
+all: lint test arch-test random bench caches wear attacks calibrate eval synth plots hypotheses results audit
 
 lint:
 	$(RUN) verilator --lint-only -Wall --top-module $(TOP) $(RTL)
@@ -134,7 +134,15 @@ calibrate:
 	$(RUN) $(VENV_PY) analysis/calibrate.py
 eval:
 	JOBS=2 $(RUN) $(VENV_PY) analysis/eval_matrix.py --run --jobs 2
-synth:      ; @scripts/not_implemented.sh $@ T6.5
+# T6.5: the physical flow itself is author-only (flow/README.md). This target re-derives the cost table from the
+# committed raw archive (flow/raw.tar.zst) with the same parser; it runs no EDA tool.
+synth:
+	@test -d flow/raw || tar --use-compress-program=unzstd -C flow -xf flow/raw.tar.zst
+	$(RUN) python3 flow/parse_results.py --repeats 3
+
+# T7.5: docs/RESULTS.md from the CSVs only
+results:
+	$(RUN) $(VENV_PY) analysis/results_md.py
 plots:
 	$(RUN) $(VENV_PY) analysis/eval_wear_export.py
 	$(RUN) $(VENV_PY) analysis/plots.py
@@ -144,7 +152,9 @@ plots:
 	MPLCONFIGDIR=/tmp/wh-mpl $(RUN) $(VENV_PY) flow/plot_area.py --if-available
 hypotheses:
 	$(RUN) $(VENV_PY) analysis/hypotheses.py
-audit:      ; @scripts/not_implemented.sh $@ T7.8
+# T7.7/T7.8: automated integrity and claim checks (docs/INTEGRITY_REPORT.md is the human-written part)
+audit:
+	$(RUN) $(VENV_PY) scripts/audit.py
 
 locks:
 	$(RUN) scripts/check_locks.sh

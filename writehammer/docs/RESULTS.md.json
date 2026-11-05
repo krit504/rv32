@@ -1,0 +1,11 @@
+{
+  "script": "analysis/results_md.py",
+  "git_commit": "4249abc56ef5712904d0ff107403e74ab82e8fd8",
+  "inputs_sha256": {
+    "analysis/results.csv": "2245a16d7aa61a4f3921363a8a21574ecd6ae157dd54a0bbf143e3ab022097fd",
+    "analysis/eval_table_control_compare.csv": "c93601047193342a221981c499e05f96e0194f7e887b48e596db54d7762deb03",
+    "docs/HYPOTHESES.md": "7d7dc22c91fddbd5ac827e4fbe73167ba2dc0b3b351a955a6a57d983203ea0e8",
+    "flow/cost_table.md": "aad93299f6f0f47c46d0e2f4ba546c24023cb2d22ea39d93cd7ea8b4f5dfb95f"
+  },
+  "output_sha256": "e484db53ebb177ac40c58b094fbc2c68a978a30d0213d1141bfe3440843ad4ee"
+}
