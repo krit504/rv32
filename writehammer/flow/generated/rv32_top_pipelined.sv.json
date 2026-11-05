@@ -1,0 +1,8 @@
+{
+  "script": "flow/specialize_core.py",
+  "git_commit": "908681380e2f368b63ee1b54169519a941b1102e",
+  "script_sha256": "2645e8b71516dd6c8ffc24e2772d3b4cac757325fc5bb4033a39ec406be518dc",
+  "source_sha256": "2d0360ae6c0589f575b9dd06df4958eff61dd986350b5a1e24e25921fb582ea3",
+  "output_sha256": "fc02e5490ff3324553a3379eeacf58363cb7006e9f7fe5e7d24c67352454b7eb",
+  "core_only": 1
+}

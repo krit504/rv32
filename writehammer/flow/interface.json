@@ -10,7 +10,7 @@
   ],
   "core_sources": [
     "rtl/core_only.sv",
-    "rtl/rv32_top_pipelined.sv",
+    "flow/generated/rv32_top_pipelined.sv",
     "rtl/f_d_reg.sv",
     "rtl/d_e_reg.sv",
     "rtl/e_m_reg.sv",
@@ -22,14 +22,7 @@
     "rtl/immediate_generator.sv",
     "rtl/pc.sv",
     "rtl/regfile.sv",
-    "rtl/hazard_unit.sv",
-    "rtl/imem.sv",
-    "rtl/dmem.sv",
-    "rtl/mem_model.sv",
-    "rtl/icache.sv",
-    "rtl/dcache.sv",
-    "rtl/write_guard.sv",
-    "rtl/cache_system.sv"
+    "rtl/hazard_unit.sv"
   ],
   "parameter_names": {
     "icache_bytes": "ICACHE_BYTES",

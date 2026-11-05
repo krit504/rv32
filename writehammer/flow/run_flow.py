@@ -98,8 +98,11 @@ def yosys_script(row, cfg, lib, netlist):
                 params[name] = int(value)
     if any(not re.fullmatch(r"[A-Za-z_][A-Za-z_0-9]*", p) for p in params):
         raise ValueError("invalid RTL parameter name")
-    lines = ["read_verilog -sv -DSYNTHESIS " + " ".join(str(p) for p in sources),
-             "hierarchy -check -top " + top + " " + " ".join(f"-chparam {k} {v}" for k, v in params.items()),
+    lines = ["read_verilog -sv -DSYNTHESIS " + " ".join(str(p) for p in sources)]
+    if params:
+        lines.append("chparam " + " ".join(f"-set {k} {v}" for k, v in params.items()) + " " + top)
+    lines += ["hierarchy -check -top " + top,
+             "rename -top " + top,
              "synth -top " + top + " -flatten -noabc",
              "dfflibmap -liberty " + str(lib),
              "abc -liberty " + str(lib),
