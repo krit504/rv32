@@ -1,0 +1,10 @@
+{
+  "script": "analysis/sensitivity.py",
+  "git_commit": "141befd65167d0e01d4e56bd3a07f7dcbdd59740",
+  "script_sha256": "24ed667ac02ee8ea56e0b1d8cf2277fb0800f6b4c5640db06ae014dc648c9b5a",
+  "results_sha256": "2245a16d7aa61a4f3921363a8a21574ecd6ae157dd54a0bbf143e3ab022097fd",
+  "manifest_sha256": "11572b690d0d8b0cc3852eda8e14bbe5127bf804fc979e8bdba16c27798bf339",
+  "derived_csv_sha256": "be0f211fd70ea7bdfc7a5494ac04792e6b1be95401d3e2e612e444c39b73a393",
+  "figure_sha256": "de304578963d6572e904ea19ce3466ca834d9cf9a63f8765182795fe39dfb1a2",
+  "censored_total": 2466
+}
