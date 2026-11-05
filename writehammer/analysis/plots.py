@@ -162,7 +162,7 @@ def main():
               "fp_store_frac", "detect_latency_cycles"]
     write_table("eval_table_fp_latency.csv", [{k: r[k] for k in fields} for r in rows], fields, [RESULT])
     print(f"[plots] regenerated per-benign miss-rate and CPI/stall plots, {nheat} measured heatmaps and three tables from CSVs")
-    print("[plots] sensitivity and hypotheses await phase snapshots; area/Fmax awaits author physical-flow results")
+    print("[plots] phase-based detector tables regenerated; physical area/Fmax awaits author flow outputs")
 
 
 if __name__ == "__main__":
