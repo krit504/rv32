@@ -1,0 +1,59 @@
+run_id: 20261103-122444-2-wear_replay_suite
+timestamp: 2026-11-03 12:25:42 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: python3 analysis/wear_replay_suite.py --benign
+git_commit: 6f20d0ca6a0463754f05a10ce7a5ca77291de25e
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 58
+outputs:
+full_output: work/runs/20261103-122444-2-wear_replay_suite.out
+output_tail: |
+  wear replay starting: Dhrystone (500 runs)
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/Dhrystone__500_runs_ HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/Dhrystone__500_runs_: 68756 accesses, 35715 array writes
+  wear replay starting: CoreMark (10 iterations)
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/CoreMark__10_iterations_ HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/CoreMark__10_iterations_: 699422 accesses, 151991 array writes
+  wear replay starting: crc32
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/crc32 HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/crc32: 525523 accesses, 175366 array writes
+  wear replay starting: md5sum
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/md5sum HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/md5sum: 346879 accesses, 132657 array writes
+  wear replay starting: nettle-sha256
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/nettle-sha256 HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/nettle-sha256: 669467 accesses, 219632 array writes
+  wear replay starting: nettle-aes
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/nettle-aes HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/nettle-aes: 862042 accesses, 437312 array writes
+  wear replay starting: huffbench
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/huffbench HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/huffbench: 704564 accesses, 222653 array writes
+  wear replay starting: wikisort
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/wikisort HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/wikisort: 759979 accesses, 287240 array writes
+  wear replay starting: sglib-combined
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/sglib-combined HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/sglib-combined: 1040280 accesses, 375682 array writes
+  wear replay starting: qrduino
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/qrduino HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/qrduino: 756319 accesses, 103451 array writes
+  wear replay starting: memcpy_big
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/memcpy_big HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/memcpy_big: 106530 accesses, 83330 array writes
+  wear replay starting: memset_big
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/memset_big HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/memset_big: 86042 accesses, 88089 array writes
+  wear replay starting: storeloop
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/storeloop HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/wear_suite/storeloop: 139264 accesses, 169984 array writes
+  [wear-replay-suite] 13/13 passed

@@ -1,0 +1,8 @@
+{
+  "script": "analysis/eval_control_compare.py",
+  "git_commit": "ec2ede14d5c5b4254d00a0ed2e8d33c7e5a45359",
+  "results_sha256": "2245a16d7aa61a4f3921363a8a21574ecd6ae157dd54a0bbf143e3ab022097fd",
+  "manifest_sha256": "11572b690d0d8b0cc3852eda8e14bbe5127bf804fc979e8bdba16c27798bf339",
+  "artifact_sha256": "74d11d160e9871e8d106ac940b15e9d4a1de982a2021b33547f0e8cfd99ae66d",
+  "rows": 112
+}

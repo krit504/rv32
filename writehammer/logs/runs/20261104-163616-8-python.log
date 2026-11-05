@@ -1,0 +1,60 @@
+run_id: 20261104-163616-8-python
+timestamp: 2026-11-04 16:36:57 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: .venv/bin/python analysis/eval_matrix.py --run --jobs 2
+git_commit: b366953bbdd5ee6e6318717629febeca2603dc5f
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+  JOBS=2
+seed: none
+exit_code: 0
+duration_s: 41
+outputs:
+full_output: work/runs/20261104-163616-8-python.out
+output_tail: |
+  eval resume ev_77349d256a8e377c: unchanged inputs, reusing completed row
+  eval resume ev_dad1c43693eb2ab7: unchanged inputs, reusing completed row
+  eval resume ev_6840a245b68b8fd6: unchanged inputs, reusing completed row
+  eval resume ev_3c1e2b588e6aab4d: unchanged inputs, reusing completed row
+  eval resume ev_3e33897eb6ad5b0c: unchanged inputs, reusing completed row
+  eval resume ev_0fa60256ed3316d7: unchanged inputs, reusing completed row
+  eval resume ev_1bbf19033ced43e8: unchanged inputs, reusing completed row
+  eval resume ev_ca016048b0f814cf: unchanged inputs, reusing completed row
+  eval resume ev_6a69f79843cf6e44: unchanged inputs, reusing completed row
+  eval resume ev_d6a2c76569422a2e: unchanged inputs, reusing completed row
+  eval resume ev_d1fa78dfc41e1b5e: unchanged inputs, reusing completed row
+  eval resume ev_45300d92677da3ac: unchanged inputs, reusing completed row
+  eval resume ev_77c428c88efd01d5: unchanged inputs, reusing completed row
+  eval resume ev_b3cc98b482b917db: unchanged inputs, reusing completed row
+  eval resume ev_d05aba2447e525f5: unchanged inputs, reusing completed row
+  eval resume ev_6bfc5e8034edd826: unchanged inputs, reusing completed row
+  eval resume ev_12c5ee98fc85239b: unchanged inputs, reusing completed row
+  eval resume ev_6cee0e669888e001: unchanged inputs, reusing completed row
+  eval resume ev_381b73695b222680: unchanged inputs, reusing completed row
+  eval resume ev_aacc459b8cd8ed9f: unchanged inputs, reusing completed row
+  eval resume ev_9727bf0a0f1936a3: unchanged inputs, reusing completed row
+  eval resume ev_86daddf945315cbc: unchanged inputs, reusing completed row
+  eval resume ev_3c82db45448238c8: unchanged inputs, reusing completed row
+  eval resume ev_b6bc0b80a9ca82fe: unchanged inputs, reusing completed row
+  eval resume ev_6d555e589969e48b: unchanged inputs, reusing completed row
+  eval resume ev_7572f4cc3765cb80: unchanged inputs, reusing completed row
+  eval resume ev_4176ff1cb7e77096: unchanged inputs, reusing completed row
+  eval resume ev_a6aabe7644e1d5f2: unchanged inputs, reusing completed row
+  eval resume ev_da2d183c8923f986: unchanged inputs, reusing completed row
+  eval resume ev_bf8e8e18ac153b5c: unchanged inputs, reusing completed row
+  eval resume ev_09adaa944190d528: unchanged inputs, reusing completed row
+  eval resume ev_0246916f58bbfd50: unchanged inputs, reusing completed row
+  eval resume ev_134da6bae0c7050c: unchanged inputs, reusing completed row
+  eval resume ev_0e5245382e4b47a9: unchanged inputs, reusing completed row
+  eval resume ev_fa798911618b1306: unchanged inputs, reusing completed row
+  eval resume ev_166f9cafcea0e225: unchanged inputs, reusing completed row
+  eval resume ev_b19e9370f1ff37ae: unchanged inputs, reusing completed row
+  eval progress 9688/9723 rows; mixed_rnta: 35 passed
+  eval progress 9723/9723 rows; mixed_rnla: 35 passed
+  full matrix PASS: 9723 rows

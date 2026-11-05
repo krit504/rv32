@@ -1,0 +1,26 @@
+run_id: 20261103-122141-2-python
+timestamp: 2026-11-03 12:21:42 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: .venv/bin/python analysis/attack_validate.py --benign analysis/wear_baseline_f3a7ccb0eb4d.csv
+git_commit: 6e3dd513fa5f8bd2aee540b3359ad3d39e1eb5ba
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 1
+duration_s: 1
+outputs:
+full_output: work/runs/20261103-122141-2-python.out
+output_tail: |
+  attack validation: 1/24 above all benign; /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/analysis/attack_6e72b1b2034e_validation.csv
+  Traceback (most recent call last):
+    File "/home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/analysis/attack_validate.py", line 98, in <module>
+      main()
+    File "/home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/analysis/attack_validate.py", line 93, in main
+      raise AssertionError(f"PMR validation failed for: {failed}")
+  AssertionError: PMR validation failed for: ['rla_paper_s1', 'rta_direct_s1', 'rta_paper_s1', 'rnla_direct_s1', 'rnla_direct_s2', 'rnla_direct_s3', 'rnla_direct_s4', 'rnla_direct_s5', 'rnla_paper_s1', 'rnla_paper_s2', 'rnla_paper_s3', 'rnla_paper_s4', 'rnla_paper_s5', 'rnta_direct_s1', 'rnta_direct_s2', 'rnta_direct_s3', 'rnta_direct_s4', 'rnta_direct_s5', 'rnta_paper_s1', 'rnta_paper_s2', 'rnta_paper_s3', 'rnta_paper_s4', 'rnta_paper_s5']

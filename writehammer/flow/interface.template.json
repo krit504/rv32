@@ -1,0 +1,35 @@
+{
+  "status": "T5 tops delivered; thresholds filled by flow/make_interface.py from calibration.csv",
+  "cache_top": "cache_system",
+  "core_top": "core_only",
+  "cache_sources": ["rtl/cache_system.sv", "rtl/icache.sv", "rtl/dcache.sv", "rtl/write_guard.sv"],
+  "core_sources": ["rtl/core_only.sv", "rtl/rv32_top_pipelined.sv", "rtl/f_d_reg.sv", "rtl/d_e_reg.sv", "rtl/e_m_reg.sv", "rtl/m_w_reg.sv", "rtl/control_unit.sv", "rtl/main_decoder.sv", "rtl/alu_decoder.sv", "rtl/alu.sv", "rtl/immediate_generator.sv", "rtl/pc.sv", "rtl/regfile.sv", "rtl/hazard_unit.sv", "rtl/imem.sv", "rtl/dmem.sv", "rtl/mem_model.sv", "rtl/icache.sv", "rtl/dcache.sv", "rtl/write_guard.sv", "rtl/cache_system.sv"],
+  "parameter_names": {
+    "icache_bytes": "ICACHE_BYTES",
+    "dcache_bytes": "DCACHE_BYTES",
+    "line_bytes": "LINE_BYTES",
+    "detector": "DETECTOR",
+    "M": "WG_M",
+    "window_cycles": "WG_WINDOW",
+    "threshold": "WG_THRESHOLD"
+  },
+  "detector_values": {"NONE": 0, "D1": 2, "D2": 3, "D3": 4},
+  "fixed_parameters": {"WG_ACTION": 0, "WG_MODE": 0, "WG_WINDOW": 10000, "WG_W": 16, "DC_WRITE_LATENCY": 1, "OBSERVE": 0},
+  "variant_parameters": {
+    "D1024_D1": {"WG_THRESHOLD": "TODO_CALIBRATION"},
+    "D1024_D2_M4": {"WG_THRESHOLD": "TODO_CALIBRATION"},
+    "D1024_D2_M8": {"WG_THRESHOLD": "TODO_CALIBRATION"},
+    "D1024_D2_M16": {"WG_THRESHOLD": "TODO_CALIBRATION"},
+    "D1024_D2_M32": {"WG_THRESHOLD": "TODO_CALIBRATION"},
+    "D1024_D3": {"WG_THRESHOLD": "TODO_CALIBRATION"},
+    "D2048_D1": {"WG_THRESHOLD": "TODO_CALIBRATION"},
+    "D2048_D2_M4": {"WG_THRESHOLD": "TODO_CALIBRATION"},
+    "D2048_D2_M8": {"WG_THRESHOLD": "TODO_CALIBRATION"},
+    "D2048_D2_M16": {"WG_THRESHOLD": "TODO_CALIBRATION"},
+    "D2048_D2_M32": {"WG_THRESHOLD": "TODO_CALIBRATION"},
+    "D2048_D2_M64": {"WG_THRESHOLD": "TODO_CALIBRATION"},
+    "D2048_D3": {"WG_THRESHOLD": "TODO_CALIBRATION"}
+  },
+  "clock_port": "clk",
+  "reset_port": "rst_n"
+}

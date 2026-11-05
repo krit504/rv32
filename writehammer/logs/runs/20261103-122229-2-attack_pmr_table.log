@@ -1,0 +1,28 @@
+run_id: 20261103-122229-2-attack_pmr_table
+timestamp: 2026-11-03 12:22:29 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: python3 analysis/attack_pmr_table.py analysis/wear_baseline_f3a7ccb0eb4d.csv analysis/attack_6e72b1b2034e_validation.csv
+git_commit: 6e3dd513fa5f8bd2aee540b3359ad3d39e1eb5ba
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 1
+duration_s: 0
+outputs:
+full_output: work/runs/20261103-122229-2-attack_pmr_table.out
+output_tail: |
+  Traceback (most recent call last):
+    File "/home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/analysis/attack_pmr_table.py", line 58, in <module>
+      main()
+    File "/home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/analysis/attack_pmr_table.py", line 48, in main
+      "source_sha256": {str(p.relative_to(ROOT)): digest(p)
+                            ^^^^^^^^^^^^^^^^^^^
+    File "/usr/lib/python3.12/pathlib.py", line 682, in relative_to
+      raise ValueError(f"{str(self)!r} is not in the subpath of {str(other)!r}")
+  ValueError: 'analysis/wear_baseline_f3a7ccb0eb4d.csv' is not in the subpath of '/home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer'

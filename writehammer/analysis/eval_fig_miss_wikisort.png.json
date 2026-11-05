@@ -1,0 +1,10 @@
+{
+  "script": "analysis/plots.py",
+  "git_commit": "ec2ede14d5c5b4254d00a0ed2e8d33c7e5a45359",
+  "source_sha256": {
+    "analysis/results.csv": "2245a16d7aa61a4f3921363a8a21574ecd6ae157dd54a0bbf143e3ab022097fd"
+  },
+  "artifact_sha256": "de9e9f599dc546e74c948feaea2e9e2a6cfba9d32c0baa4413d0c42f8071f7ff",
+  "source_rows": 4,
+  "development_subset": false
+}

@@ -132,10 +132,18 @@ attacks-validate:
 
 calibrate:
 	$(RUN) $(VENV_PY) analysis/calibrate.py
-eval:       ; @scripts/not_implemented.sh $@ T6.1
+eval:
+	JOBS=2 $(RUN) $(VENV_PY) analysis/eval_matrix.py --run --jobs 2
 synth:      ; @scripts/not_implemented.sh $@ T6.5
-plots:      ; @scripts/not_implemented.sh $@ T6.2
-hypotheses: ; @scripts/not_implemented.sh $@ T6.3
+plots:
+	$(RUN) $(VENV_PY) analysis/eval_wear_export.py
+	$(RUN) $(VENV_PY) analysis/plots.py
+	$(RUN) $(VENV_PY) analysis/eval_exploratory.py
+	$(RUN) $(VENV_PY) analysis/eval_control_compare.py
+	MPLCONFIGDIR=/tmp/wh-mpl $(RUN) $(VENV_PY) analysis/sensitivity.py
+	MPLCONFIGDIR=/tmp/wh-mpl $(RUN) $(VENV_PY) flow/plot_area.py --if-available
+hypotheses:
+	$(RUN) $(VENV_PY) analysis/hypotheses.py
 audit:      ; @scripts/not_implemented.sh $@ T7.8
 
 locks:
