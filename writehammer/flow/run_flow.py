@@ -146,7 +146,7 @@ def sta_run(top, netlist, lib, period, outdir):
                                  f"link_design {top}", f"read_sdc {sdc}",
                                  "report_checks -path_delay max -group_path_count 1",
                                  "report_worst_slack -max", "exit"]) + "\n")
-    log = command(["sta", str(script)], cwd=outdir)
+    log = command(["sta", "-no_init", "-exit", str(script)], cwd=outdir)
     (outdir / f"sta_{period:.2f}.log").write_text(log)
     match = re.search(r"worst slack(?: max)?\s+(-?[0-9.]+)", log, re.I)
     if not match:

@@ -2,7 +2,7 @@
 # The runner replaces @PERIOD_NS@ only. Any change invalidates all results.
 create_clock -name clk -period @PERIOD_NS@ [get_ports clk]
 set_clock_uncertainty 0.2 [get_clocks clk]
-set_input_delay 1.0 -clock clk [remove_from_collection [all_inputs] [get_ports {clk rst_n}]]
+set_input_delay 1.0 -clock clk [all_inputs -no_clocks]
 set_output_delay 1.0 -clock clk [all_outputs]
 set_load 0.01 [all_outputs]
 set_false_path -from [get_ports rst_n]
