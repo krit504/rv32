@@ -25,7 +25,9 @@ What is planned (spec `../../docs/writehammer.md`, Section 6), what is done, wha
 | KI-023 | G17 guard mutant caught by a Verilator build crash in the last run, by mismatch in the earlier one. | me | nothing | No | Rerun `tests/guard_mutants.py` alone (10 to 15 min) when convenient. |
 | KI-018 | Stale docstring in `analysis/attack_runner.py`. | other agent / me | nothing | No | Fix when the file is next touched. |
 
-## Phase T6 (other agent, worktree `RV32I-t3`, branch `t6-eval`)
+## Phase T6 (other agent, branch `t6-eval`, MERGED into `main` 2026-11-05)
+Results: matrix 9,723/9,723 correct; H1 REFUTED, H2 INCONCLUSIVE, H3 REFUTED (`docs/HYPOTHESES.md`). Cause checked by me on the raw data: store+load read-back attacks get the same array writes with bypass, because the bypassed store invalidates the line and the next load refills it (RLA: 285,718 store-hit writes with NONE; 0 store writes but 285,716 fills with ALWAYS).
+
 | ID | Status | Blocked on |
 |---|---|---|
 | T6.1 matrix (9,723-run manifest) | Phase A done (6 smoke runs); full detector matrix pending | `phase-T5-done` (now available), placebo two-pass, calibration CSV (available) |
