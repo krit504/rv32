@@ -1,0 +1,22 @@
+run_id: 20261104-090910-2-python
+timestamp: 2026-11-04 09:09:28 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: .venv/bin/python -c import\ sys\,json\;\ sys.path.insert\(0\,\"analysis\"\)\;\ import\ eval_matrix\ as\ e\;\ ps=e.planned_rows\(\)\;\ name=\"rla_direct_s1\"\;\ p=next\(x\ for\ x\ in\ ps\ if\ x\[\"workload\"\]==name\ and\ x\[\"detector\"\]==\"D1\"\ and\ x\[\"mode\"\]==\"STATIC\"\ and\ x\[\"window_cycles\"\]==10000\ and\ x\[\"threshold_k\"\]==2\)\;\ b=e.eval_bench\(\)\;\ img=e.build_images\(\[x\ for\ x\ in\ e.all_workloads\(\)\ if\ x\[0\]==name\]\)\[name\]\;\ base=next\(x\ for\ x\ in\ ps\ if\ x\[\"workload\"\]==name\ and\ x\[\"detector\"\]==\"NONE\"\ and\ x\[\"dcache_bytes\"\]==2048\)\;\ br\,_=e.sim_one\(base\,img\,b\)\;\ r\,err=e.sim_one\(p\,img\,b\,br\[\"signature_hash\"\]\)\;\ assert\ not\ err\,err\;\ wg=json.loads\(\(e.ROOT/\"work/eval/runs\"/p\[\"run_id\"\]\ /\"provenance.json\"\).read_text\(\)\)\[\"wg\"\]\;\ rate=round\(65536\*wg\[\"stores_restricted\"\]/wg\[\"stores\"\]\)\ if\ wg\[\"stores\"\]\ else\ 0\;\ q=next\(x\ for\ x\ in\ ps\ if\ x\[\"workload\"\]==name\ and\ x\[\"detector\"\]==\"PLACEBO\"\ and\ x\[\"control_for\"\]==\"D1\"\ and\ x\[\"mode\"\]==\"STATIC\"\ and\ x\[\"window_cycles\"\]==10000\ and\ x\[\"threshold_k\"\]==2\)\;\ qr\,qerr=e.sim_one\(q\,img\,b\,br\[\"signature_hash\"\]\,placebo_rate=rate\)\;\ assert\ not\ qerr\,qerr\;\ print\(\"probe\ PASS\"\,p\[\"threshold\"\]\,wg\[\"stores\"\]\,wg\[\"stores_restricted\"\]\,rate\,qr\[\"correct\"\]\)
+git_commit: be2de7a83269f2fbf47208418dadec2b7476210b
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 18
+outputs:
+full_output: work/runs/20261104-090910-2-python.out
+output_tail: |
+  /home/kritin/.config/matplotlib is not a writable directory
+  Matplotlib created a temporary cache directory at /tmp/matplotlib-6_n3dfdp because there was an issue with the default path (/home/kritin/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+  probe PASS 740 285718 81478 18689 1

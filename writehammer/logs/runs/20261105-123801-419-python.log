@@ -1,0 +1,20 @@
+run_id: 20261105-123801-419-python
+timestamp: 2026-11-05 12:38:01 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: .venv/bin/python analysis/eval_control_compare.py
+git_commit: 141befd65167d0e01d4e56bd3a07f7dcbdd59740
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 0
+outputs:
+full_output: work/runs/20261105-123801-419-python.out
+output_tail: |
+  controls: 4718 real/PLACEBO/NONE/ALWAYS comparisons; 112 attack seed summaries

@@ -1,0 +1,38 @@
+run_id: 20261103-121955-2-python
+timestamp: 2026-11-03 12:20:10 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: .venv/bin/python analysis/attack_mixed.py
+git_commit: eaf520d4fc22f855ca218cd3c33695f95adb352e
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 15
+outputs:
+full_output: work/runs/20261103-121955-2-python.out
+output_tail: |
+  /home/kritin/.config/matplotlib is not a writable directory
+  Matplotlib created a temporary cache directory at /tmp/matplotlib-xxqc9h1g because there was an issue with the default path (/home/kritin/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_mixed/rla/wear HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_mixed/rla/wear: 686240 accesses, 343188 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_mixed/rla/wear w_max=142862 PMR(all)=53.283727869272816
+  mixed RLA: markers=[(0, 3258), (1, 1003358), (2, 2003403), (3, 3003436)] gaps=[1000100, 1000045, 1000033]
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_mixed/rta/wear HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_mixed/rta/wear: 477457 accesses, 238800 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_mixed/rta/wear w_max=19317 PMR(all)=10.354170854271358
+  mixed RTA: markers=[(0, 3349), (1, 1003448), (2, 2004509), (3, 3004541)] gaps=[1000099, 1001061, 1000032]
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_mixed/rnla/wear HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_mixed/rnla/wear: 572977 accesses, 286575 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_mixed/rnla/wear w_max=12660 PMR(all)=5.654645380790369
+  mixed RnLA: markers=[(0, 3625), (1, 1003726), (2, 2002729), (3, 3002763)] gaps=[1000101, 999003, 1000034]
+  wear run: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_mixed/rnta/wear HALT 0
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_mixed/rnta/wear: 572981 accesses, 286577 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_mixed/rnta/wear w_max=15550 PMR(all)=6.9454282793106215
+  mixed RnTA: markers=[(0, 3628), (1, 1003752), (2, 2002133), (3, 3002165)] gaps=[1000124, 998381, 1000032]
+  [attack-mixed] 4/4 marker sequences passed: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/analysis/attack_mixed.csv

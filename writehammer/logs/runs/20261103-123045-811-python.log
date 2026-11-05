@@ -1,0 +1,38 @@
+run_id: 20261103-123045-811-python
+timestamp: 2026-11-03 12:30:59 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: .venv/bin/python analysis/attack_runner.py --dc-bytes 2048 --line-bytes 32 --case rla_direct_s1 --case rta_direct_s1 --case rnla_direct_s1 --case rnta_direct_s1
+git_commit: bc43fc589e248f08195234e3d67bb39afe24aaf0
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 14
+outputs:
+full_output: work/runs/20261103-123045-811-python.out
+output_tail: |
+  /home/kritin/.config/matplotlib is not a writable directory
+  Matplotlib created a temporary cache directory at /tmp/matplotlib-7hu0m_c7 because there was an issue with the default path (/home/kritin/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+  attack runner starting: rla_direct_s1
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rla_direct_s1/dc2048_line32/wear: 571438 accesses, 285724 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rla_direct_s1/dc2048_line32/wear w_max=285723 PMR(all)=63.99977600761574
+  attack runner PASS: rla_direct_s1, measured cycles=2000045
+  attack runner starting: rta_direct_s1
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rta_direct_s1/dc2048_line32/wear: 153877 accesses, 76950 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rta_direct_s1/dc2048_line32/wear w_max=38614 PMR(all)=32.115607537361925
+  attack runner PASS: rta_direct_s1, measured cycles=2007219
+  attack runner starting: rnla_direct_s1
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_direct_s1/dc2048_line32/wear: 344911 accesses, 172494 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_direct_s1/dc2048_line32/wear w_max=25119 PMR(all)=9.319837211729103
+  attack runner PASS: rnla_direct_s1, measured cycles=2001056
+  attack runner starting: rnta_direct_s1
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnta_direct_s1/dc2048_line32/wear: 344915 accesses, 172496 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnta_direct_s1/dc2048_line32/wear w_max=28611 PMR(all)=10.615341805027363
+  attack runner PASS: rnta_direct_s1, measured cycles=1999042
+  [attack-runner] 4/4 passed

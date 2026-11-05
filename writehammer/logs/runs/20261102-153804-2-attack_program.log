@@ -1,0 +1,29 @@
+run_id: 20261102-153804-2-attack_program
+timestamp: 2026-11-02 15:38:04 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: python3 tests/attack_program.py --kind RLA
+git_commit: 137a7431f7ae10cb27c27ced1989fad4b3264e79
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 1
+duration_s: 0
+outputs:
+full_output: work/runs/20261102-153804-2-attack_program.out
+output_tail: |
+  Traceback (most recent call last):
+    File "/home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/tests/attack_program.py", line 16, in <module>
+      from attack_runner import flags  # noqa: E402
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/analysis/attack_runner.py", line 29, in <module>
+      from wear_stats import main as wear_stats  # noqa: E402
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/analysis/wear_stats.py", line 16, in <module>
+      import matplotlib
+  ModuleNotFoundError: No module named 'matplotlib'

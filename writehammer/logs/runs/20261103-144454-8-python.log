@@ -1,0 +1,23 @@
+run_id: 20261103-144454-8-python
+timestamp: 2026-11-03 14:44:57 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: .venv/bin/python analysis/plots.py
+git_commit: 9fac7b12e4b65393e874b6811830bd2d37ac6a80
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 3
+outputs:
+full_output: work/runs/20261103-144454-8-python.out
+output_tail: |
+  /home/kritin/.config/matplotlib is not a writable directory
+  Matplotlib created a temporary cache directory at /tmp/matplotlib-loc7bipp because there was an issue with the default path (/home/kritin/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+  [plots] regenerated miss-rate, CPI/stall plots, 4 measured heatmaps and two tables from CSVs
+  [plots] sensitivity, area/Fmax and hypotheses await T5 and author physical-flow results

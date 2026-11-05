@@ -1,0 +1,27 @@
+run_id: 20261104-091147-2-python
+timestamp: 2026-11-04 09:12:12 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: .venv/bin/python analysis/eval_matrix.py --smoke
+git_commit: be2de7a83269f2fbf47208418dadec2b7476210b
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 25
+outputs:
+full_output: work/runs/20261104-091147-2-python.out
+output_tail: |
+  matrix manifest: 9723 planned runs; /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/analysis/matrix_manifest.csv
+  eval smoke PASS storeloop NONE cache=0
+  eval smoke PASS storeloop NONE cache=2048
+  eval smoke PASS storeloop ALWAYS cache=2048
+  eval smoke PASS rla_direct_s1 NONE cache=0
+  eval smoke PASS rla_direct_s1 NONE cache=2048
+  eval smoke PASS rla_direct_s1 ALWAYS cache=2048
+  [eval-smoke] 6/6 passed

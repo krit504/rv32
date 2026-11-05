@@ -1,0 +1,59 @@
+run_id: 20261102-160226-2-python
+timestamp: 2026-11-02 16:02:50 +0530
+cwd: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer
+command: .venv/bin/python analysis/attack_runner.py --case rnla_direct_s1 --case rnla_direct_s2 --case rnla_direct_s3 --case rnla_direct_s4 --case rnla_direct_s5 --case rnla_paper_s1 --case rnla_paper_s2 --case rnla_paper_s3 --case rnla_paper_s4 --case rnla_paper_s5
+git_commit: 9a6bd6094c39c67985a710661b8fb4d493c9125c
+git_dirty: yes
+tools:
+  verilator: Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  iverilog: Icarus Verilog version 12.0 (stable) ()
+  riscv-gcc: riscv64-unknown-elf-gcc (g99677969d46-dirty) 13.4.0
+  spike: Spike RISC-V ISA Simulator 1.1.1-dev
+  python3: Python 3.12.3
+parameters:
+seed: none
+exit_code: 0
+duration_s: 24
+outputs:
+full_output: work/runs/20261102-160226-2-python.out
+output_tail: |
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_direct_s1/wear: 333385 accesses, 166715 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_direct_s1/wear w_max=24456 PMR(all)=18.776762738805747
+  attack runner PASS: rnla_direct_s1, measured cycles=1934558
+  attack runner starting: rnla_direct_s2
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_direct_s2/wear: 333385 accesses, 166715 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_direct_s2/wear w_max=24621 PMR(all)=18.90344600065981
+  attack runner PASS: rnla_direct_s2, measured cycles=1934257
+  attack runner starting: rnla_direct_s3
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_direct_s3/wear: 333385 accesses, 166715 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_direct_s3/wear w_max=28757 PMR(all)=22.078973097801637
+  attack runner PASS: rnla_direct_s3, measured cycles=1935038
+  attack runner starting: rnla_direct_s4
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_direct_s4/wear: 333385 accesses, 166715 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_direct_s4/wear w_max=24720 PMR(all)=18.979455957772245
+  attack runner PASS: rnla_direct_s4, measured cycles=1934907
+  attack runner starting: rnla_direct_s5
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_direct_s5/wear: 333385 accesses, 166715 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_direct_s5/wear w_max=30539 PMR(all)=23.44715232582551
+  attack runner PASS: rnla_direct_s5, measured cycles=1931841
+  attack runner starting: rnla_paper_s1
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_paper_s1/wear: 242529 accesses, 142956 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_paper_s1/wear w_max=1344 PMR(all)=1.203391253252749
+  attack runner PASS: rnla_paper_s1, measured cycles=2026248
+  attack runner starting: rnla_paper_s2
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_paper_s2/wear: 242529 accesses, 143337 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_paper_s2/wear w_max=1347 PMR(all)=1.202871554448607
+  attack runner PASS: rnla_paper_s2, measured cycles=2037152
+  attack runner starting: rnla_paper_s3
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_paper_s3/wear: 242529 accesses, 142575 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_paper_s3/wear w_max=1423 PMR(all)=1.2775311239698404
+  attack runner PASS: rnla_paper_s3, measured cycles=2004312
+  attack runner starting: rnla_paper_s4
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_paper_s4/wear: 242529 accesses, 143083 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_paper_s4/wear w_max=1356 PMR(all)=1.213058155056855
+  attack runner PASS: rnla_paper_s4, measured cycles=2026190
+  attack runner starting: rnla_paper_s5
+  replay PASS /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_paper_s5/wear: 242529 accesses, 143210 array writes
+  wear stats: /home/kritin/Scratch/personal/sv_practice/PROJECTS/RV32I-t3/writehammer/work/attack_run/rnla_paper_s5/wear w_max=1379 PMR(all)=1.2325396271210112
+  attack runner PASS: rnla_paper_s5, measured cycles=2031733
+  [attack-runner] 10/10 passed
