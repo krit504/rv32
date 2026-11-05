@@ -1,0 +1,9 @@
+{
+  "script": "flow/make_interface.py",
+  "git_commit": "2e713f51b1f76b7a2fef011b63041891c5c8e2c2",
+  "script_sha256": "30f5187d61016db330a4d4309ffeaff64dc0bbc85b5e6a05b036f4fee39c0b56",
+  "template_sha256": "2e111be69efb76d59af9deea9608cba75ed4d3c0498fe47bc7d883bdef6728db",
+  "variants_sha256": "0de7f7a0fe46944529e6b636e64d015d3224f8ee19eb92f2bf5cd878d06cd969",
+  "calibration_sha256": "3811e63a78d37e8e071039952752cef836a16c1b443d797860d0fa0a5945757c",
+  "interface_sha256": "b8155ba3297625bc62d054f4950d91af3616203f5ff2aea090401629b564ac1c"
+}

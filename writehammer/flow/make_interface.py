@@ -55,6 +55,7 @@ def main():
     out.write_text(json.dumps(cfg, indent=2) + "\n")
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     sidecar = {"script": "flow/make_interface.py", "git_commit": commit,
+               "script_sha256": sha(Path(__file__)),
                "template_sha256": sha(FLOW / "interface.template.json"),
                "variants_sha256": sha(FLOW / "variants.csv"),
                "calibration_sha256": sha(ROOT / "analysis/calibration.csv"),
