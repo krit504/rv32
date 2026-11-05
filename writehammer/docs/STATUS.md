@@ -52,10 +52,10 @@ Times are IST.
 | T5.9 | DONE | `tests/guard_integration.py` | restricted cycles, first-restriction cycle, stores and restricted stores, dc_bypass, dc_rab appear in the run CSV (work/guard_integration/results_full.csv) | 2026-11-04 |
 | T5.10 | PARTIAL | `tests/bypass_verify.py`, `tests/guard_integration.py`, `tests/guard_mutants.py` | bypass verification 18/18 (zero store-hit array writes under ALWAYS, replay vs independent cache model, memory equals caches-off golden); NEVER == NONE in cycles and counters on every image; dropped-store and wrong-data bypass mutants caught. Unmet: rate-matched PLACEBO two-pass runs and control rows in results.csv/report are the T6 harness (RTL side verified) | 2026-11-04 |
 | T6.1 | DONE | `MPLCONFIGDIR=/tmp/wh-mpl JOBS=4 scripts/run.sh -- .venv/bin/python analysis/eval_matrix.py --run --jobs 4` | 9,723/9,723 planned rows, all correct=1 and same committed phase parser; zero missing; measured phase metrics present where applicable | 2026-11-05 |
-| T6.2 | PARTIAL | `MPLCONFIGDIR=/tmp/wh-mpl make plots` | 13 miss-rate, 13 CPI/stall, 109 heatmaps, phase-based tables, 1,064 sensitivity points and 3,101 post-hoc windows regenerated; physical area/Fmax awaits author EDA outputs | 2026-11-05 |
+| T6.2 | DONE | `MPLCONFIGDIR=/tmp/wh-mpl make plots` | All Section 8 figures/tables regenerated from measured CSVs, including physical area/Fmax and D2 M sweep; 109 heatmaps and 1,064 sensitivity points | 2026-11-05 |
 | T6.3 | DONE | `scripts/run.sh -- .venv/bin/python analysis/hypotheses.py` | Generated verdicts: H1 REFUTED; H2 INCONCLUSIVE; H3 REFUTED, with full numeric report and provenance | 2026-11-05 |
 | T6.4 | DONE | `MPLCONFIGDIR=/tmp/wh-mpl scripts/run.sh -- .venv/bin/python analysis/sensitivity.py` | 1,064 measured sweep points; 2,466 censored seeds recorded without invented latency; CSV, plot, provenance generated | 2026-11-05 |
-| T6.5 | NOT RUN | `scripts/run.sh -- python3 flow/run_flow.py --check-plan` | Both tops delivered; 16 variants and 13 calibrated thresholds checked without EDA; author physical outputs pending | 2026-11-04 |
+| T6.5 | DONE | `scripts/run.sh -- python3 flow/parse_results.py --repeats 3` | Author-authorized pinned Docker flow completed 16 variants × 3 repeats; parsed table has periods, area/Fmax deltas, critical paths, tool/PDK/constraint provenance | 2026-11-05 |
 | T7.1 | NOT RUN | | | |
 | T7.2 | NOT RUN | | | |
 | T7.3 | NOT RUN | | | |

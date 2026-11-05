@@ -50,3 +50,8 @@ T7.1 README, T7.2 REPORT, T7.3 rationale notes, T7.4 EXPLAIN_FOR_AUTHOR, T7.5 RE
 3. Me: merge `t6-eval` into `main` when they report (expected conflict only in `docs/LOCKED.sha256`: keep both sides).
 4. You: run the T6.5 flow commands when the other agent hands them over.
 5. Me: T7 documents; final `make all` and the audits.
+
+## 2026-11-05 update: T6.5 physical flow DONE (author-authorized, other agent)
+- 16 variants x 3 repeats in the pinned image (Yosys 0.66, OpenSTA 2.7.0, sky130_fd_sc_hd); `flow/cost_table.md`, `flow/area_fmax.png`, raw archive `flow/raw.tar.zst` (34 MB).
+- Replayed onto `main` as commits `1ba2191`, `d11e094`, `cd308df`, `98ddb33` under the krit504 identity. The branch `t6-eval` also holds a merge commit `a065ae1` that used the default work identity; it was **not** imported (do not push `t6-eval`; delete the branch and worktree when done).
+- Reading the table: the cache pair is about 14x the core's area (flop arrays), so deltas under about 2 % of the cache are inside synthesis variation (D2 M=4/8/16 come out *smaller* than NONE, which a design that only adds logic cannot be). Only D1 stands out above that (+4.0 % at 1 KiB, +5.7 % at 2 KiB of the cache; +57 % / +109 % of the core). Fmax is 5 to 10 MHz (untuned flow, huge flop-array muxes), and its deltas (-18 % to +6.7 %, D1 faster than NONE at 2 KiB) have no stable sign: report as measured, not as a guard-caused effect.
