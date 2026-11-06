@@ -97,14 +97,15 @@ caches:
 test-core-only:
 	$(RUN) $(PY) tests/core_only_test.py
 
-test-guard:
+# needs the attack images that `make attacks` builds (guard_integration.py refuses to run without them)
+test-guard: attacks
 	$(RUN) $(PY) tests/write_guard_test.py
 	$(RUN) $(PY) tests/guard_mutants.py
 	$(RUN) $(PY) tests/bypass_verify.py
 	$(RUN) $(PY) tests/guard_integration.py --quick
 
 # T5.8: every arm x every benchmark, attack and mixed image x latency 1, 20, random (needs `make attacks` images; about an hour)
-guard-integration:
+guard-integration: attacks
 	$(RUN) $(PY) tests/guard_integration.py --csv work/guard_integration/results_full.csv
 
 test-mutants:
