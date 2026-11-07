@@ -27,4 +27,4 @@ Artifacts are generated files; "row" means the run_id in `analysis/results.csv` 
 - The statement that the attack taxonomy is the group's prior work is attribution, from the spec and the papers named in `docs/OPEN_QUESTIONS.md` Q-004.
 
 ## Items that are BLOCKED or NOT RUN (also in `docs/STATUS.md`)
-Action A2 (KI-020); T4.7 fails by its fixed rule (KI-017); T7.6 clean-clone `make all` NOT RUN.
+Action A2 (KI-020); T4.7 fails by its fixed rule (KI-017). T7.6 was run (`docs/logs/T7.6.md`; interrupted once and resumed).

@@ -1,6 +1,6 @@
 # INTEGRITY REPORT (spec 0A.E, T7.8): adversarial self-review
 
-Written 2026-11-05 after all phases except the clean-clone `make all` (T7.6, see the end). Method: for each headline claim ask "how could this be true for the wrong reason?", run a targeted check, record the outcome. The computable checks are in `scripts/audit.py` (`make audit`); this page records the questions and the judgments that a script cannot make.
+Written 2026-11-05; updated 2026-11-07 after the clean-clone run (T7.6). Method: for each headline claim ask "how could this be true for the wrong reason?", run a targeted check, record the outcome. The computable checks are in `scripts/audit.py` (`make audit`); this page records the questions and the judgments that a script cannot make.
 
 ## Automated audit (`make audit`)
 Locks verified (60 files); mutants defined 52 (baseline 13); every check count at or above `tests/BASELINE_COUNTS.json`; no skipped or expected-fail tests, no uncommented lint waivers, no `-Wno-` in the lint target; planned 9,723 = completed 9,723, every row `correct = 1`, run_ids unique; every file cited in README.md, REPORT.md and docs/RESULTS.md exists; four adversarial computations (below) pass.
@@ -27,4 +27,4 @@ Locks verified (60 files); mutants defined 52 (baseline 13); every check count a
 - Action A2 not run (KI-020); T4.7 fails by its fixed rule (KI-017).
 - Synthesis variation of about 2 % of the cache area bounds the physical claims; the flow is untuned.
 - The earlier `make test` run reported ERROR and PATCH_FAILED in the mutant suite; the cause was two overlapping runs sharing a work directory (and a retargeted mutant patch, CHG-020), not a design fault. The clean single run passed 52/52.
-- T7.6 (clean-clone `make all`) is NOT RUN: it takes many hours (arch tests about an hour, the 9,723-run matrix, the physical-flow parse), so it was not run in this session. `STATUS.md` says so.
+- T7.6 (clean-clone `make all`) was run: all 9,723 rows recomputed and identical to the committed CSV, other artifacts byte-identical (`docs/logs/T7.6.md`). Disclosed deviation: the run was interrupted once (arch LAT=10) and resumed, so it was not one uninterrupted `make` invocation; the physical flow itself was not re-run.
